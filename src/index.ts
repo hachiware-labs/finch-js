@@ -1,11 +1,11 @@
-import { DiagramInstance } from "./instance";
-import { builtInLayouts } from "./layouts";
-import { createActivityDiagram, createClassDiagram, createComponentDiagram, createDeploymentDiagram, createErDiagram, createFlowchartDiagram, createSequenceDiagram, createSlideDiagram, createStateDiagram, createUsecaseDiagram, getDiagramKind } from "./parser";
-import { Registry } from "./registry";
-import { builtInShapes } from "./shapes";
-import { defaultTheme, midnightTheme } from "./theme";
-import type { DiagramPlugin, LayoutPlugin, RenderOptions, ShapePlugin, ThemePlugin, TitApi } from "./types";
-import { createOverlay } from "./utils";
+import { DiagramInstance } from "./instance.js";
+import { builtInLayouts } from "./layouts.js";
+import { createActivityDiagram, createClassDiagram, createComponentDiagram, createDeploymentDiagram, createErDiagram, createFlowchartDiagram, createSequenceDiagram, createSlideDiagram, createStateDiagram, createUsecaseDiagram, getDiagramKind } from "./parser.js";
+import { Registry } from "./registry.js";
+import { builtInShapes } from "./shapes.js";
+import { defaultTheme, midnightTheme } from "./theme.js";
+import type { DiagramPlugin, LayoutPlugin, RenderOptions, ShapePlugin, ThemePlugin, TitApi } from "./types.js";
+import { createOverlay } from "./utils.js";
 
 export class TitEngine implements TitApi {
   private readonly registry = new Registry();
@@ -70,7 +70,7 @@ export function createTit(): TitEngine {
 export const Tit = createTit();
 export default Tit;
 
-export { DiagramInstance } from "./instance";
-export { defaultTheme, midnightTheme } from "./theme";
-export { parseActivity, parseClass, parseComponent, parseDeployment, parseEr, parseFlowchart, parseSequence, parseSlide, parseState, parseUsecase } from "./parser";
-export type * from "./types";
+export { DiagramInstance } from "./instance.js";
+export { defaultTheme, midnightTheme } from "./theme.js";
+export { parseActivity, parseClass, parseComponent, parseDeployment, parseEr, parseFlowchart, parseSequence, parseSlide, parseState, parseUsecase } from "./parser.js";
+export type * from "./types.js";

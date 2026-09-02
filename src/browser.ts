@@ -1,4 +1,9 @@
-import Tit, { createTit, defaultTheme, midnightTheme } from "./index";
+import Tit, { createTit, defaultTheme, midnightTheme } from "./index.js";
 
-Object.assign(Tit, { createTit, defaultTheme, midnightTheme });
-(globalThis as typeof globalThis & { Tit: typeof Tit }).Tit = Tit;
+const browserTit = Object.assign(Tit, { createTit, defaultTheme, midnightTheme });
+
+declare global {
+  var Tit: typeof browserTit;
+}
+
+globalThis.Tit = browserTit;

@@ -1,4 +1,4 @@
-# Tit.js
+# Tit.js <img src="./docs/assets/shijukara-silhouette-upright-pink.png" alt="Upright pink bird" width="56" />
 
 [日本語](./README_ja.md)
 
@@ -63,10 +63,28 @@ See the [two-step tutorial](./docs/tutorial.md) for details or browse the [advan
 
 ## Environment setup
 
-If `dist/tit.global.js` is not present yet, install the dependencies and build Tit.js:
+Install Tit.js from npm:
 
 ```bash
-npm install
+npm install tit-js
+```
+
+Then import the default instance or create an isolated one:
+
+```js
+import Tit, { createTit } from "tit-js";
+```
+
+For a browser-global build, use a version-pinned CDN URL:
+
+```html
+<script src="https://cdn.jsdelivr.net/npm/tit-js@0.1.0/dist/tit.global.js"></script>
+```
+
+When developing Tit.js itself, install the repository dependencies and build it:
+
+```bash
+npm ci
 npm run build
 ```
 
@@ -76,7 +94,7 @@ To serve the repository over HTTP, start a local server:
 python -m http.server 8000
 ```
 
-Open `http://127.0.0.1:8000/quickstart.html` in a browser. With ES modules, import Tit.js as `import Tit from "tit-js"`.
+Open `http://127.0.0.1:8000/quickstart.html` in a browser.
 
 ## Codex skill
 
@@ -250,3 +268,7 @@ npm run check
 ```
 
 `npm run check` runs type checking, tests, and a production build. Tit.js is licensed under the [MIT License](./LICENSE).
+
+<p align="right">
+  <img src="./docs/assets/shijukara-silhouette-flying-pink.png" alt="Pink bird flying out of Tit.js" width="180" />
+</p>

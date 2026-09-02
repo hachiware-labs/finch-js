@@ -1,5 +1,5 @@
-import type { DiagramPlugin, SemanticConnection, SemanticGroup, SemanticModel, SemanticNode } from "./types";
-import { uniqueId } from "./utils";
+import type { DiagramPlugin, SemanticConnection, SemanticGroup, SemanticModel, SemanticNode } from "./types.js";
+import { uniqueId } from "./utils.js";
 
 function meaningfulLines(source: string): Array<{ text: string; number: number }> {
   return source.split(/\r?\n/).map((line, index) => ({

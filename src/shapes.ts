@@ -1,5 +1,5 @@
-import type { ShapePlugin, ShapeRenderContext, Size } from "./types";
-import { svgElement } from "./utils";
+import type { ShapePlugin, ShapeRenderContext, Size } from "./types.js";
+import { svgElement } from "./utils.js";
 
 function textWidth(label: string, fontSize: number): number {
   let units = 0;

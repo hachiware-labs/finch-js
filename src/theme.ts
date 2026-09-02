@@ -1,4 +1,4 @@
-import type { ThemePlugin } from "./types";
+import type { ThemePlugin } from "./types.js";
 
 export const defaultTheme: ThemePlugin = {
   name: "default",

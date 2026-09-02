@@ -1,5 +1,5 @@
-import type { Geometry, GeometryEdge, GeometryGroup, GeometryNode, LayoutContext, LayoutItem, LayoutModel, LayoutPlugin, Point } from "./types";
-import { center } from "./utils";
+import type { Geometry, GeometryEdge, GeometryGroup, GeometryNode, LayoutContext, LayoutItem, LayoutModel, LayoutPlugin, Point } from "./types.js";
+import { center } from "./utils.js";
 
 const CANVAS_PADDING = 28;
 

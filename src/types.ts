@@ -212,7 +212,7 @@ export interface LayoutChangeDetail {
 }
 
 export interface TitApi {
-  render(source: string, options?: RenderOptions | Element | string): import("./instance").DiagramInstance;
+  render(source: string, options?: RenderOptions | Element | string): import("./instance.js").DiagramInstance;
   registerDiagram(name: string, plugin: DiagramPlugin): void;
   registerShape(name: string, plugin: ShapePlugin): void;
   registerLayout(name: string, plugin: LayoutPlugin): void;

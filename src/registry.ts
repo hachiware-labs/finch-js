@@ -1,4 +1,4 @@
-import type { DiagramPlugin, LayoutPlugin, ShapePlugin, ThemePlugin } from "./types";
+import type { DiagramPlugin, LayoutPlugin, ShapePlugin, ThemePlugin } from "./types.js";
 
 export class Registry {
   readonly diagrams = new Map<string, DiagramPlugin>();

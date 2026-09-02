@@ -1,6 +1,6 @@
-import { rerouteGeometry } from "./layouts";
-import { Registry } from "./registry";
-import { SvgRenderer } from "./renderer";
+import { rerouteGeometry } from "./layouts.js";
+import { Registry } from "./registry.js";
+import { SvgRenderer } from "./renderer.js";
 import type {
   AutoLayoutOptions,
   FitMode,
@@ -11,9 +11,9 @@ import type {
   SemanticModel,
   Theme,
   ZoomChangeDetail,
-} from "./types";
-import { cloneOverlay, createOverlay, parseOverlay } from "./utils";
-import { getDiagramKind } from "./parser";
+} from "./types.js";
+import { cloneOverlay, createOverlay, parseOverlay } from "./utils.js";
+import { getDiagramKind } from "./parser.js";
 
 interface DragState {
   pointerId: number;

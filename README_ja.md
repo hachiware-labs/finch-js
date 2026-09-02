@@ -1,4 +1,4 @@
-# Tit.js
+# Tit.js <img src="./docs/assets/shijukara-silhouette-upright-pink.png" alt="立っているピンク色の鳥" width="56" />
 
 [English](./README.md)
 
@@ -63,10 +63,28 @@ api -> db: SQL</textarea>
 
 ## 環境構築
 
-`dist/tit.global.js` がまだない場合は、依存パッケージをインストールしてビルドします。
+npmからTit.jsをインストールします。
 
 ```bash
-npm install
+npm install tit-js
+```
+
+デフォルトのインスタンスを読み込むか、独立したインスタンスを作成できます。
+
+```js
+import Tit, { createTit } from "tit-js";
+```
+
+ブラウザーグローバル版を使う場合は、バージョンを固定したCDN URLを指定します。
+
+```html
+<script src="https://cdn.jsdelivr.net/npm/tit-js@0.1.0/dist/tit.global.js"></script>
+```
+
+Tit.js本体を開発する場合は、リポジトリの依存パッケージをインストールしてビルドします。
+
+```bash
+npm ci
 npm run build
 ```
 
@@ -76,7 +94,7 @@ HTTPで配信する場合は、ローカルサーバーを起動します。
 python -m http.server 8000
 ```
 
-ブラウザーで `http://127.0.0.1:8000/quickstart.html` を開いてください。ESモジュールでは `import Tit from "tit-js"` として読み込めます。
+ブラウザーで `http://127.0.0.1:8000/quickstart.html` を開いてください。
 
 ## Codex スキル
 
@@ -250,3 +268,7 @@ npm run check
 ```
 
 `npm run check` は型検査、テスト、本番ビルドを順に実行します。ライセンスは [MIT](./LICENSE) です。
+
+<p align="right">
+  <img src="./docs/assets/shijukara-silhouette-flying-pink.png" alt="Tit.jsから飛び立つピンク色の鳥" width="180" />
+</p>

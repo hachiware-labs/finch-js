@@ -1,5 +1,5 @@
-import type { Geometry, GeometryEdge, GeometryNode, ShapePlugin, Theme } from "./types";
-import { pathFromPoints, svgElement } from "./utils";
+import type { Geometry, GeometryEdge, GeometryNode, ShapePlugin, Theme } from "./types.js";
+import { pathFromPoints, svgElement } from "./utils.js";
 
 export type ShapeResolver = (name: string) => ShapePlugin;
 

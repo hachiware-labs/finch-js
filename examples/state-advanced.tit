@@ -1,0 +1,39 @@
+@state
+
+initial start
+state draft "Draft"
+state review "In review"
+choice decision
+state changes "Changes requested"
+state approved "Approved"
+state rejected "Rejected"
+state cancelled "Cancelled"
+junction resolved
+fork publish
+state audit "Write audit log"
+state archiving "Archiving outcome"
+join published
+history previous
+deep-history deep
+final done
+
+start -> draft
+draft -> review: submit
+review -> changes: request changes
+changes -> draft: revise
+review -> decision
+decision -> approved [approved] / accept
+decision -> rejected [rejected] / decline
+draft -> cancelled: cancel
+changes -> cancelled: cancel
+approved -> resolved
+rejected -> resolved
+cancelled -> resolved
+resolved -> publish: persist outcome
+publish -> archiving
+publish -> audit
+archiving -> published
+audit -> published
+published -> done
+draft -> previous: resume
+previous -> deep

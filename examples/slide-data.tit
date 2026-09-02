@@ -1,0 +1,12 @@
+@slide
+
+title "Adoption follows the first successful diagram"
+subtitle "Use ranked bars when the comparison is the message."
+
+column adoption [gap=12] {
+  bar templates "Started from a template" [value=82 suffix="%" width=720]
+  bar import "Imported an existing model" [value=64 suffix="%" width=720]
+  bar blank "Started from a blank file" [value=37 suffix="%" width=720]
+}
+
+callout insight "The starting point matters more than another editing feature." [body="Prioritize discoverable patterns and domain examples." width=720]

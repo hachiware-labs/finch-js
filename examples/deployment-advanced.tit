@@ -1,0 +1,53 @@
+@deployment
+
+' Stable IDs stay short; labels can change without losing layout.
+node web "Web Client" [shape=rounded channel=public]
+node mobile "Mobile Client" [shape=rounded channel=public]
+
+container platform "Production Platform" {
+  device edgebox "Edge Appliance"
+  execution runtime "Container Runtime"
+  artifact release "orders-service:v42"
+  container ingress "Ingress Tier" {
+    server cdn "Global CDN"
+    server waf "Web Application Firewall"
+    server gateway "API Gateway"
+  }
+
+  container services "Service Tier" {
+    server identity "Identity Service" [owner=security]
+    server orders "Order Service" [owner=commerce]
+    server worker "Async Worker" [owner=platform]
+  }
+
+  container data "Data Tier" {
+    database users "User Database"
+    database orderdb "Order Database"
+    database cache "Redis Cache"
+    server queue "Event Queue"
+    server objects "Object Storage"
+  }
+}
+
+container observe "Observability" {
+  server metrics "Metrics"
+  server logs "Log Store"
+  server traces "Distributed Tracing"
+}
+
+web -> cdn: HTTPS
+mobile -> cdn: API
+edgebox -> cdn: routes
+cdn -> waf
+waf -> gateway
+gateway -> identity: authenticate
+gateway -> orders: commands
+release ..> runtime: deployed to
+runtime -> orders: executes
+identity -> users
+orders -> cache
+orders -> orderdb
+orders -> queue: OrderCreated
+queue -> worker
+worker -> objects
+platform --> observe: telemetry

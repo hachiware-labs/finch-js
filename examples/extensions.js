@@ -1,0 +1,495 @@
+const SVG_NS = "http://www.w3.org/2000/svg";
+const layoutKey = "tit-services-extension-layout";
+const base = Tit.createTit();
+const tit = Tit.createTit();
+
+function svg(document, tag, attributes = {}) {
+  const element = document.createElementNS(SVG_NS, tag);
+  for (const [name, value] of Object.entries(attributes)) {
+    if (value !== undefined) element.setAttribute(name, String(value));
+  }
+  return element;
+}
+
+const oceanTheme = {
+  ...Tit.defaultTheme,
+  name: "ocean",
+  labelColor: "#083344",
+  mutedColor: "#0e7490",
+  nodeFill: "#ecfeff",
+  nodeStroke: "#67e8f9",
+  containerFill: "#f0fdfa",
+  containerStroke: "#5eead4",
+  edgeColor: "#0891b2",
+  accentColor: "#0f766e",
+  canvasColor: "#f8fafc",
+  shadow: "0 5px 14px rgba(8, 145, 178, 0.14)",
+};
+
+const serviceCard = {
+  name: "service-card",
+
+  measure({ label, theme }) {
+    return {
+      width: Math.max(174, Array.from(label).length * theme.fontSize * 0.66 + 44),
+      height: 70,
+    };
+  },
+
+  render({ node, theme, document }) {
+    const group = svg(document, "g", {
+      transform: `translate(${node.x} ${node.y})`,
+      "data-node-id": node.id,
+    });
+    const card = svg(document, "rect", {
+      width: node.width,
+      height: node.height,
+      rx: 12,
+      fill: theme.nodeFill,
+      stroke: theme.nodeStroke,
+      "stroke-width": theme.nodeStrokeWidth,
+      filter: "url(#tit-shadow)",
+    });
+    const accent = svg(document, "rect", {
+      width: 6,
+      height: node.height,
+      rx: 3,
+      fill: theme.accentColor,
+    });
+    const label = svg(document, "text", {
+      x: 20,
+      y: 29,
+      fill: theme.labelColor,
+      "font-family": theme.fontFamily,
+      "font-size": theme.fontSize,
+      "font-weight": 700,
+    });
+    label.textContent = node.label;
+    const owner = svg(document, "text", {
+      x: 20,
+      y: 51,
+      fill: theme.mutedColor,
+      "font-family": theme.fontFamily,
+      "font-size": theme.fontSize - 2,
+    });
+    owner.textContent = `Owner · ${node.attributes.owner ?? "Unassigned"}`;
+    group.append(card, accent, label, owner);
+    return group;
+  },
+};
+
+function iconLabel(document, node, theme) {
+  const label = svg(document, "text", {
+    x: node.width / 2,
+    y: 105,
+    "text-anchor": "middle",
+    fill: theme.labelColor,
+    "font-family": theme.fontFamily,
+    "font-size": theme.fontSize,
+    "font-weight": 700,
+  });
+  label.textContent = node.label;
+  return label;
+}
+
+const browserIcon = {
+  name: "browser-icon",
+
+  measure({ label, theme }) {
+    return {
+      width: Math.max(124, Array.from(label).length * theme.fontSize * 0.66 + 28),
+      height: 112,
+    };
+  },
+
+  render({ node, theme, document }) {
+    const group = svg(document, "g", {
+      transform: `translate(${node.x} ${node.y})`,
+      "data-node-id": node.id,
+    });
+    const centerX = node.width / 2;
+    const window = svg(document, "g", { class: "browser-glyph" });
+    window.append(
+      svg(document, "rect", {
+        x: centerX - 44,
+        y: 8,
+        width: 88,
+        height: 70,
+        rx: 9,
+        fill: theme.nodeFill,
+        stroke: theme.accentColor,
+        "stroke-width": 2,
+        filter: "url(#tit-shadow)",
+      }),
+      svg(document, "line", {
+        x1: centerX - 44,
+        y1: 27,
+        x2: centerX + 44,
+        y2: 27,
+        stroke: theme.accentColor,
+        "stroke-width": 2,
+      }),
+      svg(document, "circle", { cx: centerX - 31, cy: 18, r: 3, fill: theme.accentColor }),
+      svg(document, "circle", { cx: centerX - 21, cy: 18, r: 3, fill: theme.nodeStroke }),
+      svg(document, "circle", { cx: centerX - 11, cy: 18, r: 3, fill: theme.nodeStroke }),
+      svg(document, "path", {
+        d: `M ${centerX - 18} 44 L ${centerX - 28} 53 L ${centerX - 18} 62 `
+          + `M ${centerX + 18} 44 L ${centerX + 28} 53 L ${centerX + 18} 62`,
+        fill: "none",
+        stroke: theme.accentColor,
+        "stroke-width": 3,
+        "stroke-linecap": "round",
+        "stroke-linejoin": "round",
+      }),
+    );
+    group.append(window, iconLabel(document, node, theme));
+    return group;
+  },
+};
+
+const gatewayIcon = {
+  name: "gateway-icon",
+
+  measure({ label, theme }) {
+    return {
+      width: Math.max(124, Array.from(label).length * theme.fontSize * 0.66 + 28),
+      height: 112,
+    };
+  },
+
+  render({ node, theme, document }) {
+    const group = svg(document, "g", {
+      transform: `translate(${node.x} ${node.y})`,
+      "data-node-id": node.id,
+    });
+    const centerX = node.width / 2;
+    const tile = svg(document, "path", {
+      d: `M ${centerX} 4 L ${centerX + 38} 24 L ${centerX + 38} 66 L ${centerX} 86 L ${centerX - 38} 66 L ${centerX - 38} 24 Z`,
+      fill: theme.nodeFill,
+      stroke: theme.accentColor,
+      "stroke-width": 2,
+      filter: "url(#tit-shadow)",
+    });
+    const glyph = svg(document, "g", {
+      class: "gateway-glyph",
+      fill: "none",
+      stroke: theme.accentColor,
+      "stroke-width": 3,
+      "stroke-linecap": "round",
+      "stroke-linejoin": "round",
+    });
+    glyph.append(
+      svg(document, "path", {
+        d: `M ${centerX} 28 V 43 M ${centerX} 43 L ${centerX - 20} 58 M ${centerX} 43 L ${centerX + 20} 58`,
+      }),
+      svg(document, "circle", { cx: centerX, cy: 23, r: 5, fill: theme.canvasColor }),
+      svg(document, "circle", { cx: centerX - 24, cy: 62, r: 5, fill: theme.canvasColor }),
+      svg(document, "circle", { cx: centerX + 24, cy: 62, r: 5, fill: theme.canvasColor }),
+    );
+    group.append(tile, glyph, iconLabel(document, node, theme));
+    return group;
+  },
+};
+
+const shieldIcon = {
+  name: "shield-icon",
+
+  measure({ label, theme }) {
+    return {
+      width: Math.max(124, Array.from(label).length * theme.fontSize * 0.66 + 28),
+      height: 112,
+    };
+  },
+
+  render({ node, theme, document }) {
+    const group = svg(document, "g", {
+      transform: `translate(${node.x} ${node.y})`,
+      "data-node-id": node.id,
+    });
+    const centerX = node.width / 2;
+    const shield = svg(document, "g", { class: "shield-glyph" });
+    shield.append(
+      svg(document, "path", {
+        d: `M ${centerX} 5 L ${centerX + 36} 18 V 44 C ${centerX + 36} 65 ${centerX + 20} 79 ${centerX} 88 `
+          + `C ${centerX - 20} 79 ${centerX - 36} 65 ${centerX - 36} 44 V 18 Z`,
+        fill: theme.nodeFill,
+        stroke: theme.accentColor,
+        "stroke-width": 2,
+        filter: "url(#tit-shadow)",
+      }),
+      svg(document, "path", {
+        d: `M ${centerX - 15} 45 L ${centerX - 4} 57 L ${centerX + 18} 34`,
+        fill: "none",
+        stroke: theme.accentColor,
+        "stroke-width": 5,
+        "stroke-linecap": "round",
+        "stroke-linejoin": "round",
+      }),
+    );
+    group.append(shield, iconLabel(document, node, theme));
+    return group;
+  },
+};
+
+function starPoints(centerX, centerY, outerRadius, innerRadius) {
+  return Array.from({ length: 10 }, (_, index) => {
+    const radius = index % 2 === 0 ? outerRadius : innerRadius;
+    const angle = -Math.PI / 2 + index * Math.PI / 5;
+    return `${centerX + Math.cos(angle) * radius},${centerY + Math.sin(angle) * radius}`;
+  }).join(" ");
+}
+
+const starIcon = {
+  name: "star-icon",
+
+  measure({ label, theme }) {
+    return {
+      width: Math.max(124, Array.from(label).length * theme.fontSize * 0.66 + 28),
+      height: 112,
+    };
+  },
+
+  render({ node, theme, document }) {
+    const group = svg(document, "g", {
+      transform: `translate(${node.x} ${node.y})`,
+      "data-node-id": node.id,
+    });
+    const centerX = node.width / 2;
+    const star = svg(document, "polygon", {
+      class: "star-glyph",
+      points: starPoints(centerX, 44, 39, 17),
+      fill: theme.nodeFill,
+      stroke: theme.accentColor,
+      "stroke-width": 2.5,
+      "stroke-linejoin": "round",
+      filter: "url(#tit-shadow)",
+    });
+    const core = svg(document, "circle", {
+      cx: centerX,
+      cy: 44,
+      r: 7,
+      fill: theme.accentColor,
+    });
+    group.append(star, core, iconLabel(document, node, theme));
+    return group;
+  },
+};
+
+const documentStack = {
+  name: "document-stack",
+
+  measure({ label, theme }) {
+    return {
+      width: Math.max(124, Array.from(label).length * theme.fontSize * 0.66 + 28),
+      height: 112,
+    };
+  },
+
+  render({ node, theme, document }) {
+    const group = svg(document, "g", {
+      transform: `translate(${node.x} ${node.y})`,
+      "data-node-id": node.id,
+    });
+    const centerX = node.width / 2;
+    const documents = svg(document, "g", { class: "document-glyph" });
+    documents.append(
+      svg(document, "rect", {
+        x: centerX - 28,
+        y: 6,
+        width: 66,
+        height: 72,
+        rx: 6,
+        fill: theme.containerFill,
+        stroke: theme.nodeStroke,
+        "stroke-width": 1.5,
+      }),
+      svg(document, "rect", {
+        x: centerX - 38,
+        y: 14,
+        width: 66,
+        height: 72,
+        rx: 6,
+        fill: theme.nodeFill,
+        stroke: theme.accentColor,
+        "stroke-width": 2,
+        filter: "url(#tit-shadow)",
+      }),
+      svg(document, "line", { x1: centerX - 24, y1: 35, x2: centerX + 14, y2: 35, stroke: theme.accentColor, "stroke-width": 3, "stroke-linecap": "round" }),
+      svg(document, "line", { x1: centerX - 24, y1: 48, x2: centerX + 14, y2: 48, stroke: theme.nodeStroke, "stroke-width": 2, "stroke-linecap": "round" }),
+      svg(document, "line", { x1: centerX - 24, y1: 60, x2: centerX + 6, y2: 60, stroke: theme.nodeStroke, "stroke-width": 2, "stroke-linecap": "round" }),
+    );
+    group.append(documents, iconLabel(document, node, theme));
+    return group;
+  },
+};
+
+const serviceLanes = {
+  name: "service-lanes",
+
+  layout(model, context) {
+    const tiers = ["edge", "application", "data"];
+    const tierIndex = (item) => {
+      const index = tiers.indexOf(item.attributes.tier ?? "application");
+      return index === -1 ? 1 : index;
+    };
+    const rows = new Map(tiers.map((tier) => [tier, 0]));
+    const defaults = new Map();
+
+    for (const item of model.items) {
+      const tier = tiers[tierIndex(item)];
+      const row = rows.get(tier) ?? 0;
+      defaults.set(item.id, { x: 54 + tierIndex(item) * 278, y: 62 + row * 116 });
+      rows.set(tier, row + 1);
+    }
+
+    const previous = new Map((context.previous?.nodes ?? []).map((node) => [node.id, node]));
+    const nodes = model.items.map((item) => {
+      const fallback = defaults.get(item.id) ?? { x: 54, y: 62 };
+      const overlay = context.overlay.nodes[item.id];
+      const oldNode = previous.get(item.id);
+      let point = fallback;
+
+      if (overlay && (!context.force || (context.preservePinned && overlay.pinned))) {
+        point = overlay;
+      } else if (!context.force && oldNode) {
+        point = oldNode;
+      }
+
+      return {
+        id: item.id,
+        label: item.label,
+        shape: item.shape,
+        ...(item.parentId ? { parentId: item.parentId } : {}),
+        attributes: item.attributes,
+        x: point.x,
+        y: point.y,
+        ...item.size,
+      };
+    });
+
+    const nodeById = new Map(nodes.map((node) => [node.id, node]));
+    const edges = model.connections.flatMap((connection) => {
+      const from = nodeById.get(connection.from);
+      const to = nodeById.get(connection.to);
+      if (!from || !to) return [];
+      const fromCenter = from.x + from.width / 2;
+      const toCenter = to.x + to.width / 2;
+      let start;
+      let end;
+      let middleX;
+
+      if (Math.abs(fromCenter - toCenter) < 1) {
+        start = { x: from.x + from.width, y: from.y + from.height / 2 };
+        end = { x: to.x + to.width, y: to.y + to.height / 2 };
+        middleX = Math.max(start.x, end.x) + 48;
+      } else if (fromCenter < toCenter) {
+        start = { x: from.x + from.width, y: from.y + from.height / 2 };
+        end = { x: to.x, y: to.y + to.height / 2 };
+        middleX = start.x + (end.x - start.x) / 2;
+      } else {
+        start = { x: from.x, y: from.y + from.height / 2 };
+        end = { x: to.x + to.width, y: to.y + to.height / 2 };
+        middleX = start.x + (end.x - start.x) / 2;
+      }
+      return [{
+        ...connection,
+        points: [start, { x: middleX, y: start.y }, { x: middleX, y: end.y }, end],
+      }];
+    });
+
+    return {
+      kind: model.kind,
+      nodes,
+      edges,
+      groups: [],
+      width: Math.max(320, ...nodes.map((node) => node.x + node.width + 54)),
+      height: Math.max(240, ...nodes.map((node) => node.y + node.height + 54)),
+    };
+  },
+};
+
+const servicesDiagram = {
+  name: "services",
+  defaultLayout: "service-lanes",
+
+  parse(source) {
+    const translated = source
+      .replace(/^[ \t]*@services\b/im, "@deployment")
+      .replace(/^([ \t]*)service\b/gim, "$1node");
+    const model = base.parse(translated);
+    return {
+      ...model,
+      kind: "services",
+      source,
+      nodes: model.nodes.map((node) => ({
+        ...node,
+        shape: node.shape === "rectangle" ? "service-card" : node.shape,
+      })),
+    };
+  },
+
+  toLayoutModel(model, context) {
+    return {
+      kind: model.kind,
+      items: model.nodes.map((node) => ({
+        ...node,
+        size: context.measure(node.shape, node.label, node.attributes),
+      })),
+      connections: model.connections,
+      groups: model.groups,
+      direction: "right",
+      minimumGap: context.theme.gapY,
+    };
+  },
+};
+
+tit.registerTheme("ocean", oceanTheme);
+tit.registerShape("service-card", serviceCard);
+tit.registerShape("browser-icon", browserIcon);
+tit.registerShape("gateway-icon", gatewayIcon);
+tit.registerShape("shield-icon", shieldIcon);
+tit.registerShape("star-icon", starIcon);
+tit.registerShape("document-stack", documentStack);
+tit.registerLayout("service-lanes", serviceLanes);
+tit.registerDiagram("services", servicesDiagram);
+
+const sourceView = document.querySelector("#source");
+const errorView = document.querySelector("#error");
+const host = document.querySelector("#diagram");
+let diagram;
+let ocean = true;
+
+async function start() {
+  try {
+    const response = await fetch("./services-extension.tit");
+    if (!response.ok) throw new Error(`${response.status} ${response.statusText}`);
+    const source = await response.text();
+    sourceView.textContent = source;
+    diagram = tit.render(source, {
+      target: host,
+      theme: "ocean",
+      ariaLabel: "Custom service map extension",
+    });
+    const saved = localStorage.getItem(layoutKey);
+    if (saved) diagram.importLayout(saved);
+  } catch (error) {
+    errorView.hidden = false;
+    errorView.textContent = error instanceof Error ? error.message : String(error);
+  }
+}
+
+host.addEventListener("tit:layoutchange", (event) => {
+  localStorage.setItem(layoutKey, JSON.stringify(event.detail.overlay));
+});
+
+document.querySelector("#layout").addEventListener("click", () => diagram?.autoLayout());
+document.querySelector("#reset").addEventListener("click", () => {
+  localStorage.removeItem(layoutKey);
+  diagram?.resetLayout();
+});
+document.querySelector("#theme").addEventListener("click", () => {
+  ocean = !ocean;
+  diagram?.setTheme(ocean ? "ocean" : "midnight");
+});
+
+void start();

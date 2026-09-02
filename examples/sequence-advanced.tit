@@ -1,0 +1,51 @@
+@sequence
+
+actor Customer "Customer"
+participant Web "Web App"
+participant API "API Gateway"
+participant Auth "Auth Service"
+participant Session "Session DB"
+participant Order "Order Service"
+participant Inventory "Inventory"
+participant Payment "Payment Provider"
+participant Queue "Event Queue"
+
+Customer -> Web: Place order
+Web -> API: POST /orders
+
+group Checkout transaction
+  API -> Auth: Verify access token
+  Auth -> Session: Load session
+  Session --> Auth: Session data
+  Auth --> API: Authorized
+
+  alt Authorized request
+    critical Create order atomically
+      API -> Order: Create order
+      Order -> Order: Calculate total
+    end
+
+    loop Reserve each item
+      Order -> Inventory: Reserve SKU
+      Inventory --> Order: Reserved
+    end
+
+    opt Payment required
+      Order -> Payment: Authorize amount
+      Payment --> Order: Authorization
+    end
+
+    par Publish checkout results
+      Order -> Queue: OrderCreated
+      Queue --> Order: Accepted
+    end
+    Order --> API: Order response
+  end
+end
+
+break Client disconnected
+  API --> Web: Abort response
+end
+
+API --> Web: 201 Created
+Web --> Customer: Confirmation

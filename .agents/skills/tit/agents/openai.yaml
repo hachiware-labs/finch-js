@@ -1,0 +1,4 @@
+interface:
+  display_name: "Tit"
+  short_description: "Create Tit.js diagrams directly inside HTML pages"
+  default_prompt: "Use $tit to draw the requested diagram directly in an HTML page."

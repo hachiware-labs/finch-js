@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Tit.js slide pattern gallery</title>
+    <link rel="stylesheet" href="./example.css" />
+  </head>
+  <body class="diagram-page">
+    <header>
+      <a class="back" href="./index.html">← All examples</a>
+      <span class="eyebrow">@slide · Pattern gallery</span>
+      <h1>Typical slide patterns</h1>
+      <p>KPI summary, data story, roadmap, and customer evidence—built from reusable presentation elements.</p>
+    </header>
+    <main class="diagram-layout">
+      <nav class="example-toolbar pattern-picker" aria-label="Choose a slide pattern">
+        <button type="button" data-pattern-source="slide-kpi.tit" aria-pressed="true">KPI summary</button>
+        <button type="button" data-pattern-source="slide-data.tit" aria-pressed="false">Data story</button>
+        <button type="button" data-pattern-source="slide-roadmap.tit" aria-pressed="false">Roadmap</button>
+        <button type="button" data-pattern-source="slide-quote.tit" aria-pressed="false">Customer quote</button>
+      </nav>
+      <section id="diagram" class="canvas" aria-label="Slide pattern output"></section>
+      <details><summary>Show <span id="source-name">source</span></summary><pre id="source"></pre></details>
+      <p id="error" class="error" hidden></p>
+    </main>
+    <script src="../dist/tit.global.js?v=0.1.0-slide-patterns-1"></script>
+    <script src="./slide-patterns.js?v=1"></script>
+  </body>
+</html>

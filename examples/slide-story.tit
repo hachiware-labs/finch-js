@@ -1,0 +1,21 @@
+@slide
+
+title "Stop redrawing architecture slides" [align=center]
+subtitle "Keep one readable source. Generate the first layout, then refine only what matters." [align=center]
+
+row transformation [gap=82] {
+  card before "Before" [badge=MANUAL body="Slow updates.\nUneven spacing.\nIntent gets lost."]
+  arrow: One source
+  card tit "Tit.js" [badge=DSL+SVG body="One source.\nOne theme.\nOne layout." tone=accent]
+  arrow: Human touch
+  card after "After" [badge=EDITABLE body="Faster reviews.\nStable decisions.\nSVG anywhere."]
+}
+
+callout message "From architecture note to presentation-ready SVG." [body="Text owns the meaning. The layout overlay preserves deliberate visual choices." width=760]
+
+grid uses [columns=4 gap=12] {
+  badge docs "DOCUMENTATION"
+  badge pitches "PITCHES"
+  badge workshops "WORKSHOPS"
+  badge reviews "DESIGN REVIEWS"
+}

@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Tit.js extension example</title>
+    <link rel="stylesheet" href="./example.css" />
+  </head>
+  <body class="diagram-page">
+    <header>
+      <a class="back" href="./index.html">← All examples</a>
+      <span class="eyebrow">Plugin composition</span>
+      <h1>Custom service map</h1>
+      <p>A custom <code>@services</code> diagram with card, browser, gateway, shield, star, document, and database shapes.</p>
+    </header>
+    <main class="diagram-layout">
+      <section class="extension-notes" aria-label="Registered extensions">
+        <span><strong>Diagram</strong> @services</span>
+        <span><strong>Shapes</strong> 6 custom + database</span>
+        <span><strong>Layout</strong> service-lanes</span>
+        <span><strong>Theme</strong> ocean</span>
+      </section>
+      <div class="example-toolbar">
+        <button id="layout">Auto layout</button>
+        <button id="reset">Reset saved layout</button>
+        <button id="theme">Toggle theme</button>
+      </div>
+      <section id="diagram" class="canvas" aria-label="Custom service map output"></section>
+      <details><summary>Show services-extension.tit</summary><pre id="source"></pre></details>
+      <p id="error" class="error" hidden></p>
+    </main>
+    <script src="../dist/tit.global.js?v=0.1.0-extensions-1"></script>
+    <script src="./extensions.js"></script>
+  </body>
+</html>

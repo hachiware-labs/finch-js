@@ -1,0 +1,50 @@
+@component
+
+external customer "Customer"
+external identity "Identity Provider"
+external payments "Payment Provider"
+external mail "Email Delivery"
+
+system commerce "Commerce Platform" {
+  system experience "Experience Layer" {
+    component web "Web Application"
+    component mobile "Mobile Application"
+    component bff "Backend for Frontend"
+  }
+
+  system core "Core Services" {
+    port public_port "HTTP"
+    component gateway "Public API"
+    component catalog "Catalog Component"
+    component orders "Order Component"
+    component notifications "Notification Component"
+    provided events "Order Events"
+    required payment_api "Payment API"
+    artifact contract "OpenAPI Contract"
+  }
+
+  system storage "Storage" {
+    database productdb "Product Database"
+    database orderdb "Order Database"
+    database cache "Redis Cache"
+  }
+}
+
+customer -> web: uses
+customer -> mobile: uses
+web -> bff: HTTPS
+mobile -> bff: HTTPS
+bff -> identity: OIDC
+bff -> public_port: JSON API
+public_port -> gateway
+gateway -> catalog: queries
+gateway -> orders: commands
+catalog -> productdb
+catalog -> cache
+orders -> orderdb
+orders -> payment_api: authorize
+payment_api -> payments: HTTPS
+orders -> events: publish
+gateway ..> contract: describes
+events -> notifications: subscribe
+notifications -> mail: send

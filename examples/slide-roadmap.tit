@@ -1,0 +1,16 @@
+@slide
+
+title "A roadmap with evidence gates" [align=center]
+subtitle "Milestones show progression without turning the slide into a project plan." [align=center]
+
+row roadmap [gap=50] {
+  milestone discover "Find the wedge" [period="Q1" step=1 body="Interview\n12 teams"]
+  arrow
+  milestone pilot "Prove repeat use" [period="Q2" step=2 body="Pilot with\n3 design partners"]
+  arrow
+  milestone launch "Launch patterns" [period="Q3" step=3 body="Ship gallery\nand docs"]
+  arrow
+  milestone scale "Scale adoption" [period="Q4" step=4 body="Measure team\nactivation"]
+}
+
+note gate "Each phase earns the next." [body="A milestone is a decision point, not just a date." width=520]

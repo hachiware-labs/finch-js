@@ -1,0 +1,14 @@
+@slide
+
+title "Make the customer voice the evidence"
+subtitle "Pair one memorable quote with only the metrics needed to size its impact."
+
+row evidence [gap=24] {
+  quote customer "We stopped redrawing the same architecture for every review." [by="Aiko Sato" role="Platform design lead" width=610 height=196]
+  column impact [gap=14] {
+    metric review "−46%" [label="Review preparation" delta="3.1 hours saved" tone=accent width=230]
+    metric reuse "3.4×" [label="Diagram reuse" delta="Across docs and slides" width=230]
+  }
+}
+
+badge source "CUSTOMER INTERVIEW · JUNE 2026"

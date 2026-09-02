@@ -1,0 +1,37 @@
+@activity
+
+start begin
+action receive "Receive order"
+action validate "Validate request"
+decision valid "Valid?"
+action reject "Record rejection"
+fork parallel
+action reserve "Reserve inventory"
+action score "Run fraud checks"
+object order "Order"
+join prepared
+decision approved "Approved?"
+action charge "Capture payment"
+action release "Release inventory"
+merge outcome "Outcome"
+action notify "Notify customer"
+end done
+
+begin -> receive
+receive -> validate
+validate -> valid
+valid -> reject [invalid] / record reason
+valid -> parallel [valid]
+parallel -> reserve
+parallel -> score
+reserve -> order: updates
+order -> prepared
+score -> prepared
+prepared -> approved
+approved -> charge [yes]
+approved -> release [no]
+charge -> outcome
+release -> outcome
+reject -> outcome
+outcome -> notify
+notify -> done

@@ -4,6 +4,8 @@ These examples intentionally combine several supported DSL features while remain
 
 Every rendered diagram uses the standard Finch editor: the compact icon in the SVG's lower-left opens the connected editor below the image. A closed editor keeps the diagram in view mode. Save is explicit, and SVG/PNG exports omit the editor icon.
 
+The looping [`readme-demo.html`](./readme-demo.html) page is the source for the README animation. Add `?frame=0` through `?frame=4` to hold a specific stage for screenshots or visual review.
+
 ## Software (UML / ER)
 
 | File | Concepts |
@@ -34,6 +36,7 @@ Every rendered diagram uses the standard Finch editor: the compact icon in the S
 
 The standalone pages are:
 
+- `readme-demo.html`
 - `deployment.html`
 - `sequence.html`
 - `flowchart.html`

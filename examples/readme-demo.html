@@ -1,0 +1,207 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Finch.js editing demo</title>
+    <style>
+      :root { color-scheme: light; font-family: Inter, ui-sans-serif, system-ui, sans-serif; }
+      * { box-sizing: border-box; }
+      html, body { overflow: hidden; }
+      body { min-width: 960px; min-height: 560px; margin: 0; color: #172033; background: #f4f7fb; }
+      .demo { width: 1080px; height: 600px; margin: 0 auto; padding: 28px; overflow: hidden; }
+      .demo__header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 18px; }
+      .brand { display: flex; align-items: center; gap: 10px; font-size: 19px; font-weight: 800; letter-spacing: -.02em; }
+      .brand img { width: 34px; height: 34px; object-fit: contain; }
+      .steps { display: flex; gap: 7px; }
+      .step { padding: 7px 11px; color: #7b8495; background: #fff; border: 1px solid #dfe5ee; border-radius: 999px; font-size: 12px; font-weight: 700; }
+      .step.is-active { color: #fff; background: #e91e63; border-color: #e91e63; }
+      .workspace { display: grid; grid-template-columns: 390px 1fr; height: 492px; overflow: hidden; background: #fff; border: 1px solid #dce3ec; border-radius: 18px; box-shadow: 0 18px 48px rgb(30 41 59 / 11%); }
+      .source { position: relative; padding: 20px; overflow: hidden; color: #dbeafe; background: #111827; }
+      .source__label { display: flex; align-items: center; justify-content: space-between; margin-bottom: 13px; color: #94a3b8; font-size: 11px; font-weight: 800; letter-spacing: .08em; text-transform: uppercase; }
+      .source__status { color: #f9a8d4; letter-spacing: 0; text-transform: none; }
+      pre { margin: 0; white-space: pre-wrap; font: 13px/1.52 ui-monospace, SFMono-Regular, Consolas, monospace; }
+      .line-changed { display: inline-block; margin: 0 -7px; padding: 0 7px; color: #fff; background: rgb(236 72 153 / 28%); border-left: 2px solid #f472b6; }
+      .canvas { position: relative; display: grid; grid-template-rows: 390px 1fr; gap: 10px; min-width: 0; padding: 14px 18px 18px; background: linear-gradient(#fff, #fbfcff); }
+      #diagram { min-width: 0; min-height: 0; overflow: hidden; }
+      #diagram svg { display: block; margin: 0 auto; }
+      .message { min-height: 54px; padding: 13px 16px; color: #475569; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 12px; font-size: 14px; line-height: 1.45; }
+      .message strong { color: #172033; }
+      .cursor { position: absolute; z-index: 3; width: 25px; height: 32px; filter: drop-shadow(0 3px 3px rgb(15 23 42 / 20%)); transform: translate(-3px, -2px); transition: left .35s ease, top .35s ease; }
+      .cursor::before { content: ""; display: block; width: 0; height: 0; border-top: 25px solid #172033; border-right: 15px solid transparent; transform: rotate(-12deg); transform-origin: top left; }
+      .cursor::after { content: ""; position: absolute; left: 7px; top: 18px; width: 5px; height: 12px; background: #172033; border-radius: 2px; transform: rotate(-35deg); }
+      .saved { display: none; align-items: center; gap: 7px; color: #15803d; font-weight: 750; }
+      .saved::before { content: "✓"; display: grid; width: 21px; height: 21px; place-items: center; color: #fff; background: #22c55e; border-radius: 50%; font-size: 12px; }
+      body[data-frame="4"] .saved { display: inline-flex; }
+      body[data-frame="4"] .cursor { display: none; }
+    </style>
+  </head>
+  <body>
+    <main class="demo">
+      <header class="demo__header">
+        <div class="brand">
+          <img src="../docs/assets/green-warbler-finch-icon-128.png" alt="" />
+          Finch.js
+        </div>
+        <div class="steps" aria-label="Demo progress">
+          <span class="step" data-step="0">Generate</span>
+          <span class="step" data-step="1">Drag &amp; pin</span>
+          <span class="step" data-step="2">Edit text</span>
+          <span class="step" data-step="3">Layout stays</span>
+        </div>
+      </header>
+
+      <section class="workspace">
+        <aside class="source">
+          <div class="source__label">
+            <span>Source</span>
+            <span class="source__status" id="source-status">Readable text</span>
+          </div>
+          <pre id="source-code"></pre>
+        </aside>
+
+        <section class="canvas" aria-label="Rendered Finch.js diagram">
+          <div id="diagram" aria-label="Order fulfillment flowchart"></div>
+          <div class="cursor" aria-hidden="true"></div>
+          <div class="message" id="message"></div>
+        </section>
+      </section>
+    </main>
+
+    <script src="../dist/finch.global.js"></script>
+    <script>
+      const initialSource = `
+@flowchart
+start received "Order received"
+process validate "Check inventory"
+decision available "In stock?"
+process reserve "Reserve items"
+end confirmed "Order confirmed"
+end backorder "Await restock"
+
+received -> validate
+validate -> available
+available -> reserve: Yes
+available -> backorder: No
+reserve -> confirmed
+      `.trim();
+
+      const updatedSource = `
+@flowchart
+start received "Order received"
+process validate "Check inventory and allocation"
+decision available "In stock?"
+process reserve "Reserve items"
+process audit "Record allocation"
+end confirmed "Order confirmed"
+end backorder "Await restock"
+
+received -> validate
+validate -> available
+available -> reserve: Yes
+available -> backorder: No
+reserve -> confirmed
+reserve --> audit: Async
+      `.trim();
+
+      const requestedFrame = Number.parseInt(new URLSearchParams(location.search).get("frame") ?? "-1", 10);
+      const messages = [
+        "<strong>Generate.</strong> Concise text becomes a polished SVG diagram.",
+        "<strong>Drag and pin.</strong> Put the exceptional path where it reads best.",
+        "<strong>Edit the text.</strong> Rename a step and add a new one.",
+        "<strong>The layout stays.</strong> Existing IDs keep the positions you chose.",
+        "<span class='saved'>Saved explicitly</span> Source and layout remain separate.",
+      ];
+
+      const diagram = Finch.render(initialSource, {
+        target: "#diagram",
+        editor: false,
+        editable: true,
+      });
+
+      const initialBackorder = diagram.geometry.nodes.find((node) => node.id === "backorder");
+      const manualBackorder = initialBackorder
+        ? { x: initialBackorder.x + 118, y: initialBackorder.y + 12, manual: true, pinned: true }
+        : undefined;
+
+      function escapedSource(source, changed) {
+        const escaped = source
+          .replaceAll("&", "&amp;")
+          .replaceAll("<", "&lt;")
+          .replaceAll(">", "&gt;");
+        if (!changed) return escaped;
+        return escaped
+          .replace('process validate "Check inventory and allocation"', '<span class="line-changed">process validate "Check inventory and allocation"</span>')
+          .replace('process audit "Record allocation"', '<span class="line-changed">process audit "Record allocation"</span>')
+          .replace("reserve --&gt; audit: Async", '<span class="line-changed">reserve --&gt; audit: Async</span>');
+      }
+
+      function placeCursor(frame) {
+        const cursor = document.querySelector(".cursor");
+        const canvas = document.querySelector(".canvas");
+        const targetId = frame === 2 ? "validate" : "backorder";
+        const target = diagram.svg.querySelector(`[data-node-id="${targetId}"]`);
+        if (!target || frame === 0 || frame === 4) {
+          cursor.hidden = true;
+          return;
+        }
+        cursor.hidden = false;
+        const targetRect = target.getBoundingClientRect();
+        const canvasRect = canvas.getBoundingClientRect();
+        cursor.style.left = `${targetRect.left - canvasRect.left + targetRect.width * .72}px`;
+        cursor.style.top = `${targetRect.top - canvasRect.top + targetRect.height * .58}px`;
+      }
+
+      function showFrame(frame) {
+        document.body.dataset.frame = String(frame);
+        if (frame >= 1 && manualBackorder) {
+          diagram.importLayout({
+            version: 1,
+            diagram: "flowchart",
+            editable: true,
+            nodes: { backorder: manualBackorder },
+          });
+        }
+        if (frame >= 2) {
+          diagram.update(updatedSource);
+          const audit = diagram.geometry.nodes.find((node) => node.id === "audit");
+          if (audit && manualBackorder) {
+            diagram.importLayout({
+              version: 1,
+              diagram: "flowchart",
+              editable: true,
+              nodes: {
+                backorder: manualBackorder,
+                audit: { x: Math.max(16, audit.x - 180), y: audit.y + 8, manual: true, pinned: false },
+              },
+            });
+          }
+        }
+        diagram.fit("diagram");
+        document.querySelector("#source-code").innerHTML = escapedSource(frame >= 2 ? updatedSource : initialSource, frame >= 2);
+        document.querySelector("#source-status").textContent = frame >= 2 ? "Source changed" : "Readable text";
+        document.querySelector("#message").innerHTML = messages[frame];
+        document.querySelectorAll(".step").forEach((step) => {
+          const active = frame === 4 ? 3 : Math.min(frame, 3);
+          step.classList.toggle("is-active", Number(step.dataset.step) === active);
+        });
+        requestAnimationFrame(() => {
+          window.scrollTo(0, 0);
+          placeCursor(frame);
+          requestAnimationFrame(() => window.scrollTo(0, 0));
+        });
+      }
+
+      if (requestedFrame >= 0 && requestedFrame <= 4) {
+        showFrame(requestedFrame);
+      } else {
+        let frame = 0;
+        showFrame(frame);
+        setInterval(() => {
+          frame = (frame + 1) % 5;
+          showFrame(frame);
+        }, 1800);
+      }
+    </script>
+  </body>
+</html>

@@ -3,7 +3,7 @@
 import { readFileSync } from "node:fs";
 import { resolve } from "node:path";
 import { afterEach, describe, expect, it, vi } from "vitest";
-import { createTit, defaultTheme } from "../src/index";
+import { createFinch, defaultTheme } from "../src/index";
 
 describe("browser extension example", () => {
   afterEach(() => {
@@ -21,24 +21,17 @@ describe("browser extension example", () => {
       <p id="error" hidden></p>
     `;
 
-    const sourcePath = resolve("examples/services-extension.tit");
-    const scriptPath = resolve("examples/extensions.js");
-    const source = readFileSync(sourcePath, "utf8");
-    const script = readFileSync(scriptPath, "utf8");
-    const browserApi = Object.assign(createTit(), { createTit, defaultTheme });
+    const html = readFileSync(resolve("examples/extensions.html"), "utf8");
+    const script = html.match(/<script>\s*([\s\S]*?)<\/script>/)?.[1];
+    if (!script) throw new Error("Could not find the inline extension example script.");
+    const browserApi = Object.assign(createFinch(), { createFinch, defaultTheme });
 
-    vi.stubGlobal("Tit", browserApi);
-    vi.stubGlobal("fetch", vi.fn(async () => ({
-      ok: true,
-      status: 200,
-      statusText: "OK",
-      text: async () => source,
-    })));
+    vi.stubGlobal("Finch", browserApi);
 
     Function(script)();
 
     await vi.waitFor(() => {
-      expect(document.querySelectorAll("#diagram .tit-node")).toHaveLength(7);
+      expect(document.querySelectorAll("#diagram .finch-node")).toHaveLength(7);
     });
     expect(document.querySelector('[data-node-id="orders"]')?.textContent).toContain("Owner");
     expect(document.querySelector('[data-node-id="browser"] .browser-glyph')).not.toBeNull();

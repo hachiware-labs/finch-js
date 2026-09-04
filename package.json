@@ -1,33 +1,33 @@
 {
-  "name": "tit-js",
-  "version": "0.1.0",
+  "name": "finch-js",
+  "version": "0.5.0",
   "description": "Fast, beautiful, editable diagrams from concise text.",
-  "homepage": "https://github.com/hachiware-labs/tit-js#readme",
+  "homepage": "https://github.com/hachiware-labs/finch-js#readme",
   "bugs": {
-    "url": "https://github.com/hachiware-labs/tit-js/issues"
+    "url": "https://github.com/hachiware-labs/finch-js/issues"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/hachiware-labs/tit-js.git"
+    "url": "git+https://github.com/hachiware-labs/finch-js.git"
   },
   "type": "module",
   "sideEffects": [
-    "./dist/tit.global.js"
+    "./dist/finch.global.js"
   ],
-  "main": "./dist/tit.js",
-  "module": "./dist/tit.js",
+  "main": "./dist/finch.js",
+  "module": "./dist/finch.js",
   "types": "./dist/index.d.ts",
   "exports": {
     ".": {
       "import": {
         "types": "./dist/index.d.ts",
-        "default": "./dist/tit.js"
+        "default": "./dist/finch.js"
       }
     },
     "./browser": {
       "import": {
         "types": "./dist/browser.d.ts",
-        "default": "./dist/tit.global.js"
+        "default": "./dist/finch.global.js"
       }
     }
   },

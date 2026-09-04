@@ -1,4 +1,4 @@
-# Tit.js tutorial
+# Finch.js tutorial
 
 [日本語](./tutorial_ja.md) · [Back to README](../README.md)
 
@@ -6,7 +6,7 @@ Write a diagram as text, arrange it by dragging, and save the layout. It takes t
 
 ## 1. Put this in an HTML file
 
-Create `tutorial.html` in the repository root and paste in the following. The page loads `dist/tit.global.js` from the same repository.
+Create `tutorial.html` in the repository root and paste in the following. The page loads `dist/finch.global.js` from the same repository.
 
 ```html
 <!doctype html>
@@ -14,7 +14,7 @@ Create `tutorial.html` in the repository root and paste in the following. The pa
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Tit.js</title>
+    <title>Finch.js</title>
     <style>
       body { display: grid; grid-template-columns: 320px 1fr; min-height: 100vh; margin: 0; }
       textarea { padding: 16px; font: 14px/1.6 monospace; }
@@ -31,12 +31,12 @@ browser -> api: HTTPS
 api -> db: SQL</textarea>
     <div id="diagram"></div>
 
-    <script src="./dist/tit.global.js"></script>
+    <script src="./dist/finch.global.js"></script>
     <script>
       const source = document.querySelector("#source");
       const host = document.querySelector("#diagram");
-      const layoutKey = "tit-tutorial-layout";
-      const diagram = Tit.render(source.value, "#diagram");
+      const layoutKey = "finch-tutorial-layout";
+      const diagram = Finch.render(source.value, "#diagram");
 
       const savedLayout = localStorage.getItem(layoutKey);
       if (savedLayout) diagram.importLayout(savedLayout);
@@ -45,7 +45,7 @@ api -> db: SQL</textarea>
         diagram.update(source.value);
       });
 
-      host.addEventListener("tit:layoutchange", ({ detail }) => {
+      host.addEventListener("finch:layoutchange", ({ detail }) => {
         localStorage.setItem(layoutKey, JSON.stringify(detail.overlay));
       });
     </script>
@@ -53,11 +53,11 @@ api -> db: SQL</textarea>
 </html>
 ```
 
-Open `tutorial.html` in a browser. Tit.js turns the text on the left into a diagram on the right and redraws it as you edit.
+Open `tutorial.html` in a browser. Finch.js turns the text on the left into a diagram on the right and redraws it as you edit.
 
 ## 2. Arrange and save the layout
 
-Drag nodes on the right to arrange them. Double-click a node to pin its position. Tit.js saves layout changes in the browser automatically and restores them after a reload.
+Drag nodes on the right to arrange them. Double-click a node to pin its position. Finch.js saves layout changes in the browser automatically and restores them after a reload.
 
 In the source, `api` is the node ID and `"API Server"` is its visible label. Keep the ID stable when changing the label so the node retains its position.
 
@@ -65,7 +65,7 @@ The diagram content now stays as readable text while the human-adjusted position
 
 ## Set up the development environment later
 
-If `dist/tit.global.js` is not present yet, or you want to serve the page over HTTP, install the dependencies and build Tit.js from the repository root:
+If `dist/finch.global.js` is not present yet, or you want to serve the page over HTTP, install the dependencies and build Finch.js from the repository root:
 
 ```bash
 npm install
@@ -80,4 +80,4 @@ python -m http.server 8000
 
 Open `http://127.0.0.1:8000/tutorial.html` in a browser.
 
-To try other diagrams, continue with [Diagram types](../README.md#diagram-types) or the [advanced examples](../examples/README.md). To add themes or custom layouts, see [Extending Tit.js](./extensions.md).
+To try other diagrams, continue with [Diagram types](../README.md#diagram-types) or the [advanced examples](../examples/README.md). To add themes or custom layouts, see [Extending Finch.js](./extensions.md).

@@ -112,6 +112,7 @@ export interface LayoutNodeState extends Point {
 export interface LayoutOverlay {
   version: 1;
   diagram?: DiagramKind;
+  editable?: boolean;
   nodes: Record<string, LayoutNodeState>;
 }
 
@@ -188,6 +189,7 @@ export interface RenderOptions {
   theme?: string | Theme;
   overlay?: LayoutOverlay | string;
   interactive?: boolean;
+  editable?: boolean;
   padding?: number;
   ariaLabel?: string;
   zoom?: number | "auto" | "fit" | "width";
@@ -206,12 +208,22 @@ export interface AutoLayoutOptions {
   preservePinned?: boolean;
 }
 
+export interface PngExportOptions {
+  scale?: number;
+  background?: string | null;
+}
+
 export interface LayoutChangeDetail {
   overlay: LayoutOverlay;
   changedNodeIds: string[];
 }
 
-export interface TitApi {
+export interface EditChangeDetail {
+  editable: boolean;
+  overlay: LayoutOverlay;
+}
+
+export interface FinchApi {
   render(source: string, options?: RenderOptions | Element | string): import("./instance.js").DiagramInstance;
   registerDiagram(name: string, plugin: DiagramPlugin): void;
   registerShape(name: string, plugin: ShapePlugin): void;

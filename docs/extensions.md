@@ -1,33 +1,33 @@
-# Extending Tit.js
+# Extending Finch.js
 
 [日本語](./extensions_ja.md) · [Back to README](../README.md)
 
-Tit.js exposes four plugin boundaries. A Diagram plugin turns source into meaning, a Shape plugin measures and draws one kind of node, a Layout plugin turns measured items into geometry, and a Theme plugin supplies visual tokens. These boundaries meet at public models, so an extension does not need access to the parser, router, scene, or SVG renderer internals.
+Finch.js exposes four plugin boundaries. A Diagram plugin turns source into meaning, a Shape plugin measures and draws one kind of node, a Layout plugin turns measured items into geometry, and a Theme plugin supplies visual tokens. These boundaries meet at public models, so an extension does not need access to the parser, router, scene, or SVG renderer internals.
 
 The [browser extension example](../examples/extensions.html) combines all four plugins into a small service-map DSL. This guide explains why each part exists and what its contract must preserve.
 
 ## Start with an isolated engine
 
-The default `Tit` export has a shared registry. That is convenient for a single application, but an isolated engine prevents tests, embedded widgets, or separate editors from changing one another.
+The default `Finch` export has a shared registry. That is convenient for a single application, but an isolated engine prevents tests, embedded widgets, or separate editors from changing one another.
 
 ```ts
 import {
-  createTit,
+  createFinch,
   defaultTheme,
   type DiagramPlugin,
   type LayoutPlugin,
   type ShapePlugin,
   type ThemePlugin,
-} from "tit-js";
+} from "finch-js";
 
-const tit = createTit();
+const finch = createFinch();
 ```
 
 Register every plugin before rendering a source that refers to it. Registry names are normalized to lowercase.
 
 ## Create a theme
 
-A theme is a complete set of rendering and spacing tokens. Extend a built-in theme so new fields added by Tit.js receive a sensible default.
+A theme is a complete set of rendering and spacing tokens. Extend a built-in theme so new fields added by Finch.js receive a sensible default.
 
 ```ts
 const oceanTheme: ThemePlugin = {
@@ -44,7 +44,7 @@ const oceanTheme: ThemePlugin = {
   canvasColor: "#f8fafc",
 };
 
-tit.registerTheme("ocean", oceanTheme);
+finch.registerTheme("ocean", oceanTheme);
 ```
 
 The registry name passed to `registerTheme()` is the name applications use in `render({ theme: "ocean" })` and `setTheme("ocean")`. Keep the `name` field consistent as well, since consumers may inspect the theme object.
@@ -121,10 +121,10 @@ const serviceCard: ShapePlugin = {
   },
 };
 
-tit.registerShape("service-card", serviceCard);
+finch.registerShape("service-card", serviceCard);
 ```
 
-Set `data-node-id` on the returned group. Tit.js uses that attribute to connect pointer and keyboard interaction to the semantic node. Use `textContent` for labels and attribute values so user-provided text is not interpreted as SVG markup.
+Set `data-node-id` on the returned group. Finch.js uses that attribute to connect pointer and keyboard interaction to the semantic node. Use `textContent` for labels and attribute values so user-provided text is not interpreted as SVG markup.
 
 A shape can also behave like a custom icon. This example uses a hexagonal tile and a branching gateway glyph, but the same `render()` method can compose any SVG paths and primitives:
 
@@ -174,7 +174,7 @@ const gatewayIcon: ShapePlugin = {
   },
 };
 
-tit.registerShape("gateway-icon", gatewayIcon);
+finch.registerShape("gateway-icon", gatewayIcon);
 ```
 
 Select it per node through the ordinary shape attribute: `service gateway "API Gateway" [shape=gateway-icon]`. The complete browser example adds endpoint circles to the glyph and lets the custom theme recolor the whole icon.
@@ -197,9 +197,9 @@ const star = svg(document, "polygon", {
 });
 ```
 
-`examples/extensions.js` also includes browser-window, shield, and document-stack shapes, alongside the built-in database cylinder. This makes the example a small shape gallery rather than a set of rectangle variations.
+The inline script in `examples/extensions.html` also includes browser-window, shield, and document-stack shapes, alongside the built-in database cylinder. This makes the example a small shape gallery rather than a set of rectangle variations.
 
-If a parser requests an unregistered shape, Tit.js currently falls back to the built-in rectangle. Registering explicit names is still preferable because it makes a missing extension visible in tests and documentation.
+If a parser requests an unregistered shape, Finch.js currently falls back to the built-in rectangle. Registering explicit names is still preferable because it makes a missing extension visible in tests and documentation.
 
 ## Create a layout
 
@@ -224,10 +224,10 @@ const serviceLanes: LayoutPlugin = {
   },
 };
 
-tit.registerLayout("service-lanes", serviceLanes);
+finch.registerLayout("service-lanes", serviceLanes);
 ```
 
-The abbreviated body is intentional: the full, working implementation is in [`examples/extensions.js`](../examples/extensions.js). A useful layout must make several decisions together, and copying only its coordinate loop would hide important responsibilities.
+The abbreviated body is intentional: the full, working implementation is embedded in [`examples/extensions.html`](../examples/extensions.html). A useful layout must make several decisions together, and copying only its coordinate loop would hide important responsibilities.
 
 A layout should preserve these behaviors:
 
@@ -238,7 +238,7 @@ A layout should preserve these behaviors:
 - Ignore unpinned manual coordinates during a forced auto-layout.
 - Include enough canvas width and height for every node and group.
 
-Tit.js reroutes edges after an interactive drag, but the plugin remains responsible for the initial routes. Edge point arrays should contain at least a start and an end point.
+Finch.js reroutes edges after an interactive drag, but the plugin remains responsible for the initial routes. Edge point arrays should contain at least a start and an end point.
 
 ## Create a diagram type
 
@@ -247,7 +247,7 @@ A Diagram plugin separates syntax from presentation. `parse()` produces a `Seman
 This example creates `@services` by translating its small syntax into the built-in deployment parser, then replacing the node shape:
 
 ```ts
-const base = createTit();
+const base = createFinch();
 
 const servicesDiagram: DiagramPlugin = {
   name: "services",
@@ -285,7 +285,7 @@ const servicesDiagram: DiagramPlugin = {
   },
 };
 
-tit.registerDiagram("services", servicesDiagram);
+finch.registerDiagram("services", servicesDiagram);
 ```
 
 Using a separate `base` engine avoids calling the new `@services` plugin recursively. For a genuinely different grammar, implement `parse()` directly and return stable node and connection IDs. Parser errors should identify the input line and the invalid text when possible.
@@ -305,7 +305,7 @@ service database "Order Database" [tier=data owner=Commerce]
 gateway -> orders: HTTPS
 orders -> database: SQL`;
 
-const diagram = tit.render(source, {
+const diagram = finch.render(source, {
   target: "#diagram",
   theme: "ocean",
 });
@@ -322,7 +322,7 @@ Test each boundary at the smallest useful level:
 3. Run the layout with an empty overlay, a manual overlay, and a forced layout with pinned nodes.
 4. Render the composed extension and verify that dragging, source updates, and overlay import still work.
 
-Run Tit.js's own checks after changing a plugin example:
+Run Finch.js's own checks after changing a plugin example:
 
 ```bash
 npm run check

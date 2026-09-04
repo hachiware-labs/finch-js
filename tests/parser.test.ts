@@ -198,7 +198,7 @@ describe("slide DSL", () => {
   it("parses presentation items, layout blocks, and automatic arrows", () => {
     const model = parseSlide(`
 @slide
-title "Tit.js の価値"
+title "Finch.js の価値"
 subtitle "テキストから、そのまま使える図へ"
 row journey [gap=72] {
   card input "簡単な記法" [badge=INPUT body="短いDSL"]

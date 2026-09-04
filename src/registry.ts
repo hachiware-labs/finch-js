@@ -24,7 +24,7 @@ export class Registry {
 
   diagram(name: string): DiagramPlugin {
     const plugin = this.diagrams.get(normalize(name));
-    if (!plugin) throw new Error(`Unknown diagram "${name}". Register it with Tit.registerDiagram().`);
+    if (!plugin) throw new Error(`Unknown diagram "${name}". Register it with Finch.registerDiagram().`);
     return plugin;
   }
 
@@ -34,13 +34,13 @@ export class Registry {
 
   layout(name: string): LayoutPlugin {
     const plugin = this.layouts.get(normalize(name));
-    if (!plugin) throw new Error(`Unknown layout "${name}". Register it with Tit.registerLayout().`);
+    if (!plugin) throw new Error(`Unknown layout "${name}". Register it with Finch.registerLayout().`);
     return plugin;
   }
 
   theme(name: string): ThemePlugin {
     const theme = this.themes.get(normalize(name));
-    if (!theme) throw new Error(`Unknown theme "${name}". Register it with Tit.registerTheme().`);
+    if (!theme) throw new Error(`Unknown theme "${name}". Register it with Finch.registerTheme().`);
     return theme;
   }
 }

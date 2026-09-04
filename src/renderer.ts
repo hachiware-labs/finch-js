@@ -1,5 +1,6 @@
 import type { Geometry, GeometryEdge, GeometryNode, ShapePlugin, Theme } from "./types.js";
-import { pathFromPoints, svgElement } from "./utils.js";
+import { svgElement } from "./utils.js";
+import { pathWithEdgeJumps } from "./edge-jumps.js";
 
 export type ShapeResolver = (name: string) => ShapePlugin;
 
@@ -21,7 +22,7 @@ export class SvgRenderer {
       xmlns: "http://www.w3.org/2000/svg",
       role: "img",
       "aria-label": ariaLabel,
-      class: "tit-canvas",
+      class: "finch-canvas",
       width: "100%",
       preserveAspectRatio: "xMinYMin meet",
       tabindex: "0",
@@ -40,7 +41,7 @@ export class SvgRenderer {
     this.svg.style.aspectRatio = `${geometry.width} / ${geometry.height}`;
     this.svg.append(this.createDefinitions(), this.createStyles());
 
-    const groupLayer = svgElement(this.document, "g", { class: "tit-groups" });
+    const groupLayer = svgElement(this.document, "g", { class: "finch-groups" });
     for (const group of geometry.groups) {
       groupLayer.append(svgElement(this.document, "rect", {
         x: group.x,
@@ -74,8 +75,8 @@ export class SvgRenderer {
     }
     this.svg.append(groupLayer);
 
-    const containers = svgElement(this.document, "g", { class: "tit-containers" });
-    const regularNodes = svgElement(this.document, "g", { class: "tit-nodes" });
+    const containers = svgElement(this.document, "g", { class: "finch-containers" });
+    const regularNodes = svgElement(this.document, "g", { class: "finch-nodes" });
     for (const node of geometry.nodes.filter((candidate) => candidate.shape === "container")) this.appendNode(containers, node);
     this.svg.append(containers);
 
@@ -93,10 +94,16 @@ export class SvgRenderer {
     this.svg.setAttribute("viewBox", `0 0 ${geometry.width} ${geometry.height}`);
     this.svg.style.aspectRatio = `${geometry.width} / ${geometry.height}`;
     for (const node of geometry.nodes) {
-      this.nodeElements.get(node.id)?.setAttribute("transform", `translate(${node.x} ${node.y})`);
+      const element = this.nodeElements.get(node.id);
+      element?.setAttribute("transform", `translate(${node.x} ${node.y})`);
+      if (node.shape === "container") {
+        const frame = element?.querySelector<SVGRectElement>(":scope > rect");
+        frame?.setAttribute("width", String(node.width));
+        frame?.setAttribute("height", String(node.height));
+      }
     }
-    for (const edge of geometry.edges) {
-      this.edgeElements.get(edge.id)?.setAttribute("d", pathFromPoints(edge.points));
+    for (const [index, edge] of geometry.edges.entries()) {
+      this.edgeElements.get(edge.id)?.setAttribute("d", pathWithEdgeJumps(edge, geometry.edges.slice(0, index)));
       const label = this.edgeLabelElements.get(edge.id);
       if (label) {
         const point = labelPoint(edge);
@@ -104,7 +111,7 @@ export class SvgRenderer {
         label.setAttribute("y", String(point.y - 8));
       }
       for (const endpoint of ["start", "end"] as const) {
-        const cardinality = this.svg.querySelector<SVGTextElement>(`.tit-cardinality[data-edge-id="${cssEscape(edge.id)}"][data-endpoint="${endpoint}"]`);
+        const cardinality = this.svg.querySelector<SVGTextElement>(`.finch-cardinality[data-edge-id="${cssEscape(edge.id)}"][data-endpoint="${endpoint}"]`);
         if (!cardinality) continue;
         const point = cardinalityPoint(edge, endpoint);
         cardinality.setAttribute("x", String(point.x));
@@ -113,13 +120,13 @@ export class SvgRenderer {
     }
     if (geometry.kind === "sequence") {
       for (const node of geometry.nodes) {
-        const line = this.svg.querySelector<SVGLineElement>(`.tit-lifeline[data-node-id="${cssEscape(node.id)}"]`);
+        const line = this.svg.querySelector<SVGLineElement>(`.finch-lifeline[data-node-id="${cssEscape(node.id)}"]`);
         if (line) {
           const x = node.x + node.width / 2;
           line.setAttribute("x1", String(x));
           line.setAttribute("x2", String(x));
         }
-        const activations = this.svg.querySelectorAll<SVGRectElement>(`.tit-activation[data-node-id="${cssEscape(node.id)}"]`);
+        const activations = this.svg.querySelectorAll<SVGRectElement>(`.finch-activation[data-node-id="${cssEscape(node.id)}"]`);
         for (const activation of activations) {
           const offset = Number(activation.dataset.xOffset ?? -5);
           activation.setAttribute("x", String(node.x + node.width / 2 + offset));
@@ -154,27 +161,27 @@ export class SvgRenderer {
 
   private appendNode(layer: SVGGElement, node: GeometryNode): void {
     const element = this.resolveShape(node.shape).render({ node, theme: this.theme, document: this.document });
-    element.classList.add("tit-node");
+    element.classList.add("finch-node");
     layer.append(element);
     this.nodeElements.set(node.id, element);
   }
 
   private createEdges(geometry: Geometry): SVGGElement {
-    const layer = svgElement(this.document, "g", { class: "tit-edges" });
-    for (const edge of geometry.edges) {
+    const layer = svgElement(this.document, "g", { class: "finch-edges" });
+    for (const [index, edge] of geometry.edges.entries()) {
       const relation = edge.attributes?.relation;
       const markerEnd = ["inheritance", "realization"].includes(relation ?? "")
-        ? "url(#tit-triangle)"
+        ? "url(#finch-triangle)"
         : ["association", "aggregation", "composition"].includes(relation ?? "")
           ? undefined
-          : "url(#tit-arrow)";
+          : "url(#finch-arrow)";
       const markerStart = relation === "composition"
-        ? "url(#tit-diamond-filled)"
+        ? "url(#finch-diamond-filled)"
         : relation === "aggregation"
-          ? "url(#tit-diamond-open)"
+          ? "url(#finch-diamond-open)"
           : undefined;
       const path = svgElement(this.document, "path", {
-        d: pathFromPoints(edge.points),
+        d: pathWithEdgeJumps(edge, geometry.edges.slice(0, index)),
         fill: "none",
         stroke: this.theme.edgeColor,
         "stroke-width": this.theme.edgeWidth,
@@ -183,7 +190,7 @@ export class SvgRenderer {
         "stroke-linecap": "round",
         "marker-start": markerStart,
         "marker-end": markerEnd,
-        class: "tit-edge",
+        class: "finch-edge",
         "data-edge-id": edge.id,
       });
       layer.append(path);
@@ -202,7 +209,7 @@ export class SvgRenderer {
           "font-family": this.theme.fontFamily,
           "font-size": this.theme.fontSize - 1,
           "font-weight": 750,
-          class: "tit-cardinality",
+          class: "finch-cardinality",
           "data-edge-id": edge.id,
           "data-endpoint": endpoint,
         });
@@ -218,7 +225,7 @@ export class SvgRenderer {
           fill: this.theme.mutedColor,
           "font-family": this.theme.fontFamily,
           "font-size": this.theme.fontSize - 1,
-          class: "tit-edge-label",
+          class: "finch-edge-label",
         });
         text.textContent = edge.label;
         layer.append(text);
@@ -229,7 +236,7 @@ export class SvgRenderer {
   }
 
   private createLifelines(geometry: Geometry): SVGGElement {
-    const layer = svgElement(this.document, "g", { class: "tit-lifelines" });
+    const layer = svgElement(this.document, "g", { class: "finch-lifelines" });
     for (const node of geometry.nodes) {
       const x = node.x + node.width / 2;
       layer.append(svgElement(this.document, "line", {
@@ -240,7 +247,7 @@ export class SvgRenderer {
         stroke: this.theme.nodeStroke,
         "stroke-width": 1,
         "stroke-dasharray": "5 5",
-        class: "tit-lifeline",
+        class: "finch-lifeline",
         "data-node-id": node.id,
       }));
     }
@@ -248,7 +255,7 @@ export class SvgRenderer {
   }
 
   private createActivations(geometry: Geometry): SVGGElement {
-    const layer = svgElement(this.document, "g", { class: "tit-activations" });
+    const layer = svgElement(this.document, "g", { class: "finch-activations" });
     const nodeMap = new Map(geometry.nodes.map((node) => [node.id, node]));
     const stacks = new Map<string, Array<{ start: number; depth: number }>>();
     const intervals: Array<{ nodeId: string; start: number; end: number; depth: number }> = [];
@@ -283,7 +290,7 @@ export class SvgRenderer {
         fill: this.theme.nodeFill,
         stroke: this.theme.accentColor,
         "stroke-width": 1.25,
-        class: "tit-activation",
+        class: "finch-activation",
         "data-node-id": interval.nodeId,
         "data-x-offset": offset,
       }));
@@ -294,7 +301,7 @@ export class SvgRenderer {
   private createDefinitions(): SVGDefsElement {
     const defs = svgElement(this.document, "defs");
     const marker = svgElement(this.document, "marker", {
-      id: "tit-arrow",
+      id: "finch-arrow",
       viewBox: "0 0 10 10",
       refX: 9,
       refY: 5,
@@ -304,7 +311,7 @@ export class SvgRenderer {
     });
     marker.append(svgElement(this.document, "path", { d: "M 0 0 L 10 5 L 0 10 z", fill: this.theme.edgeColor }));
     const triangle = svgElement(this.document, "marker", {
-      id: "tit-triangle",
+      id: "finch-triangle",
       viewBox: "0 0 12 12",
       refX: 11,
       refY: 6,
@@ -314,7 +321,7 @@ export class SvgRenderer {
     });
     triangle.append(svgElement(this.document, "path", { d: "M 1 1 L 11 6 L 1 11 Z", fill: this.theme.canvasColor, stroke: this.theme.edgeColor, "stroke-width": 1.2 }));
     const openDiamond = svgElement(this.document, "marker", {
-      id: "tit-diamond-open",
+      id: "finch-diamond-open",
       viewBox: "0 0 14 10",
       refX: 2,
       refY: 5,
@@ -324,7 +331,7 @@ export class SvgRenderer {
     });
     openDiamond.append(svgElement(this.document, "path", { d: "M 1 5 L 7 1 L 13 5 L 7 9 Z", fill: this.theme.canvasColor, stroke: this.theme.edgeColor, "stroke-width": 1.2 }));
     const filledDiamond = svgElement(this.document, "marker", {
-      id: "tit-diamond-filled",
+      id: "finch-diamond-filled",
       viewBox: "0 0 14 10",
       refX: 2,
       refY: 5,
@@ -333,7 +340,7 @@ export class SvgRenderer {
       orient: "auto-start-reverse",
     });
     filledDiamond.append(svgElement(this.document, "path", { d: "M 1 5 L 7 1 L 13 5 L 7 9 Z", fill: this.theme.edgeColor, stroke: this.theme.edgeColor, "stroke-width": 1.2 }));
-    const filter = svgElement(this.document, "filter", { id: "tit-shadow", x: "-20%", y: "-30%", width: "140%", height: "170%" });
+    const filter = svgElement(this.document, "filter", { id: "finch-shadow", x: "-20%", y: "-30%", width: "140%", height: "170%" });
     filter.append(svgElement(this.document, "feDropShadow", { dx: 0, dy: 2, stdDeviation: 2.5, "flood-color": "#0f172a", "flood-opacity": 0.10 }));
     defs.append(marker, triangle, openDiamond, filledDiamond, filter);
     return defs;
@@ -342,17 +349,19 @@ export class SvgRenderer {
   private createStyles(): SVGStyleElement {
     const style = svgElement(this.document, "style");
     style.textContent = `
-      .tit-node { cursor: grab; outline: none; }
-      .tit-node:active { cursor: grabbing; }
-      .tit-node > :first-child { transition: stroke 120ms ease, stroke-width 120ms ease; }
-      .tit-node.is-selected > :first-child { stroke: ${this.theme.accentColor}; stroke-width: 2.4; }
-      .tit-node.is-pinned::after { content: ""; }
-      .tit-canvas.is-panning { cursor: grabbing; user-select: none; }
-      .tit-edge { pointer-events: none; }
-      .tit-activation { pointer-events: none; }
-      .tit-edge-label { paint-order: stroke; stroke: ${this.theme.canvasColor}; stroke-width: 5px; stroke-linejoin: round; }
-      .tit-cardinality { paint-order: stroke; stroke: ${this.theme.canvasColor}; stroke-width: 5px; stroke-linejoin: round; pointer-events: none; }
-      .tit-canvas:focus-visible { outline: 2px solid ${this.theme.accentColor}; outline-offset: 2px; }
+      .finch-node { cursor: grab; outline: none; }
+      .finch-node:active { cursor: grabbing; }
+      .finch-node > :first-child { transition: stroke 120ms ease, stroke-width 120ms ease; }
+      .finch-node.is-selected > :first-child { stroke: ${this.theme.accentColor}; stroke-width: 2.4; }
+      .finch-node.is-pinned::after { content: ""; }
+      .finch-canvas.is-view-only, .finch-canvas.is-view-only .finch-node { cursor: grab; }
+      .finch-canvas.is-panning { cursor: grabbing; user-select: none; }
+      .finch-canvas.is-panning .finch-node { cursor: grabbing; }
+      .finch-edge { pointer-events: none; }
+      .finch-activation { pointer-events: none; }
+      .finch-edge-label { paint-order: stroke; stroke: ${this.theme.canvasColor}; stroke-width: 5px; stroke-linejoin: round; }
+      .finch-cardinality { paint-order: stroke; stroke: ${this.theme.canvasColor}; stroke-width: 5px; stroke-linejoin: round; pointer-events: none; }
+      .finch-canvas:focus-visible { outline: 2px solid ${this.theme.accentColor}; outline-offset: 2px; }
     `;
     return style;
   }

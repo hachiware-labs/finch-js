@@ -4,10 +4,10 @@ import { createActivityDiagram, createClassDiagram, createComponentDiagram, crea
 import { Registry } from "./registry.js";
 import { builtInShapes } from "./shapes.js";
 import { defaultTheme, midnightTheme } from "./theme.js";
-import type { DiagramPlugin, LayoutPlugin, RenderOptions, ShapePlugin, ThemePlugin, TitApi } from "./types.js";
+import type { DiagramPlugin, LayoutPlugin, RenderOptions, ShapePlugin, ThemePlugin, FinchApi } from "./types.js";
 import { createOverlay } from "./utils.js";
 
-export class TitEngine implements TitApi {
+export class FinchEngine implements FinchApi {
   private readonly registry = new Registry();
 
   constructor() {
@@ -63,12 +63,12 @@ function isElement(value: unknown): value is Element {
   return typeof Element !== "undefined" && value instanceof Element;
 }
 
-export function createTit(): TitEngine {
-  return new TitEngine();
+export function createFinch(): FinchEngine {
+  return new FinchEngine();
 }
 
-export const Tit = createTit();
-export default Tit;
+export const Finch = createFinch();
+export default Finch;
 
 export { DiagramInstance } from "./instance.js";
 export { defaultTheme, midnightTheme } from "./theme.js";

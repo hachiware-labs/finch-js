@@ -1,9 +1,9 @@
-import Tit, { createTit, defaultTheme, midnightTheme } from "./index.js";
+import Finch, { createFinch, defaultTheme, midnightTheme } from "./index.js";
 
-const browserTit = Object.assign(Tit, { createTit, defaultTheme, midnightTheme });
+const browserFinch = Object.assign(Finch, { createFinch, defaultTheme, midnightTheme });
 
 declare global {
-  var Tit: typeof browserTit;
+  var Finch: typeof browserFinch;
 }
 
-globalThis.Tit = browserTit;
+globalThis.Finch = browserFinch;

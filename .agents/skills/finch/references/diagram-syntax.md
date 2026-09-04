@@ -1,12 +1,12 @@
-# Tit.js diagram syntax
+# Finch.js diagram syntax
 
-Use this reference to choose the directive and compose valid Tit.js DSL in a JavaScript string inside HTML. The parser implementation in `src/parser.ts` is authoritative; the advanced examples listed below are the preferred models for realistic diagrams.
+Use this reference to choose the directive and compose valid Finch.js DSL in a JavaScript string inside HTML. The parser implementation in `src/parser.ts` is authoritative; the advanced examples listed below are the preferred models for realistic diagrams.
 
 ## Shared rules
 
 - The first meaningful line is exactly one diagram directive.
 - Use stable IDs containing letters, digits, `_`, `-`, or `.`. Keep the human-facing text in a quoted label.
-- Declare nodes before connecting them, except sequence participants, which Tit.js may infer from messages.
+- Declare nodes before connecting them, except sequence participants, which Finch.js may infer from messages.
 - Use `->` for a solid relationship, `-->` for a dashed relationship, and `..>` where the applicable syntax supports dependency-like relationships.
 - Add an edge label after `:`. Flow, state, and activity edges also accept guard/action text such as `[valid] / reserve`.
 - Add attributes in brackets: `[key=value other="quoted value"]`.
@@ -16,16 +16,16 @@ Use this reference to choose the directive and compose valid Tit.js DSL in a Jav
 
 | Request intent | Directive | Canonical example |
 | --- | --- | --- |
-| Infrastructure, runtime, physical placement | `@deployment` | `examples/deployment-advanced.tit` |
-| Time-ordered calls or messages | `@sequence` | `examples/sequence-advanced.tit` |
-| General process or decision flow | `@flowchart` | `examples/flowchart-advanced.tit` |
-| Lifecycle and event-driven transitions | `@state` | `examples/state-advanced.tit` |
-| Tables/entities, fields, keys, cardinalities | `@er` | `examples/er-advanced.tit` |
-| Logical software boundaries and interfaces | `@component` | `examples/component-advanced.tit` |
-| Presentation narrative or data story | `@slide` | `examples/slide-advanced.tit` and `docs/slide-patterns_ja.md` |
-| Classes, members, inheritance, composition | `@class` | `examples/class-advanced.tit` |
-| Actors and system goals | `@usecase` | `examples/usecase-advanced.tit` |
-| UML actions, control/object flow, fork and join | `@activity` | `examples/activity-advanced.tit` |
+| Infrastructure, runtime, physical placement | `@deployment` | `examples/deployment.html` |
+| Time-ordered calls or messages | `@sequence` | `examples/sequence.html` |
+| General process or decision flow | `@flowchart` | `examples/flowchart.html` |
+| Lifecycle and event-driven transitions | `@state` | `examples/state.html` |
+| Tables/entities, fields, keys, cardinalities | `@er` | `examples/er.html` |
+| Logical software boundaries and interfaces | `@component` | `examples/component.html` |
+| Presentation narrative or data story | `@slide` | `examples/slide.html`, `examples/slide-patterns.html`, and `docs/slide-patterns_ja.md` |
+| Classes, members, inheritance, composition | `@class` | `examples/class.html` |
+| Actors and system goals | `@usecase` | `examples/usecase.html` |
+| UML actions, control/object flow, fork and join | `@activity` | `examples/activity.html` |
 
 ## Deployment
 
@@ -39,6 +39,8 @@ container cloud "本番環境" {
 }
 api -> db: SQL
 ```
+
+Containers accept `layout=row`, `layout=column`, or `layout=grid`; a grid may set `columns`. Direct children may set `order`, `row`, and `column`. On a top-level container, `place=below` keeps the container below its predecessor rather than opening another horizontal band.
 
 ## Sequence
 
@@ -57,6 +59,7 @@ end
 ## Flowchart
 
 Node declarations are `start`, `process` or `step`, `decision`, `input`, `output`, `node`, and `end`.
+Flowcharts are laid out vertically by default: ranks progress from top to bottom and branches in the same rank spread horizontally.
 
 ```text
 @flowchart
@@ -70,6 +73,7 @@ valid -> done: Yes
 ## State
 
 Declarations are `initial`, `state`, `choice`, `junction`, `fork`, `join`, `history`, `deep-history`, `final`, and `terminate`.
+Fork/join sections are arranged vertically: the fork bar sits above its parallel states, the join bar sits below them, and a single successor continues downward.
 
 ```text
 @state

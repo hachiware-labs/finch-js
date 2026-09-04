@@ -1,12 +1,14 @@
-import { rerouteGeometry } from "./layouts.js";
+import { expandAncestorContainers, rerouteGeometry } from "./layouts.js";
 import { Registry } from "./registry.js";
 import { SvgRenderer } from "./renderer.js";
 import type {
   AutoLayoutOptions,
+  EditChangeDetail,
   FitMode,
   Geometry,
   LayoutChangeDetail,
   LayoutOverlay,
+  PngExportOptions,
   RenderOptions,
   SemanticModel,
   Theme,
@@ -14,11 +16,13 @@ import type {
 } from "./types.js";
 import { cloneOverlay, createOverlay, parseOverlay } from "./utils.js";
 import { getDiagramKind } from "./parser.js";
+import { svgToPngBlob } from "./png.js";
 
 interface DragState {
   pointerId: number;
   start: { x: number; y: number };
   origins: Map<string, { x: number; y: number }>;
+  expandedContainerIds: Set<string>;
   moved: boolean;
 }
 
@@ -38,6 +42,7 @@ export class DiagramInstance {
   private modelValue!: SemanticModel;
   private geometryValue!: Geometry;
   private overlayValue: LayoutOverlay;
+  private editableValue = true;
   private rendererValue!: SvgRenderer;
   private themeValue!: Theme;
   private layoutName = "";
@@ -56,6 +61,10 @@ export class DiagramInstance {
     this.options = options;
     this.host = resolveTarget(options.target);
     this.overlayValue = parseOverlay(options.overlay);
+    this.editableValue = options.overlay === undefined
+      ? options.editable ?? true
+      : this.overlayValue.editable ?? options.editable ?? true;
+    this.overlayValue.editable = this.editableValue;
     if (typeof options.zoom === "number") {
       this.zoomValue = options.zoom;
       this.zoomMode = "manual";
@@ -92,6 +101,10 @@ export class DiagramInstance {
     return this.zoomValue;
   }
 
+  get editable(): boolean {
+    return this.editableValue;
+  }
+
   get viewportMode(): "auto" | "manual" | FitMode {
     return this.zoomMode;
   }
@@ -117,6 +130,7 @@ export class DiagramInstance {
 
   fit(mode: FitMode = "diagram"): this {
     this.assertActive();
+    if (!this.editableValue) return this;
     this.zoomMode = mode;
     this.applyViewport(true);
     const host = this.scrollHost();
@@ -133,7 +147,7 @@ export class DiagramInstance {
     this.sourceValue = source;
     const nextKind = getDiagramKind(source);
     if (previousKind !== nextKind) {
-      this.overlayValue = createOverlay();
+      this.overlayValue = createOverlay(this.editableValue);
       this.selectedIds.clear();
     }
     this.rebuild({ force: false, preservePinned: true });
@@ -149,12 +163,14 @@ export class DiagramInstance {
 
   setLayout(layout: string): this {
     this.assertActive();
+    if (!this.editableValue) return this;
     this.options = { ...this.options, layout };
     this.rebuild({ force: true, preservePinned: true });
     return this;
   }
 
   select(ids: string | string[], additive = false): this {
+    if (!this.editableValue) return this;
     const values = typeof ids === "string" ? [ids] : ids;
     if (!additive) this.selectedIds.clear();
     const valid = new Set(this.geometryValue.nodes.map((node) => node.id));
@@ -170,10 +186,12 @@ export class DiagramInstance {
   }
 
   pin(ids: string | string[] = this.selection): this {
+    if (!this.editableValue) return this;
     return this.setPin(ids, true);
   }
 
   unpin(ids: string | string[] = this.selection): this {
+    if (!this.editableValue) return this;
     return this.setPin(ids, false);
   }
 
@@ -183,6 +201,7 @@ export class DiagramInstance {
 
   autoLayout(options: AutoLayoutOptions = {}): this {
     this.assertActive();
+    if (!this.editableValue) return this;
     const preservePinned = options.preservePinned ?? true;
     for (const [id, state] of Object.entries(this.overlayValue.nodes)) {
       if (!preservePinned || !state.pinned) delete this.overlayValue.nodes[id];
@@ -193,7 +212,8 @@ export class DiagramInstance {
   }
 
   resetLayout(): this {
-    this.overlayValue = createOverlay();
+    if (!this.editableValue) return this;
+    this.overlayValue = createOverlay(this.editableValue);
     this.rebuild({ force: true, preservePinned: false });
     this.emitLayoutChange(this.geometryValue.nodes.map((node) => node.id));
     return this;
@@ -202,7 +222,7 @@ export class DiagramInstance {
   exportLayout(space = 2): string {
     const activeIds = new Set(this.geometryValue.nodes.map((node) => node.id));
     const nodes = Object.fromEntries(Object.entries(this.overlayValue.nodes).filter(([id]) => activeIds.has(id)));
-    return JSON.stringify({ version: 1, diagram: this.modelValue.kind, nodes }, null, space);
+    return JSON.stringify({ version: 1, diagram: this.modelValue.kind, editable: this.editableValue, nodes }, null, space);
   }
 
   importLayout(layout: LayoutOverlay | string): this {
@@ -210,8 +230,26 @@ export class DiagramInstance {
     if (overlay.diagram && overlay.diagram !== this.modelValue.kind) {
       throw new Error(`Layout overlay is for @${overlay.diagram}, not @${this.modelValue.kind}.`);
     }
+    this.editableValue = overlay.editable ?? true;
+    overlay.editable = this.editableValue;
     this.overlayValue = overlay;
     this.rebuild({ force: false, preservePinned: true });
+    return this;
+  }
+
+  setEditable(editable: boolean): this {
+    this.assertActive();
+    if (this.editableValue === editable) return this;
+    this.editableValue = editable;
+    this.overlayValue.editable = editable;
+    this.drag = undefined;
+    this.pan = undefined;
+    this.spacePressed = false;
+    if (!editable) this.clearSelection();
+    this.applyEditState();
+    const detail: EditChangeDetail = { editable, overlay: this.overlay };
+    this.rendererValue.svg.dispatchEvent(new CustomEvent<EditChangeDetail>("finch:editchange", { detail, bubbles: true }));
+    this.emitLayoutChange([]);
     return this;
   }
 
@@ -220,10 +258,10 @@ export class DiagramInstance {
     let element: HTMLScriptElement | null = null;
     if (typeof target === "string") element = this.svg.ownerDocument.querySelector<HTMLScriptElement>(target);
     else if (target) element = target;
-    else if (this.host) element = this.host.parentElement?.querySelector<HTMLScriptElement>("script[type='application/json'][data-tit-layout]") ?? null;
+    else if (this.host) element = this.host.parentElement?.querySelector<HTMLScriptElement>("script[type='application/json'][data-finch-layout]") ?? null;
     if (element) {
       element.type = "application/json";
-      element.dataset.titLayout = "";
+      element.dataset.finchLayout = "";
       element.textContent = json;
     }
     return json;
@@ -231,6 +269,28 @@ export class DiagramInstance {
 
   toSvgString(): string {
     return new XMLSerializer().serializeToString(this.svg);
+  }
+
+  toPngBlob(options: PngExportOptions = {}): Promise<Blob> {
+    this.assertActive();
+    return svgToPngBlob(this.svg, this.geometryValue, this.themeValue.canvasColor, options);
+  }
+
+  async downloadPng(filename = `${this.modelValue.kind}.png`, options: PngExportOptions = {}): Promise<void> {
+    const blob = await this.toPngBlob(options);
+    const url = URL.createObjectURL(blob);
+    const link = this.svg.ownerDocument.createElement("a");
+    link.href = url;
+    link.download = filename;
+    link.style.display = "none";
+    this.svg.ownerDocument.body?.append(link);
+    try {
+      link.click();
+    } finally {
+      link.remove();
+      const view = this.svg.ownerDocument.defaultView;
+      (view?.setTimeout ?? setTimeout)(() => URL.revokeObjectURL(url), 0);
+    }
   }
 
   destroy(): void {
@@ -262,8 +322,9 @@ export class DiagramInstance {
       preservePinned: layoutOptions.preservePinned,
     });
     this.overlayValue.diagram = kind;
+    this.overlayValue.editable = this.editableValue;
     const document = this.host?.ownerDocument ?? globalThis.document;
-    if (!document) throw new Error("Tit.render() requires a browser Document or a target Element.");
+    if (!document) throw new Error("Finch.render() requires a browser Document or a target Element.");
     const nextRenderer = new SvgRenderer(document, this.themeValue, (name) => this.registry.shape(name), this.options.ariaLabel ?? `${kind} diagram`);
     nextRenderer.draw(this.geometryValue);
     const oldSvg = this.rendererValue?.svg;
@@ -282,6 +343,7 @@ export class DiagramInstance {
   }
 
   private bindInteractions(): void {
+    this.applyEditState();
     if (this.options.interactive === false) return;
     const svg = this.rendererValue.svg;
     svg.addEventListener("pointerdown", (event) => this.onPointerDown(event));
@@ -295,12 +357,13 @@ export class DiagramInstance {
       this.applyZoom(this.zoomValue * (event.deltaY < 0 ? 1.1 : 1 / 1.1), true, { clientX: event.clientX, clientY: event.clientY });
     }, { passive: false });
     svg.addEventListener("dblclick", (event) => {
+      if (!this.editableValue) return;
       const id = this.rendererValue.nodeIdFromTarget(event.target);
       if (id) this.setPin(id, !this.isPinned(id));
     });
     svg.addEventListener("keydown", (event) => {
       if (event.key === "Escape") this.clearSelection();
-      if (event.key.toLowerCase() === "p" && this.selectedIds.size) this.pin();
+      if (this.editableValue && event.key.toLowerCase() === "p" && this.selectedIds.size) this.pin();
       if (event.key === " ") {
         this.spacePressed = true;
         event.preventDefault();
@@ -320,7 +383,7 @@ export class DiagramInstance {
 
   private onPointerDown(event: PointerEvent): void {
     const scrollHost = this.scrollHost();
-    if (scrollHost && (event.button === 1 || (event.button === 0 && (this.spacePressed || event.altKey)))) {
+    if (scrollHost && (event.button === 1 || (event.button === 0 && (!this.editableValue || this.spacePressed || event.altKey)))) {
       this.pan = {
         pointerId: event.pointerId,
         clientX: event.clientX,
@@ -333,6 +396,7 @@ export class DiagramInstance {
       event.preventDefault();
       return;
     }
+    if (!this.editableValue) return;
     if (event.button !== 0) return;
     const id = this.rendererValue.nodeIdFromTarget(event.target);
     if (!id) {
@@ -353,6 +417,7 @@ export class DiagramInstance {
       pointerId: event.pointerId,
       start: this.rendererValue.clientPoint(event),
       origins,
+      expandedContainerIds: new Set(),
       moved: false,
     };
     this.rendererValue.svg.setPointerCapture(event.pointerId);
@@ -379,6 +444,9 @@ export class DiagramInstance {
       if (!node) continue;
       node.x = Math.max(8, origin.x + dx);
       node.y = Math.max(8, origin.y + dy);
+    }
+    for (const id of expandAncestorContainers(this.geometryValue.nodes, this.drag.origins.keys())) {
+      this.drag.expandedContainerIds.add(id);
     }
     rerouteGeometry(this.geometryValue);
     this.rendererValue.updateGeometry(this.geometryValue);
@@ -410,10 +478,11 @@ export class DiagramInstance {
         ...(previous?.height ? { height: previous.height } : {}),
       };
     }
-    this.emitLayoutChange([...drag.origins.keys()]);
+    this.emitLayoutChange([...new Set([...drag.origins.keys(), ...drag.expandedContainerIds])]);
   }
 
   private setPin(ids: string | string[], pinned: boolean): this {
+    if (!this.editableValue) return this;
     const values = typeof ids === "string" ? [ids] : ids;
     const map = new Map(this.geometryValue.nodes.map((node) => [node.id, node]));
     const changed: string[] = [];
@@ -453,7 +522,14 @@ export class DiagramInstance {
 
   private emitLayoutChange(changedNodeIds: string[]): void {
     const detail: LayoutChangeDetail = { overlay: this.overlay, changedNodeIds };
-    this.rendererValue.svg.dispatchEvent(new CustomEvent<LayoutChangeDetail>("tit:layoutchange", { detail, bubbles: true }));
+    this.rendererValue.svg.dispatchEvent(new CustomEvent<LayoutChangeDetail>("finch:layoutchange", { detail, bubbles: true }));
+  }
+
+  private applyEditState(): void {
+    const svg = this.rendererValue?.svg;
+    if (!svg) return;
+    svg.dataset.editable = String(this.editableValue);
+    svg.classList.toggle("is-view-only", !this.editableValue);
   }
 
   private applyViewport(emit: boolean): void {
@@ -493,7 +569,7 @@ export class DiagramInstance {
     }
     if (emit) {
       const detail: ZoomChangeDetail = { zoom: next, mode: this.zoomMode };
-      svg.dispatchEvent(new CustomEvent<ZoomChangeDetail>("tit:zoomchange", { detail, bubbles: true }));
+      svg.dispatchEvent(new CustomEvent<ZoomChangeDetail>("finch:zoomchange", { detail, bubbles: true }));
     }
   }
 
@@ -518,7 +594,7 @@ export class DiagramInstance {
   }
 
   private assertNotDestroyed(): void {
-    if (this.destroyed) throw new Error("This Tit.js diagram has been destroyed.");
+    if (this.destroyed) throw new Error("This Finch.js diagram has been destroyed.");
   }
 }
 
@@ -526,6 +602,6 @@ function resolveTarget(target: RenderOptions["target"]): Element | undefined {
   if (!target) return undefined;
   if (typeof target !== "string") return target;
   const element = globalThis.document?.querySelector(target);
-  if (!element) throw new Error(`Tit.js target "${target}" was not found.`);
+  if (!element) throw new Error(`Finch.js target "${target}" was not found.`);
   return element;
 }

@@ -32,20 +32,21 @@ export function center(bounds: Bounds): Point {
   return { x: bounds.x + bounds.width / 2, y: bounds.y + bounds.height / 2 };
 }
 
-export function createOverlay(): LayoutOverlay {
-  return { version: 1, nodes: {} };
+export function createOverlay(editable = true): LayoutOverlay {
+  return { version: 1, editable, nodes: {} };
 }
 
 export function parseOverlay(value?: LayoutOverlay | string): LayoutOverlay {
   if (!value) return createOverlay();
   const parsed = typeof value === "string" ? JSON.parse(value) as unknown : value;
   if (!parsed || typeof parsed !== "object" || (parsed as LayoutOverlay).version !== 1) {
-    throw new Error("Unsupported Tit.js layout overlay.");
+    throw new Error("Unsupported Finch.js layout overlay.");
   }
   const overlay = parsed as LayoutOverlay;
   return {
     version: 1,
     ...(overlay.diagram ? { diagram: overlay.diagram } : {}),
+    ...(typeof overlay.editable === "boolean" ? { editable: overlay.editable } : {}),
     nodes: Object.fromEntries(Object.entries(overlay.nodes ?? {}).map(([id, node]) => [id, { ...node }])),
   };
 }

@@ -1,33 +1,33 @@
-# Tit.js の拡張
+# Finch.js の拡張
 
 [English](./extensions.md) · [README に戻る](../README_ja.md)
 
-Tit.js には4つの plugin 境界があります。Diagram plugin はソースを意味へ変換し、Shape plugin は1種類のノードを計測・描画します。Layout plugin は計測済み item を配置し、Theme plugin は見た目を決める値を提供します。これらは公開 model で接続されるため、parser、router、scene、SVG renderer の内部実装へ触れる必要はありません。
+Finch.js には4つの plugin 境界があります。Diagram plugin はソースを意味へ変換し、Shape plugin は1種類のノードを計測・描画します。Layout plugin は計測済み item を配置し、Theme plugin は見た目を決める値を提供します。これらは公開 model で接続されるため、parser、router、scene、SVG renderer の内部実装へ触れる必要はありません。
 
 [ブラウザー拡張例](../examples/extensions.html)では、4種類の plugin を小さな service map DSL にまとめています。このガイドでは、各 plugin の役割と、互換性を保つための契約を説明します。
 
 ## 独立した engine から始める
 
-既定 export の `Tit` は registry を共有します。単一アプリケーションでは便利ですが、テスト、埋め込み widget、複数の editor が互いに影響しないようにするには、独立した engine が適しています。
+既定 export の `Finch` は registry を共有します。単一アプリケーションでは便利ですが、テスト、埋め込み widget、複数の editor が互いに影響しないようにするには、独立した engine が適しています。
 
 ```ts
 import {
-  createTit,
+  createFinch,
   defaultTheme,
   type DiagramPlugin,
   type LayoutPlugin,
   type ShapePlugin,
   type ThemePlugin,
-} from "tit-js";
+} from "finch-js";
 
-const tit = createTit();
+const finch = createFinch();
 ```
 
 plugin を参照するソースを描画する前に、必要な plugin をすべて登録します。registry の名前は小文字へ正規化されます。
 
 ## Theme plugin を作る
 
-Theme は、描画と余白に使う値をひと揃い持ちます。Tit.js に新しい field が加わったときも適切な初期値を得られるよう、組み込み theme を基に作ります。
+Theme は、描画と余白に使う値をひと揃い持ちます。Finch.js に新しい field が加わったときも適切な初期値を得られるよう、組み込み theme を基に作ります。
 
 ```ts
 const oceanTheme: ThemePlugin = {
@@ -44,7 +44,7 @@ const oceanTheme: ThemePlugin = {
   canvasColor: "#f8fafc",
 };
 
-tit.registerTheme("ocean", oceanTheme);
+finch.registerTheme("ocean", oceanTheme);
 ```
 
 `registerTheme()` に渡す registry 名は、アプリケーションが `render({ theme: "ocean" })` や `setTheme("ocean")` で使う名前です。theme object を調べる利用者もいるため、`name` field も同じ値にしておきます。
@@ -121,10 +121,10 @@ const serviceCard: ShapePlugin = {
   },
 };
 
-tit.registerShape("service-card", serviceCard);
+finch.registerShape("service-card", serviceCard);
 ```
 
-返す group には `data-node-id` を設定します。Tit.js はこの属性を使い、pointer や keyboard の操作を semantic node に対応付けます。利用者が入力したラベルや属性値は `textContent` へ設定し、SVG markup として解釈させないでください。
+返す group には `data-node-id` を設定します。Finch.js はこの属性を使い、pointer や keyboard の操作を semantic node に対応付けます。利用者が入力したラベルや属性値は `textContent` へ設定し、SVG markup として解釈させないでください。
 
 Shape plugin は独自アイコンとしても使えます。次の例は六角形の tile と分岐する gateway glyph を組み合わせていますが、同じ `render()` method で任意の SVG path や基本図形を合成できます。
 
@@ -174,7 +174,7 @@ const gatewayIcon: ShapePlugin = {
   },
 };
 
-tit.registerShape("gateway-icon", gatewayIcon);
+finch.registerShape("gateway-icon", gatewayIcon);
 ```
 
 通常の shape 属性を使い、ノード単位で `service gateway "API Gateway" [shape=gateway-icon]` と指定します。完全版のブラウザー例では glyph に端点の円を加え、custom theme の切り替えでアイコン全体の色も変わります。
@@ -197,9 +197,9 @@ const star = svg(document, "polygon", {
 });
 ```
 
-`examples/extensions.js` には、このほかにブラウザー窓、盾、書類スタックの shape があり、組み込みの database の円筒形も並べています。長方形の装飾違いではなく、小さな shape gallery として比較できます。
+`examples/extensions.html` のインラインスクリプトには、このほかにブラウザー窓、盾、書類スタックの shape があり、組み込みの database の円筒形も並べています。長方形の装飾違いではなく、小さな shape gallery として比較できます。
 
-parser が未登録の shape を要求した場合、現状の Tit.js は組み込みの長方形へ fallback します。それでも shape 名を明示的に登録すると、不足している拡張をテストや文書から判断しやすくなります。
+parser が未登録の shape を要求した場合、現状の Finch.js は組み込みの長方形へ fallback します。それでも shape 名を明示的に登録すると、不足している拡張をテストや文書から判断しやすくなります。
 
 ## Layout plugin を作る
 
@@ -224,10 +224,10 @@ const serviceLanes: LayoutPlugin = {
   },
 };
 
-tit.registerLayout("service-lanes", serviceLanes);
+finch.registerLayout("service-lanes", serviceLanes);
 ```
 
-ここでは method の本体を要約しています。完全に動く実装は [`examples/extensions.js`](../examples/extensions.js) にあります。有用な layout は複数の判断をまとめて行う必要があり、座標計算だけを抜き出すと重要な責務が見えなくなるためです。
+ここでは method の本体を要約しています。完全に動く実装は [`examples/extensions.html`](../examples/extensions.html) に埋め込んであります。有用な layout は複数の判断をまとめて行う必要があり、座標計算だけを抜き出すと重要な責務が見えなくなるためです。
 
 layout では次の振る舞いを保ちます。
 
@@ -238,7 +238,7 @@ layout では次の振る舞いを保ちます。
 - 強制自動配置では、固定されていない手動座標を無視します。
 - すべてのノードと group が入る canvas の幅と高さを返します。
 
-対話操作でノードをドラッグした後は Tit.js が edge を引き直しますが、最初の経路は plugin が作ります。edge の point 配列には、少なくとも始点と終点を含めてください。
+対話操作でノードをドラッグした後は Finch.js が edge を引き直しますが、最初の経路は plugin が作ります。edge の point 配列には、少なくとも始点と終点を含めてください。
 
 ## Diagram plugin を作る
 
@@ -247,7 +247,7 @@ Diagram plugin は構文と表示を分けます。`parse()` は `SemanticModel`
 次の例では、小さな `@services` 構文を組み込み deployment parser の構文へ変換し、ノードの shape を差し替えます。
 
 ```ts
-const base = createTit();
+const base = createFinch();
 
 const servicesDiagram: DiagramPlugin = {
   name: "services",
@@ -285,7 +285,7 @@ const servicesDiagram: DiagramPlugin = {
   },
 };
 
-tit.registerDiagram("services", servicesDiagram);
+finch.registerDiagram("services", servicesDiagram);
 ```
 
 別の `base` engine を使うことで、新しい `@services` plugin の再帰呼び出しを避けています。構文が本質的に異なる場合は `parse()` を直接実装し、安定した node ID と connection ID を返します。parser の error には、可能な限り入力行と解釈できなかった文字列を含めてください。
@@ -305,7 +305,7 @@ service database "Order Database" [tier=data owner=Commerce]
 gateway -> orders: HTTPS
 orders -> database: SQL`;
 
-const diagram = tit.render(source, {
+const diagram = finch.render(source, {
   target: "#diagram",
   theme: "ocean",
 });
@@ -322,7 +322,7 @@ diagram は既定 layout として `service-lanes` を選び、解析したす�
 3. 空の overlay、手動 overlay、固定ノードを含む強制 layout の3条件で Layout plugin を実行します。
 4. 拡張全体を描画し、drag、ソース更新、overlay の import が維持されることを確認します。
 
-plugin 例を変更した後は、Tit.js 本体の検査も実行します。
+plugin 例を変更した後は、Finch.js 本体の検査も実行します。
 
 ```bash
 npm run check

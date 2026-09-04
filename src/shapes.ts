@@ -1,24 +1,72 @@
 import type { ShapePlugin, ShapeRenderContext, Size } from "./types.js";
 import { svgElement } from "./utils.js";
 
-function textWidth(label: string, fontSize: number): number {
-  let units = 0;
-  for (const character of label) units += /[\u3000-\u9fff\uff00-\uffef]/.test(character) ? 1 : 0.56;
-  return Math.ceil(units * fontSize);
+const MAX_NODE_LABEL_WIDTH = 216;
+
+function textUnits(value: string): number {
+  return [...value].reduce((total, character) =>
+    total + (/[\u3000-\u9fff\uff00-\uffef]/.test(character) ? 1 : 0.56), 0);
 }
 
-function baseSize(label: string, context: { theme: ShapeRenderContext["theme"] }): Size {
+function textWidth(label: string, fontSize: number): number {
+  return Math.ceil(textUnits(label) * fontSize);
+}
+
+function wrappedLines(value: string, maximumWidth: number, fontSize: number): string[] {
+  const maximumUnits = Math.max(1, maximumWidth / fontSize);
+  const lines: string[] = [];
+  for (const paragraph of value.replace(/\\n/g, "\n").split("\n")) {
+    let remaining = paragraph;
+    while (remaining && textUnits(remaining) > maximumUnits) {
+      const characters = [...remaining];
+      let units = 0;
+      let overflowIndex = characters.length;
+      let whitespaceIndex = -1;
+      for (let index = 0; index < characters.length; index += 1) {
+        const character = characters[index] ?? "";
+        units += textUnits(character);
+        if (/\s/.test(character)) whitespaceIndex = index;
+        if (units > maximumUnits) {
+          overflowIndex = index;
+          break;
+        }
+      }
+      const breakIndex = whitespaceIndex > 0 ? whitespaceIndex + 1 : Math.max(1, overflowIndex);
+      lines.push(characters.slice(0, breakIndex).join(""));
+      remaining = characters.slice(breakIndex).join("").trimStart();
+    }
+    lines.push(remaining);
+  }
+  return lines.length ? lines : [""];
+}
+
+function wrappedLabelSize(
+  label: string,
+  context: { theme: ShapeRenderContext["theme"] },
+  options: { minimumWidth?: number; minimumHeight?: number; maximumTextWidth?: number; paddingX?: number; paddingY?: number } = {},
+): Size {
+  const fontSize = context.theme.fontSize;
+  const paddingX = options.paddingX ?? context.theme.nodePaddingX;
+  const paddingY = options.paddingY ?? context.theme.nodePaddingY;
+  const lineHeight = Math.ceil(fontSize * 1.4);
+  const lines = wrappedLines(label, options.maximumTextWidth ?? MAX_NODE_LABEL_WIDTH, fontSize);
   return {
-    width: Math.max(104, textWidth(label, context.theme.fontSize) + context.theme.nodePaddingX * 2),
-    height: Math.max(46, context.theme.fontSize * 1.4 + context.theme.nodePaddingY * 2),
+    width: Math.max(options.minimumWidth ?? 104, ...lines.map((line) => textWidth(line, fontSize) + paddingX * 2)),
+    height: Math.max(options.minimumHeight ?? 46, lines.length * lineHeight + paddingY * 2),
   };
 }
 
-function addLabel(group: SVGGElement, context: ShapeRenderContext, yOffset = 0): void {
+function baseSize(label: string, context: { theme: ShapeRenderContext["theme"] }): Size {
+  return wrappedLabelSize(label, context);
+}
+
+function addLabel(group: SVGGElement, context: ShapeRenderContext, yOffset = 0, paddingX = context.theme.nodePaddingX): void {
   const { node, theme, document } = context;
+  const lines = wrappedLines(node.label, Math.max(theme.fontSize, node.width - paddingX * 2), theme.fontSize);
+  const lineHeight = Math.ceil(theme.fontSize * 1.4);
   const text = svgElement(document, "text", {
     x: node.width / 2,
-    y: node.height / 2 + yOffset,
+    y: node.height / 2 + yOffset - (lines.length - 1) * lineHeight / 2,
     "text-anchor": "middle",
     "dominant-baseline": "middle",
     fill: theme.labelColor,
@@ -26,13 +74,21 @@ function addLabel(group: SVGGElement, context: ShapeRenderContext, yOffset = 0):
     "font-size": theme.fontSize,
     "font-weight": 560,
   });
-  text.textContent = node.label;
+  if (lines.length === 1) {
+    text.textContent = node.label;
+  } else {
+    lines.forEach((line, index) => {
+      const span = svgElement(document, "tspan", { x: node.width / 2, dy: index === 0 ? 0 : lineHeight });
+      span.textContent = line;
+      text.append(span);
+    });
+  }
   group.append(text);
 }
 
 function groupFor(context: ShapeRenderContext): SVGGElement {
   return svgElement(context.document, "g", {
-    class: `tit-shape tit-shape-${context.node.shape}`,
+    class: `finch-shape finch-shape-${context.node.shape}`,
     "data-node-id": context.node.id,
     transform: `translate(${context.node.x} ${context.node.y})`,
   });
@@ -50,7 +106,7 @@ export const rectangleShape: ShapePlugin = {
       fill: context.theme.nodeFill,
       stroke: context.theme.nodeStroke,
       "stroke-width": context.theme.nodeStrokeWidth,
-      filter: "url(#tit-shadow)",
+      filter: "url(#finch-shadow)",
     }));
     addLabel(group, context);
     return group;
@@ -69,7 +125,7 @@ export const roundedShape: ShapePlugin = {
       fill: context.theme.nodeFill,
       stroke: context.theme.nodeStroke,
       "stroke-width": context.theme.nodeStrokeWidth,
-      filter: "url(#tit-shadow)",
+      filter: "url(#finch-shadow)",
     }));
     addLabel(group, context);
     return group;
@@ -98,7 +154,7 @@ export const databaseShape: ShapePlugin = {
       fill: theme.nodeFill,
       stroke: theme.nodeStroke,
       "stroke-width": theme.nodeStrokeWidth,
-      filter: "url(#tit-shadow)",
+      filter: "url(#finch-shadow)",
     }));
     group.append(svgElement(document, "ellipse", {
       cx: node.width / 2,
@@ -148,7 +204,7 @@ export const containerShape: ShapePlugin = {
   render(context) {
     const { node, theme, document } = context;
     const group = groupFor(context);
-    group.classList.add("tit-container");
+    group.classList.add("finch-container");
     group.append(svgElement(document, "rect", {
       width: node.width,
       height: node.height,
@@ -185,7 +241,7 @@ export const serverShape: ShapePlugin = {
       fill: theme.nodeFill,
       stroke: theme.nodeStroke,
       "stroke-width": theme.nodeStrokeWidth,
-      filter: "url(#tit-shadow)",
+      filter: "url(#finch-shadow)",
     }));
     group.append(svgElement(document, "line", { x1: 13, y1: 18, x2: 13, y2: node.height - 18, stroke: theme.accentColor, "stroke-width": 3, "stroke-linecap": "round" }));
     addLabel(group, context);
@@ -195,10 +251,7 @@ export const serverShape: ShapePlugin = {
 
 export const diamondShape: ShapePlugin = {
   name: "diamond",
-  measure: ({ label, theme }) => ({
-    width: Math.max(148, textWidth(label, theme.fontSize) + 54),
-    height: 86,
-  }),
+  measure: ({ label, theme }) => wrappedLabelSize(label, { theme }, { minimumWidth: 148, minimumHeight: 86, paddingX: 27, paddingY: 18, maximumTextWidth: 180 }),
   render(context) {
     const { node, theme, document } = context;
     const group = groupFor(context);
@@ -207,9 +260,9 @@ export const diamondShape: ShapePlugin = {
       fill: theme.nodeFill,
       stroke: theme.nodeStroke,
       "stroke-width": theme.nodeStrokeWidth,
-      filter: "url(#tit-shadow)",
+      filter: "url(#finch-shadow)",
     }));
-    addLabel(group, context);
+    addLabel(group, context, 0, 27);
     return group;
   },
 };
@@ -229,9 +282,9 @@ export const parallelogramShape: ShapePlugin = {
       fill: theme.nodeFill,
       stroke: theme.nodeStroke,
       "stroke-width": theme.nodeStrokeWidth,
-      filter: "url(#tit-shadow)",
+      filter: "url(#finch-shadow)",
     }));
-    addLabel(group, context);
+    addLabel(group, context, 0, context.theme.nodePaddingX + 11);
     return group;
   },
 };
@@ -239,7 +292,8 @@ export const parallelogramShape: ShapePlugin = {
 export const circleShape: ShapePlugin = {
   name: "circle",
   measure: ({ label, theme }) => {
-    const diameter = Math.max(64, textWidth(label, theme.fontSize) + 30);
+    const size = wrappedLabelSize(label, { theme }, { minimumWidth: 64, minimumHeight: 64, paddingX: 15, paddingY: 15, maximumTextWidth: 160 });
+    const diameter = Math.max(size.width, size.height);
     return { width: diameter, height: diameter };
   },
   render(context) {
@@ -252,9 +306,9 @@ export const circleShape: ShapePlugin = {
       fill: theme.nodeFill,
       stroke: theme.nodeStroke,
       "stroke-width": theme.nodeStrokeWidth,
-      filter: "url(#tit-shadow)",
+      filter: "url(#finch-shadow)",
     }));
-    addLabel(group, context);
+    addLabel(group, context, 0, 15);
     return group;
   },
 };
@@ -351,7 +405,7 @@ export const entityShape: ShapePlugin = {
       fill: theme.nodeFill,
       stroke: theme.nodeStroke,
       "stroke-width": theme.nodeStrokeWidth,
-      filter: "url(#tit-shadow)",
+      filter: "url(#finch-shadow)",
     }));
     group.append(svgElement(document, "path", {
       d: `M ${theme.nodeRadius} 0 H ${node.width - theme.nodeRadius} Q ${node.width} 0 ${node.width} ${theme.nodeRadius} V 38 H 0 V ${theme.nodeRadius} Q 0 0 ${theme.nodeRadius} 0 Z`,
@@ -425,7 +479,7 @@ export const externalShape: ShapePlugin = {
       stroke: theme.containerStroke,
       "stroke-width": theme.nodeStrokeWidth,
       "stroke-dasharray": "5 4",
-      filter: "url(#tit-shadow)",
+      filter: "url(#finch-shadow)",
     }));
     const stereotype = svgElement(document, "text", { x: node.width / 2, y: 19, "text-anchor": "middle", fill: theme.mutedColor, "font-family": theme.fontFamily, "font-size": theme.fontSize - 3, "font-weight": 650 });
     stereotype.textContent = "«external»";
@@ -552,7 +606,7 @@ export const slideCardShape: ShapePlugin = {
       fill: accent ? theme.containerFill : theme.nodeFill,
       stroke: accent ? theme.accentColor : theme.nodeStroke,
       "stroke-width": accent ? 2 : theme.nodeStrokeWidth,
-      filter: "url(#tit-shadow)",
+      filter: "url(#finch-shadow)",
     }));
     group.append(svgElement(document, "rect", { x: 0, y: 0, width: 7, height: node.height, rx: 4, fill: theme.accentColor }));
     if (node.attributes.badge) {
@@ -623,7 +677,7 @@ export const slideMetricShape: ShapePlugin = {
       fill: accent ? theme.containerFill : theme.nodeFill,
       stroke: accent ? theme.accentColor : theme.nodeStroke,
       "stroke-width": accent ? 2 : theme.nodeStrokeWidth,
-      filter: "url(#tit-shadow)",
+      filter: "url(#finch-shadow)",
     }));
     appendSlideText(group, context, node.attributes.label ?? "METRIC", {
       x: 20,
@@ -697,7 +751,7 @@ export const slideQuoteShape: ShapePlugin = {
   render(context) {
     const { node, theme, document } = context;
     const group = groupFor(context);
-    group.append(svgElement(document, "rect", { width: node.width, height: node.height, rx: 18, fill: theme.nodeFill, stroke: theme.nodeStroke, "stroke-width": theme.nodeStrokeWidth, filter: "url(#tit-shadow)" }));
+    group.append(svgElement(document, "rect", { width: node.width, height: node.height, rx: 18, fill: theme.nodeFill, stroke: theme.nodeStroke, "stroke-width": theme.nodeStrokeWidth, filter: "url(#finch-shadow)" }));
     group.append(svgElement(document, "rect", { width: 8, height: node.height, rx: 4, fill: theme.accentColor }));
     const mark = svgElement(document, "text", { x: 28, y: 53, fill: theme.accentColor, "font-family": theme.fontFamily, "font-size": 52, "font-weight": 800 });
     mark.textContent = "“";
@@ -720,7 +774,7 @@ export const slideMilestoneShape: ShapePlugin = {
   render(context) {
     const { node, theme, document } = context;
     const group = groupFor(context);
-    group.append(svgElement(document, "rect", { x: 14, y: 18, width: node.width - 14, height: node.height - 18, rx: 14, fill: theme.nodeFill, stroke: theme.nodeStroke, "stroke-width": theme.nodeStrokeWidth, filter: "url(#tit-shadow)" }));
+    group.append(svgElement(document, "rect", { x: 14, y: 18, width: node.width - 14, height: node.height - 18, rx: 14, fill: theme.nodeFill, stroke: theme.nodeStroke, "stroke-width": theme.nodeStrokeWidth, filter: "url(#finch-shadow)" }));
     group.append(svgElement(document, "circle", { cx: 20, cy: 38, r: 17, fill: theme.accentColor, stroke: theme.nodeFill, "stroke-width": 5 }));
     const dot = svgElement(document, "text", { x: 20, y: 43, "text-anchor": "middle", fill: theme.nodeFill, "font-family": theme.fontFamily, "font-size": 15, "font-weight": 800 });
     dot.textContent = node.attributes.step ?? "•";
@@ -771,7 +825,7 @@ export const umlClassShape: ShapePlugin = {
     const stereotypeHeight = kind === "class" ? 0 : 18;
     const headerHeight = 46 + stereotypeHeight;
     const group = groupFor(context);
-    group.append(svgElement(document, "rect", { width: node.width, height: node.height, rx: 4, fill: theme.nodeFill, stroke: theme.nodeStroke, "stroke-width": theme.nodeStrokeWidth, filter: "url(#tit-shadow)" }));
+    group.append(svgElement(document, "rect", { width: node.width, height: node.height, rx: 4, fill: theme.nodeFill, stroke: theme.nodeStroke, "stroke-width": theme.nodeStrokeWidth, filter: "url(#finch-shadow)" }));
     if (kind !== "class") {
       const stereotype = svgElement(document, "text", { x: node.width / 2, y: 17, "text-anchor": "middle", fill: theme.mutedColor, "font-family": theme.fontFamily, "font-size": theme.fontSize - 2 });
       stereotype.textContent = `«${kind}»`;
@@ -806,44 +860,50 @@ export const umlClassShape: ShapePlugin = {
 
 export const usecaseShape: ShapePlugin = {
   name: "usecase",
-  measure: ({ label, theme }) => ({ width: Math.max(150, textWidth(label, theme.fontSize) + 54), height: 72 }),
+  measure: ({ label, theme }) => wrappedLabelSize(label, { theme }, { minimumWidth: 150, minimumHeight: 72, paddingX: 27, paddingY: 18, maximumTextWidth: 180 }),
   render(context) {
     const { node, theme, document } = context;
     const group = groupFor(context);
-    group.append(svgElement(document, "ellipse", { cx: node.width / 2, cy: node.height / 2, rx: node.width / 2, ry: node.height / 2, fill: theme.nodeFill, stroke: theme.nodeStroke, "stroke-width": theme.nodeStrokeWidth, filter: "url(#tit-shadow)" }));
-    addLabel(group, context);
+    group.append(svgElement(document, "ellipse", { cx: node.width / 2, cy: node.height / 2, rx: node.width / 2, ry: node.height / 2, fill: theme.nodeFill, stroke: theme.nodeStroke, "stroke-width": theme.nodeStrokeWidth, filter: "url(#finch-shadow)" }));
+    addLabel(group, context, 0, 27);
     return group;
   },
 };
 
 export const umlArtifactShape: ShapePlugin = {
   name: "uml-artifact",
-  measure: ({ label, theme }) => ({ width: Math.max(132, textWidth(label, theme.fontSize) + 40), height: 66 }),
+  measure: ({ label, theme }) => {
+    const size = wrappedLabelSize(label, { theme }, { minimumWidth: 132, minimumHeight: 46, paddingX: 20 });
+    return { width: size.width, height: Math.max(66, size.height + 20) };
+  },
   render(context) {
     const { node, theme, document } = context;
     const group = groupFor(context);
     const fold = 16;
-    group.append(svgElement(document, "path", { d: `M 0 0 H ${node.width - fold} L ${node.width} ${fold} V ${node.height} H 0 Z`, fill: theme.nodeFill, stroke: theme.nodeStroke, "stroke-width": theme.nodeStrokeWidth, filter: "url(#tit-shadow)" }));
+    group.append(svgElement(document, "path", { d: `M 0 0 H ${node.width - fold} L ${node.width} ${fold} V ${node.height} H 0 Z`, fill: theme.nodeFill, stroke: theme.nodeStroke, "stroke-width": theme.nodeStrokeWidth, filter: "url(#finch-shadow)" }));
     group.append(svgElement(document, "path", { d: `M ${node.width - fold} 0 V ${fold} H ${node.width}`, fill: "none", stroke: theme.nodeStroke, "stroke-width": theme.nodeStrokeWidth }));
     const stereotype = svgElement(document, "text", { x: node.width / 2, y: 20, "text-anchor": "middle", fill: theme.mutedColor, "font-family": theme.fontFamily, "font-size": theme.fontSize - 3 });
     stereotype.textContent = "«artifact»";
     group.append(stereotype);
-    addLabel(group, context, 10);
+    addLabel(group, context, 10, 20);
     return group;
   },
 };
 
 export const umlDeviceShape: ShapePlugin = {
   name: "uml-device",
-  measure: ({ label, theme }) => ({ width: Math.max(140, textWidth(label, theme.fontSize) + 44), height: 76 }),
+  measure: ({ label, theme }) => {
+    const size = wrappedLabelSize(label, { theme }, { minimumWidth: 140, minimumHeight: 46, paddingX: 22 });
+    return { width: size.width, height: Math.max(76, size.height + 22) };
+  },
   render(context) {
     const { node, theme, document } = context;
     const group = groupFor(context);
-    group.append(svgElement(document, "path", { d: `M 0 12 L 12 0 H ${node.width} V ${node.height - 12} L ${node.width - 12} ${node.height} H 0 Z M 0 12 H ${node.width - 12} L ${node.width} 0 M ${node.width - 12} 12 V ${node.height}`, fill: theme.nodeFill, stroke: theme.nodeStroke, "stroke-width": theme.nodeStrokeWidth, filter: "url(#tit-shadow)" }));
+    group.append(svgElement(document, "path", { d: `M 0 12 L 12 0 H ${node.width} V ${node.height - 12} L ${node.width - 12} ${node.height} H 0 Z M 0 12 H ${node.width - 12} L ${node.width} 0 M ${node.width - 12} 12 V ${node.height}`, fill: theme.nodeFill, stroke: theme.nodeStroke, "stroke-width": theme.nodeStrokeWidth, filter: "url(#finch-shadow)" }));
     const stereotype = svgElement(document, "text", { x: node.width / 2, y: 25, "text-anchor": "middle", fill: theme.mutedColor, "font-family": theme.fontFamily, "font-size": theme.fontSize - 3 });
     stereotype.textContent = "«device»";
     group.append(stereotype);
-    addLabel(group, context, 11);
+    addLabel(group, context, 11, 22);
     return group;
   },
 };

@@ -1,8 +1,8 @@
-# Tit.js <img src="./docs/assets/shijukara-silhouette-upright-pink.png" alt="Upright pink bird" width="56" />
+# Finch.js <img src="./docs/assets/green-warbler-finch-silhouette-profile-pink.png" alt="Pink silhouette of a Green Warbler-Finch in profile" width="56" align="middle" />
 
 [日本語](./README_ja.md)
 
-🐦 **Generate fast. Fine-tune freely.** Tit.js turns concise text into polished SVG diagrams in moments. Drag and pin nodes to refine the layout by hand without rewriting the source.
+🐦 **Generate fast. Fine-tune freely.** Finch.js turns concise text into polished SVG diagrams in moments. Drag and pin nodes to refine the layout by hand without rewriting the source.
 
 [![Custom service map showing browser, gateway, card, shield, star, database, and document shapes](./docs/assets/custom-service-map.png)](./examples/extensions.html)
 
@@ -36,18 +36,18 @@ browser -> api: HTTPS
 api -> db: SQL</textarea>
 <div id="diagram"></div>
 
-<script src="./dist/tit.global.js"></script>
+<script src="./dist/finch.global.js"></script>
 <script>
   const source = document.querySelector("#source");
   const host = document.querySelector("#diagram");
-  const layoutKey = "tit-layout";
-  const diagram = Tit.render(source.value, "#diagram");
+  const layoutKey = "finch-layout";
+  const diagram = Finch.render(source.value, "#diagram");
 
   const saved = localStorage.getItem(layoutKey);
   if (saved) diagram.importLayout(saved);
 
   source.addEventListener("input", () => diagram.update(source.value));
-  host.addEventListener("tit:layoutchange", ({ detail }) => {
+  host.addEventListener("finch:layoutchange", ({ detail }) => {
     localStorage.setItem(layoutKey, JSON.stringify(detail.overlay));
   });
 </script>
@@ -57,31 +57,31 @@ Open `quickstart.html` in a browser to turn the text into a diagram.
 
 ### 2. Drag and save
 
-Drag nodes to refine the layout. Tit.js saves the layout in the browser automatically and restores it after a reload. Edit the text on the left to redraw the diagram while retaining positions for stable node IDs.
+Drag nodes to refine the layout. Finch.js saves the layout in the browser automatically and restores it after a reload. Edit the text on the left to redraw the diagram while retaining positions for stable node IDs.
 
 See the [two-step tutorial](./docs/tutorial.md) for details or browse the [advanced examples](./examples/README.md) for complete diagrams.
 
 ## Environment setup
 
-Install Tit.js from npm:
+Install Finch.js from npm:
 
 ```bash
-npm install tit-js
+npm install finch-js
 ```
 
 Then import the default instance or create an isolated one:
 
 ```js
-import Tit, { createTit } from "tit-js";
+import Finch, { createFinch } from "finch-js";
 ```
 
 For a browser-global build, use a version-pinned CDN URL:
 
 ```html
-<script src="https://cdn.jsdelivr.net/npm/tit-js@0.1.0/dist/tit.global.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/finch-js@0.5.0/dist/finch.global.js"></script>
 ```
 
-When developing Tit.js itself, install the repository dependencies and build it:
+When developing Finch.js itself, install the repository dependencies and build it:
 
 ```bash
 npm ci
@@ -98,39 +98,39 @@ Open `http://127.0.0.1:8000/quickstart.html` in a browser.
 
 ## Codex skill
 
-This repository includes the [`$tit` Codex skill](./.agents/skills/tit/SKILL.md) for creating or updating HTML pages that render Tit.js diagrams. It keeps the diagram source in a JavaScript string inside the HTML rather than delivering a standalone `.tit` file.
+This repository includes the [`$finch` Codex skill](./.agents/skills/finch/SKILL.md) for creating or updating HTML pages that render Finch.js diagrams. It keeps the diagram source in a JavaScript string inside the HTML rather than delivering a standalone `.finch` file.
 
 ### Use it in this repository
 
-No separate installation command is needed. Start Codex from this repository or one of its subdirectories; Codex discovers `.agents/skills/tit` automatically. Invoke it explicitly with a prompt such as:
+No separate installation command is needed. Start Codex from this repository or one of its subdirectories; Codex discovers `.agents/skills/finch` automatically. Invoke it explicitly with a prompt such as:
 
 ```text
-$tit Draw an activity diagram in HTML.
+$finch Draw an activity diagram in HTML.
 ```
 
 If the skill does not appear after cloning or updating the repository, restart Codex.
 
 ### Install it with the Skills CLI
 
-The [`skills` CLI](https://github.com/vercel-labs/skills) can discover and install the skill. From a local Tit.js checkout, run:
+The [`skills` CLI](https://github.com/vercel-labs/skills) can discover and install the skill. From a local Finch.js checkout, run:
 
 ```bash
-npx skills add . --skill tit
+npx skills add . --skill finch
 ```
 
 After the repository is available on GitHub, install it directly with the repository name:
 
 ```bash
-npx skills add <owner>/<repository> --skill tit
+npx skills add <owner>/<repository> --skill finch
 ```
 
-Add `--global` to make `$tit` available across all of your repositories:
+Add `--global` to make `$finch` available across all of your repositories:
 
 ```bash
-npx skills add <owner>/<repository> --skill tit --global
+npx skills add <owner>/<repository> --skill finch --global
 ```
 
-To inspect the available skills without installing them, use `npx skills add <owner>/<repository> --list`. Codex detects newly installed skills automatically; restart Codex if `$tit` is not listed. See the [official OpenAI skill documentation](https://learn.chatgpt.com/docs/build-skills) for Codex skill scopes and discovery locations.
+To inspect the available skills without installing them, use `npx skills add <owner>/<repository> --list`. Codex detects newly installed skills automatically; restart Codex if `$finch` is not listed. See the [official OpenAI skill documentation](https://learn.chatgpt.com/docs/build-skills) for Codex skill scopes and discovery locations.
 
 ## Diagram types
 
@@ -164,13 +164,33 @@ Node IDs and labels are separate. Keep the ID stable when changing the visible l
 server billing-api "Billing API"
 ```
 
+### Long node labels
+
+Standard node labels stay on one line while they fit. Finch.js wraps a longer label at a word boundary, or between characters when needed, and makes the node taller so every line remains readable.
+
+### Deployment layout hints
+
+Deployment containers accept `layout=row`, `layout=column`, or `layout=grid`. Use `columns` on a grid container, and use `order`, `row`, and `column` on its direct children for finer placement. A top-level container with `place=below` stays in the same horizontal band as its predecessor instead of adding another column. These hints guide automatic layout; dragging and pinning remain available for exact positioning.
+
+Flowcharts use a vertical reading direction by default. The main path runs from top to bottom, while nodes in the same decision rank spread horizontally.
+
+In state diagrams, a fork/join section also reads vertically: parallel states sit between a fork bar above and a join bar below, followed by the joined successor.
+
 Comments can use a leading apostrophe on a full line, or `#` and `//` after whitespace.
 
 ## Editing and persistence
 
-The default SVG is interactive:
+New diagrams start with edit mode on. Use `setEditable(false)` for view mode; a plain left-button drag then pans inside the diagram instead of moving a node. Zoom in, zoom out, and reset remain viewing operations, while Fit, layout changes, pinning, and node selection are disabled.
+
+```js
+diagram.setEditable(false);
+diagram.setEditable(true);
+```
+
+With edit mode on, the SVG supports:
 
 - Drag a node to give it a manual position.
+- When a node inside a deployment container moves beyond its frame, that container and any outer container expand with it. Frames do not shrink during the drag; run automatic layout or reset the layout to compact them again.
 - Ctrl/⌘/Shift-click to select multiple nodes, then drag them together.
 - Double-click a node to toggle its pinned state.
 - Press `P` to pin selected nodes or `Escape` to clear the selection.
@@ -178,7 +198,7 @@ The default SVG is interactive:
 - Call `autoLayout()` to arrange unpinned nodes again.
 - Call `resetLayout()` to discard every manual position and pin.
 
-The semantic source and manual layout are intentionally stored separately:
+The semantic source and manual layout are intentionally stored separately. `exportLayout()` includes the `editable` flag, so saving while edit mode is off restores the diagram in view mode. Older overlays without the flag default to edit mode on.
 
 ```js
 const json = diagram.exportLayout();
@@ -187,15 +207,42 @@ localStorage.setItem("diagram-layout", json);
 diagram.importLayout(localStorage.getItem("diagram-layout"));
 ```
 
-When a drag, pin, or layout command changes the overlay, the SVG emits a bubbling `tit:layoutchange` event. Its `detail` contains `{ overlay, changedNodeIds }`.
+When a drag, pin, layout command, or edit-mode change updates the overlay, the SVG emits a bubbling `finch:layoutchange` event. Its `detail` contains `{ overlay, changedNodeIds }`. Edit-mode changes also emit `finch:editchange` with `{ editable, overlay }` for toolbar synchronization.
+
+For an explicit editing session, mark the session dirty when `changedNodeIds` is non-empty and persist `exportLayout()` when the user switches from Edit ON to Edit OFF. This saves completed changes once without writing repeatedly during every pointer move.
 
 ```js
-diagram.svg.addEventListener("tit:layoutchange", ({ detail }) => {
+diagram.svg.addEventListener("finch:layoutchange", ({ detail }) => {
   localStorage.setItem("diagram-layout", JSON.stringify(detail.overlay));
 });
 ```
 
 Use `diagram.update(nextSource)` for live editors. Nodes with the same stable ID retain their existing layout. Use `diagram.toSvgString()` when you need the generated SVG markup.
+
+### Edge routes
+
+Built-in layouts choose an edge route in this order:
+
+1. Avoid nodes.
+2. Reduce crossings with other edges.
+3. Reduce right-angle bends.
+4. Prefer the shorter route when the other results are equal.
+
+This routing runs during the first render, `update()`, layout import, and rerouting after a node moves. It first keeps visual space around nodes. In a narrow gap, it reduces that space while still avoiding the node itself. The first and last segment keep their original heading, so an arrow approaches the node boundary from outside. If overlapping nodes leave no safe route, Finch.js keeps the established basic route instead of dropping the edge.
+
+### Save as PNG
+
+Call `downloadPng()` to save the current diagram as a PNG file. The image includes node positions after editing. Viewport zoom does not change the PNG dimensions.
+
+```js
+await diagram.downloadPng("system-map.png");
+```
+
+Call `toPngBlob()` when you need a `Blob` to upload or store yourself. Set `scale` to change the image dimensions, or set `background: null` for a transparent background.
+
+```js
+const png = await diagram.toPngBlob({ scale: 2 });
+```
 
 Viewport zoom is separate from semantic geometry and the saved layout overlay. Automatic zoom only shrinks diagrams that are wider than their host; it never enlarges a small diagram beyond 100%.
 
@@ -208,14 +255,14 @@ diagram.fit("width");
 diagram.resetZoom();
 ```
 
-Zoom is clamped to 25–200% by default. Override that range with `minZoom` and `maxZoom` in `Tit.render()`. A bubbling `tit:zoomchange` event exposes `{ zoom, mode }` for toolbar synchronization.
+Zoom is clamped to 25–200% by default. Override that range with `minZoom` and `maxZoom` in `Finch.render()`. A bubbling `finch:zoomchange` event exposes `{ zoom, mode }` for toolbar synchronization.
 
 ## Themes and extensions
 
 Choose a built-in theme when rendering, or switch later:
 
 ```js
-const diagram = Tit.render(source, {
+const diagram = Finch.render(source, {
   target: "#diagram",
   theme: "midnight",
 });
@@ -227,20 +274,20 @@ diagram.setLayout("compact");
 Create an isolated engine when extensions should not modify the shared default registry:
 
 ```js
-import { createTit } from "tit-js";
+import { createFinch } from "finch-js";
 
-const tit = createTit();
-tit.registerDiagram("custom", diagramPlugin);
-tit.registerShape("custom-shape", shapePlugin);
-tit.registerLayout("custom-layout", layoutPlugin);
-tit.registerTheme("brand", themePlugin);
+const finch = createFinch();
+finch.registerDiagram("custom", diagramPlugin);
+finch.registerShape("custom-shape", shapePlugin);
+finch.registerLayout("custom-layout", layoutPlugin);
+finch.registerTheme("brand", themePlugin);
 ```
 
-See [Extending Tit.js](./docs/extensions.md) for complete plugin contracts and the [browser extension example](./examples/extensions.html) for a working custom diagram, card and icon shapes, layout, and theme.
+See [Extending Finch.js](./docs/extensions.md) for complete plugin contracts and the [browser extension example](./examples/extensions.html) for a working custom diagram, card and icon shapes, layout, and theme.
 
 ## API at a glance
 
-`Tit.render()` returns a `DiagramInstance` with these main operations:
+`Finch.render()` returns a `DiagramInstance` with these main operations:
 
 | Operation | Purpose |
 | --- | --- |
@@ -250,13 +297,21 @@ See [Extending Tit.js](./docs/extensions.md) for complete plugin contracts and t
 | `pin(ids)` / `unpin(ids)` | Protect or release manual positions |
 | `autoLayout()` / `resetLayout()` | Recalculate or clear layout state |
 | `setZoom(value)` / `zoomIn()` / `zoomOut()` | Control viewport magnification |
+| `setEditable(value)` / `editable` | Switch between layout editing and drag-to-pan viewing |
 | `fit("diagram")` / `fit("width")` / `resetZoom()` | Fit or reset the viewport |
 | `exportLayout()` / `importLayout(value)` | Persist the layout overlay |
 | `saveLayout(target?)` | Write the overlay into a JSON script element |
 | `toSvgString()` | Serialize the current SVG |
+| `toPngBlob(options?)` | Create a PNG `Blob` from the current diagram |
+| `downloadPng(filename?, options?)` | Save the current diagram as a PNG file |
 | `destroy()` | Remove the SVG and disable the instance |
 
 The package includes TypeScript declarations for the public API and plugin interfaces.
+
+## Artwork credits
+
+- Header silhouette adapted from a [Green Warbler-Finch photograph](https://www.inaturalist.org/observations/9398069) by Julien Renoult, licensed under [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/). The background was removed and the bird was simplified, recolored, and repositioned as a silhouette.
+- Footer silhouette adapted from [*Green warbler-finch on Santa Cruz Island*](https://commons.wikimedia.org/wiki/File:Green_warbler-finch_on_Santa_Cruz_Island.jpg) by Andrew Katsis, licensed under [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/). The background was removed and the bird was simplified, recolored, and repositioned as a silhouette.
 
 ## Development
 
@@ -267,8 +322,8 @@ npm run build
 npm run check
 ```
 
-`npm run check` runs type checking, tests, and a production build. Tit.js is licensed under the [MIT License](./LICENSE).
+`npm run check` runs type checking, tests, and a production build. Finch.js is licensed under the [MIT License](./LICENSE).
 
 <p align="right">
-  <img src="./docs/assets/shijukara-silhouette-flying-pink.png" alt="Pink bird flying out of Tit.js" width="180" />
+  <img src="./docs/assets/green-warbler-finch-silhouette-foraging-pink.png" alt="Pink silhouette of a foraging Green Warbler-Finch" width="180" />
 </p>

@@ -10,7 +10,7 @@ function meaningfulLines(source: string): Array<{ text: string; number: number }
 
 function header(source: string): string {
   const first = meaningfulLines(source)[0]?.text;
-  if (!first?.startsWith("@")) throw new Error("Tit.js source must begin with a diagram directive such as @deployment or @sequence.");
+  if (!first?.startsWith("@")) throw new Error("Finch.js source must begin with a diagram directive such as @deployment or @sequence.");
   return first.slice(1).trim().split(/\s+/)[0]?.toLowerCase() ?? "";
 }
 
@@ -620,7 +620,12 @@ export function parseSlide(source: string): SemanticModel {
   return { kind: "slide", nodes, connections, groups: [], source };
 }
 
-function createDirectedGraphDiagram(name: string, parse: (source: string) => SemanticModel, defaultLayout = "hierarchical"): DiagramPlugin {
+function createDirectedGraphDiagram(
+  name: string,
+  parse: (source: string) => SemanticModel,
+  defaultLayout = "hierarchical",
+  direction: "right" | "down" = "right",
+): DiagramPlugin {
   return {
     name,
     defaultLayout,
@@ -631,7 +636,7 @@ function createDirectedGraphDiagram(name: string, parse: (source: string) => Sem
         items: model.nodes.map((node) => ({ ...node, size: context.measure(node.shape, node.label, node.attributes) })),
         connections: model.connections,
         groups: [],
-        direction: "right",
+        direction,
         minimumGap: context.theme.gapY,
       };
     },
@@ -639,7 +644,7 @@ function createDirectedGraphDiagram(name: string, parse: (source: string) => Sem
 }
 
 export function createFlowchartDiagram(): DiagramPlugin {
-  return createDirectedGraphDiagram("flowchart", parseFlowchart, "flowchart");
+  return createDirectedGraphDiagram("flowchart", parseFlowchart, "flowchart", "down");
 }
 
 export function createActivityDiagram(): DiagramPlugin {

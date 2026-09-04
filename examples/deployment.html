@@ -3,10 +3,10 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Tit.js advanced deployment example</title>
+    <title>Finch.js advanced deployment example</title>
     <link rel="stylesheet" href="./example.css" />
   </head>
-  <body class="diagram-page" data-title="Deployment" data-source="deployment-advanced.tit">
+  <body class="diagram-page" data-title="Deployment">
     <header>
       <a class="back" href="./index.html">← All examples</a>
       <span class="eyebrow">@deployment</span>
@@ -14,11 +14,145 @@
       <p>Nested platform boundaries with stable IDs and aggregated telemetry.</p>
     </header>
     <main class="diagram-layout">
-      <section id="diagram" class="canvas" aria-label="Diagram output"></section>
-      <details><summary>Show deployment-advanced.tit</summary><pre id="source"></pre></details>
+      <section id="diagram" class="canvas" aria-label="Deployment diagram output"></section>
+      <details><summary>Show Finch source</summary><pre id="source"></pre></details>
       <p id="error" class="error" hidden></p>
     </main>
-    <script src="../dist/tit.global.js?v=0.1.0-examples-2"></script>
-    <script src="./example-page.js"></script>
+    <script src="../dist/finch.global.js?v=0.5.0-examples-2"></script>
+    <script>
+      const deploymentSource = String.raw`
+@deployment
+
+' Stable IDs stay short; labels can change without losing layout.
+node web "Web Client" [shape=rounded channel=public]
+node mobile "Mobile Client" [shape=rounded channel=public]
+
+container platform "Production Platform" [layout=grid columns=2] {
+  device edgebox "Edge Appliance" [row=1 column=1]
+  artifact release "orders-service:v42" [row=1 column=2]
+  execution runtime "Container Runtime" [row=2 column=1]
+  container ingress "Ingress Tier" [layout=column row=2 column=2] {
+    server cdn "Global CDN"
+    server waf "Web Application Firewall"
+    server gateway "API Gateway"
+  }
+
+  container services "Service Tier" [layout=column row=3 column=1] {
+    server identity "Identity Service" [owner=security]
+    server orders "Order Service" [owner=commerce]
+    server worker "Async Worker" [owner=platform]
+  }
+
+  container data "Data Tier" [layout=grid columns=2 row=3 column=2] {
+    database users "User Database"
+    database orderdb "Order Database"
+    database cache "Redis Cache"
+    server queue "Event Queue"
+    server objects "Object Storage"
+  }
+}
+
+container observe "Observability" [layout=column place=below] {
+  server metrics "Metrics"
+  server logs "Log Store"
+  server traces "Distributed Tracing"
+}
+
+web -> cdn: HTTPS
+mobile -> cdn: API
+edgebox -> cdn: routes
+cdn -> waf
+waf -> gateway
+gateway -> identity: authenticate
+gateway -> orders: commands
+release ..> runtime: deployed to
+runtime -> orders: executes
+identity -> users
+orders -> cache
+orders -> orderdb
+orders -> queue: OrderCreated
+queue -> worker
+worker -> objects
+platform --> observe: telemetry
+      `.trim();
+
+      const title = document.body.dataset.title ?? "Diagram";
+      const diagram = document.querySelector("#diagram");
+      const sourceView = document.querySelector("#source");
+      const errorView = document.querySelector("#error");
+      let instance;
+      let layoutDirty = false;
+      const layoutKey = "finch-example-layout:deployment";
+
+      const controls = document.createElement("div");
+      controls.className = "example-toolbar viewport-controls";
+      controls.innerHTML = `
+        <button type="button" data-zoom="out" aria-label="Zoom out">−</button>
+        <button type="button" data-zoom="reset" class="zoom-readout" aria-label="Reset zoom to 100%">100%</button>
+        <button type="button" data-zoom="in" aria-label="Zoom in">＋</button>
+        <button type="button" data-edit aria-pressed="true">Edit ON</button>
+        <button type="button" data-zoom="fit">Fit diagram</button>
+        <button type="button" data-zoom="width">Fit width</button>
+      `;
+      diagram.before(controls);
+
+      function updateZoomReadout() {
+        const readout = controls.querySelector(".zoom-readout");
+        if (readout && instance) readout.textContent = `${Math.round(instance.zoom * 100)}%`;
+      }
+
+      function updateEditControls() {
+        const toggle = controls.querySelector("[data-edit]");
+        const editable = instance?.editable ?? true;
+        if (toggle) {
+          toggle.textContent = editable ? "Edit ON" : "Edit OFF";
+          toggle.setAttribute("aria-pressed", String(editable));
+        }
+        for (const button of controls.querySelectorAll("[data-zoom='fit'], [data-zoom='width']")) {
+          button.disabled = !editable;
+        }
+      }
+
+      controls.addEventListener("click", (event) => {
+        if (event.target.closest("[data-edit]") && instance) {
+          const leavingEditMode = instance.editable;
+          instance.setEditable(!instance.editable);
+          if (leavingEditMode && layoutDirty) {
+            localStorage.setItem(layoutKey, instance.exportLayout());
+            layoutDirty = false;
+          }
+          return;
+        }
+        const action = event.target.closest("[data-zoom]")?.dataset.zoom;
+        if (!instance || !action) return;
+        if (action === "out") instance.zoomOut();
+        if (action === "in") instance.zoomIn();
+        if (action === "reset") instance.resetZoom();
+        if (action === "fit") instance.fit("diagram");
+        if (action === "width") instance.fit("width");
+        updateZoomReadout();
+      });
+
+      diagram.addEventListener("finch:zoomchange", updateZoomReadout);
+      diagram.addEventListener("finch:editchange", updateEditControls);
+      diagram.addEventListener("finch:layoutchange", (event) => {
+        if (event.detail.changedNodeIds.length) layoutDirty = true;
+      });
+
+      try {
+        sourceView.textContent = deploymentSource;
+        instance = Finch.render(deploymentSource, {
+          target: diagram,
+          ariaLabel: `${title} advanced example`,
+        });
+        const savedLayout = localStorage.getItem(layoutKey);
+        if (savedLayout) instance.importLayout(savedLayout);
+        updateZoomReadout();
+        updateEditControls();
+      } catch (error) {
+        errorView.hidden = false;
+        errorView.textContent = error instanceof Error ? error.message : String(error);
+      }
+    </script>
   </body>
 </html>

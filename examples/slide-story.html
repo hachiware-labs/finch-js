@@ -3,10 +3,10 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Tit.js presentation story example</title>
+    <title>Finch.js presentation story example</title>
     <link rel="stylesheet" href="./example.css" />
   </head>
-  <body class="diagram-page" data-title="Slide story" data-source="slide-story.tit?v=2">
+  <body class="diagram-page" data-title="Slide story">
     <header>
       <a class="back" href="./index.html">← All examples</a>
       <span class="eyebrow">@slide</span>
@@ -14,11 +14,101 @@
       <p>A focused before/after narrative with one takeaway, sized to work as a single slide.</p>
     </header>
     <main class="diagram-layout">
-      <section id="diagram" class="canvas" aria-label="Diagram output"></section>
-      <details><summary>Show slide-story.tit</summary><pre id="source"></pre></details>
+      <section id="diagram" class="canvas" aria-label="Slide story diagram output"></section>
+      <details><summary>Show Finch source</summary><pre id="source"></pre></details>
       <p id="error" class="error" hidden></p>
     </main>
-    <script src="../dist/tit.global.js?v=0.1.0-slide-story-1"></script>
-    <script src="./example-page.js?v=2"></script>
+    <script src="../dist/finch.global.js?v=0.5.0-slide-story-1"></script>
+    <script>
+      const slideStorySource = String.raw`
+@slide
+
+title "Stop redrawing architecture slides" [align=center]
+subtitle "Keep one readable source. Generate the first layout, then refine only what matters." [align=center]
+
+row transformation [gap=82] {
+  card before "Before" [badge=MANUAL body="Slow updates.\nUneven spacing.\nIntent gets lost."]
+  arrow: One source
+  card finch "Finch.js" [badge=DSL+SVG body="One source.\nOne theme.\nOne layout." tone=accent]
+  arrow: Human touch
+  card after "After" [badge=EDITABLE body="Faster reviews.\nStable decisions.\nSVG anywhere."]
+}
+
+callout message "From architecture note to presentation-ready SVG." [body="Text owns the meaning. The layout overlay preserves deliberate visual choices." width=760]
+
+grid uses [columns=4 gap=12] {
+  badge docs "DOCUMENTATION"
+  badge pitches "PITCHES"
+  badge workshops "WORKSHOPS"
+  badge reviews "DESIGN REVIEWS"
+}
+      `.trim();
+
+      const title = document.body.dataset.title ?? "Diagram";
+      const diagram = document.querySelector("#diagram");
+      const sourceView = document.querySelector("#source");
+      const errorView = document.querySelector("#error");
+      let instance;
+
+      const controls = document.createElement("div");
+      controls.className = "example-toolbar viewport-controls";
+      controls.innerHTML = `
+        <button type="button" data-zoom="out" aria-label="Zoom out">−</button>
+        <button type="button" data-zoom="reset" class="zoom-readout" aria-label="Reset zoom to 100%">100%</button>
+        <button type="button" data-zoom="in" aria-label="Zoom in">＋</button>
+        <button type="button" data-edit aria-pressed="true">Edit ON</button>
+        <button type="button" data-zoom="fit">Fit diagram</button>
+        <button type="button" data-zoom="width">Fit width</button>
+      `;
+      diagram.before(controls);
+
+      function updateZoomReadout() {
+        const readout = controls.querySelector(".zoom-readout");
+        if (readout && instance) readout.textContent = `${Math.round(instance.zoom * 100)}%`;
+      }
+
+      function updateEditControls() {
+        const toggle = controls.querySelector("[data-edit]");
+        const editable = instance?.editable ?? true;
+        if (toggle) {
+          toggle.textContent = editable ? "Edit ON" : "Edit OFF";
+          toggle.setAttribute("aria-pressed", String(editable));
+        }
+        for (const button of controls.querySelectorAll("[data-zoom='fit'], [data-zoom='width']")) {
+          button.disabled = !editable;
+        }
+      }
+
+      controls.addEventListener("click", (event) => {
+        if (event.target.closest("[data-edit]") && instance) {
+          instance.setEditable(!instance.editable);
+          return;
+        }
+        const action = event.target.closest("[data-zoom]")?.dataset.zoom;
+        if (!instance || !action) return;
+        if (action === "out") instance.zoomOut();
+        if (action === "in") instance.zoomIn();
+        if (action === "reset") instance.resetZoom();
+        if (action === "fit") instance.fit("diagram");
+        if (action === "width") instance.fit("width");
+        updateZoomReadout();
+      });
+
+      diagram.addEventListener("finch:zoomchange", updateZoomReadout);
+      diagram.addEventListener("finch:editchange", updateEditControls);
+
+      try {
+        sourceView.textContent = slideStorySource;
+        instance = Finch.render(slideStorySource, {
+          target: diagram,
+          ariaLabel: `${title} advanced example`,
+        });
+        updateZoomReadout();
+        updateEditControls();
+      } catch (error) {
+        errorView.hidden = false;
+        errorView.textContent = error instanceof Error ? error.message : String(error);
+      }
+    </script>
   </body>
 </html>

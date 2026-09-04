@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Tit.js slide pattern gallery</title>
+    <title>Finch.js slide pattern gallery</title>
     <link rel="stylesheet" href="./example.css" />
   </head>
   <body class="diagram-page">
@@ -15,16 +15,130 @@
     </header>
     <main class="diagram-layout">
       <nav class="example-toolbar pattern-picker" aria-label="Choose a slide pattern">
-        <button type="button" data-pattern-source="slide-kpi.tit" aria-pressed="true">KPI summary</button>
-        <button type="button" data-pattern-source="slide-data.tit" aria-pressed="false">Data story</button>
-        <button type="button" data-pattern-source="slide-roadmap.tit" aria-pressed="false">Roadmap</button>
-        <button type="button" data-pattern-source="slide-quote.tit" aria-pressed="false">Customer quote</button>
+        <button type="button" data-pattern="kpi" aria-pressed="true">KPI summary</button>
+        <button type="button" data-pattern="data" aria-pressed="false">Data story</button>
+        <button type="button" data-pattern="roadmap" aria-pressed="false">Roadmap</button>
+        <button type="button" data-pattern="quote" aria-pressed="false">Customer quote</button>
       </nav>
       <section id="diagram" class="canvas" aria-label="Slide pattern output"></section>
-      <details><summary>Show <span id="source-name">source</span></summary><pre id="source"></pre></details>
+      <details><summary>Show <span id="source-name">selected pattern</span> source</summary><pre id="source"></pre></details>
       <p id="error" class="error" hidden></p>
     </main>
-    <script src="../dist/tit.global.js?v=0.1.0-slide-patterns-1"></script>
-    <script src="./slide-patterns.js?v=1"></script>
+    <script src="../dist/finch.global.js?v=0.5.0-slide-patterns-1"></script>
+    <script>
+      const kpiSlideSource = String.raw`
+@slide
+
+title "Q2 product health" [align=center]
+subtitle "Lead with the numbers that support one decision." [align=center]
+
+row metrics [gap=18] {
+  metric activation "72%" [label="Activation" delta="+8 pt vs Q1" tone=accent]
+  metric teams "1,284" [label="Active teams" delta="+19% QoQ"]
+  metric time "4.6 min" [label="Time to first diagram" delta="−31% vs Q1"]
+}
+
+callout decision "Double down on guided templates." [body="Activation improved most for teams that started from a representative example." width=760]
+      `.trim();
+
+      const dataSlideSource = String.raw`
+@slide
+
+title "Adoption follows the first successful diagram"
+subtitle "Use ranked bars when the comparison is the message."
+
+column adoption [gap=12] {
+  bar templates "Started from a template" [value=82 suffix="%" width=720]
+  bar import "Imported an existing model" [value=64 suffix="%" width=720]
+  bar blank "Started from a blank file" [value=37 suffix="%" width=720]
+}
+
+callout insight "The starting point matters more than another editing feature." [body="Prioritize discoverable patterns and domain examples." width=720]
+      `.trim();
+
+      const roadmapSlideSource = String.raw`
+@slide
+
+title "A roadmap with evidence gates" [align=center]
+subtitle "Milestones show progression without turning the slide into a project plan." [align=center]
+
+row roadmap [gap=50] {
+  milestone discover "Find the wedge" [period="Q1" step=1 body="Interview\n12 teams"]
+  arrow
+  milestone pilot "Prove repeat use" [period="Q2" step=2 body="Pilot with\n3 design partners"]
+  arrow
+  milestone launch "Launch patterns" [period="Q3" step=3 body="Ship gallery\nand docs"]
+  arrow
+  milestone scale "Scale adoption" [period="Q4" step=4 body="Measure team\nactivation"]
+}
+
+note gate "Each phase earns the next." [body="A milestone is a decision point, not just a date." width=520]
+      `.trim();
+
+      const quoteSlideSource = String.raw`
+@slide
+
+title "Make the customer voice the evidence"
+subtitle "Pair one memorable quote with only the metrics needed to size its impact."
+
+row evidence [gap=24] {
+  quote customer "We stopped redrawing the same architecture for every review." [by="Aiko Sato" role="Platform design lead" width=610 height=196]
+  column impact [gap=14] {
+    metric review "−46%" [label="Review preparation" delta="3.1 hours saved" tone=accent width=230]
+    metric reuse "3.4×" [label="Diagram reuse" delta="Across docs and slides" width=230]
+  }
+}
+
+badge source "CUSTOMER INTERVIEW · JUNE 2026"
+      `.trim();
+
+      const slidePatternSources = {
+        kpi: kpiSlideSource,
+        data: dataSlideSource,
+        roadmap: roadmapSlideSource,
+        quote: quoteSlideSource,
+      };
+
+      const patterns = [...document.querySelectorAll("[data-pattern]")];
+      const diagram = document.querySelector("#diagram");
+      const sourceView = document.querySelector("#source");
+      const sourceName = document.querySelector("#source-name");
+      const errorView = document.querySelector("#error");
+      let instance;
+
+      function showPattern(button) {
+        const pattern = button.dataset.pattern;
+        const source = slidePatternSources[pattern];
+        if (!source) return;
+
+        try {
+          errorView.hidden = true;
+          sourceView.textContent = source;
+          sourceName.textContent = button.textContent.trim();
+          const ariaLabel = `${button.textContent.trim()} slide pattern`;
+          if (instance) {
+            instance.update(source);
+            instance.svg.setAttribute("aria-label", ariaLabel);
+          }
+          else {
+            instance = Finch.render(source, {
+              target: diagram,
+              ariaLabel,
+            });
+          }
+          patterns.forEach((candidate) => {
+            candidate.setAttribute("aria-pressed", String(candidate === button));
+          });
+        } catch (error) {
+          errorView.hidden = false;
+          errorView.textContent = error instanceof Error ? error.message : String(error);
+        }
+      }
+
+      patterns.forEach((button) => {
+        button.addEventListener("click", () => showPattern(button));
+      });
+      if (patterns[0]) showPattern(patterns[0]);
+    </script>
   </body>
 </html>

@@ -3,10 +3,10 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Tit.js presentation slide example</title>
+    <title>Finch.js presentation slide example</title>
     <link rel="stylesheet" href="./example.css" />
   </head>
-  <body class="diagram-page" data-title="Slide" data-source="slide-advanced.tit">
+  <body class="diagram-page" data-title="Slide">
     <header>
       <a class="back" href="./index.html">← All examples</a>
       <span class="eyebrow">@slide</span>
@@ -14,11 +14,110 @@
       <p>Titles, narrative cards, automatic arrows, grids, notes, callouts, and badges composed as one slide.</p>
     </header>
     <main class="diagram-layout">
-      <section id="diagram" class="canvas" aria-label="Diagram output"></section>
-      <details><summary>Show slide-advanced.tit</summary><pre id="source"></pre></details>
+      <section id="diagram" class="canvas" aria-label="Slide diagram output"></section>
+      <details><summary>Show Finch source</summary><pre id="source"></pre></details>
       <p id="error" class="error" hidden></p>
     </main>
-    <script src="../dist/tit.global.js?v=0.1.0-slide-1"></script>
-    <script src="./example-page.js?v=2"></script>
+    <script src="../dist/finch.global.js?v=0.5.0-slide-1"></script>
+    <script>
+      const slideSource = String.raw`
+@slide
+
+title "Finch.js — ideas become diagrams" [align=center]
+subtitle "A concise DSL keeps the story structured, consistent, and editable." [align=center]
+
+row journey [gap=76] {
+  card source "Describe" [badge=STEP-1 body="Write the intent in a few readable lines."]
+  arrow: Structure
+  card compose "Compose" [badge=STEP-2 body="Rows, grids, and relationships arrange themselves." tone=accent]
+  arrow: Refine
+  card present "Present" [badge=STEP-3 body="Adjust only what needs a human touch."]
+}
+
+grid strengths [columns=3 gap=22] {
+  card fast "Fast to author" [body="Less time aligning boxes and arrows."]
+  card consistent "Visually consistent" [body="One theme governs spacing, type, and color."]
+  card editable "Still editable" [body="Drag, pin, and preserve intentional changes."]
+  note syntax "Readable source" [body="The diagram remains understandable in code review."]
+  note export "SVG output" [body="Sharp enough for decks, documents, and the web."]
+  note extensible "Open vocabulary" [body="Add more presentation patterns over time."]
+}
+
+callout outcome "Spend the meeting on the idea—not on aligning shapes." [body="Finch.js turns presentation structure into a reusable, versionable artifact." width=720]
+
+row tags [gap=12] {
+  badge docs "DOCUMENTATION"
+  badge pitches "PITCHES"
+  badge workshops "WORKSHOPS"
+  badge reviews "DESIGN REVIEWS"
+}
+      `.trim();
+
+      const title = document.body.dataset.title ?? "Diagram";
+      const diagram = document.querySelector("#diagram");
+      const sourceView = document.querySelector("#source");
+      const errorView = document.querySelector("#error");
+      let instance;
+
+      const controls = document.createElement("div");
+      controls.className = "example-toolbar viewport-controls";
+      controls.innerHTML = `
+        <button type="button" data-zoom="out" aria-label="Zoom out">−</button>
+        <button type="button" data-zoom="reset" class="zoom-readout" aria-label="Reset zoom to 100%">100%</button>
+        <button type="button" data-zoom="in" aria-label="Zoom in">＋</button>
+        <button type="button" data-edit aria-pressed="true">Edit ON</button>
+        <button type="button" data-zoom="fit">Fit diagram</button>
+        <button type="button" data-zoom="width">Fit width</button>
+      `;
+      diagram.before(controls);
+
+      function updateZoomReadout() {
+        const readout = controls.querySelector(".zoom-readout");
+        if (readout && instance) readout.textContent = `${Math.round(instance.zoom * 100)}%`;
+      }
+
+      function updateEditControls() {
+        const toggle = controls.querySelector("[data-edit]");
+        const editable = instance?.editable ?? true;
+        if (toggle) {
+          toggle.textContent = editable ? "Edit ON" : "Edit OFF";
+          toggle.setAttribute("aria-pressed", String(editable));
+        }
+        for (const button of controls.querySelectorAll("[data-zoom='fit'], [data-zoom='width']")) {
+          button.disabled = !editable;
+        }
+      }
+
+      controls.addEventListener("click", (event) => {
+        if (event.target.closest("[data-edit]") && instance) {
+          instance.setEditable(!instance.editable);
+          return;
+        }
+        const action = event.target.closest("[data-zoom]")?.dataset.zoom;
+        if (!instance || !action) return;
+        if (action === "out") instance.zoomOut();
+        if (action === "in") instance.zoomIn();
+        if (action === "reset") instance.resetZoom();
+        if (action === "fit") instance.fit("diagram");
+        if (action === "width") instance.fit("width");
+        updateZoomReadout();
+      });
+
+      diagram.addEventListener("finch:zoomchange", updateZoomReadout);
+      diagram.addEventListener("finch:editchange", updateEditControls);
+
+      try {
+        sourceView.textContent = slideSource;
+        instance = Finch.render(slideSource, {
+          target: diagram,
+          ariaLabel: `${title} advanced example`,
+        });
+        updateZoomReadout();
+        updateEditControls();
+      } catch (error) {
+        errorView.hidden = false;
+        errorView.textContent = error instanceof Error ? error.message : String(error);
+      }
+    </script>
   </body>
 </html>

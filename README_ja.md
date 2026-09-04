@@ -1,8 +1,8 @@
-# Tit.js <img src="./docs/assets/shijukara-silhouette-upright-pink.png" alt="立っているピンク色の鳥" width="56" />
+# Finch.js <img src="./docs/assets/green-warbler-finch-silhouette-profile-pink.png" alt="横を向いたグリーンムシクイフィンチのピンク色のシルエット" width="56" align="middle" />
 
 [English](./README.md)
 
-🐦 **図はすばやく生成し、仕上げは思いどおりに。** Tit.js は短いテキストから整った SVG 図をすぐに生成します。ノードはドラッグして固定できるため、ソースを書き換えずにレイアウトを手で細かく調整できます。
+🐦 **図はすばやく生成し、仕上げは思いどおりに。** Finch.js は短いテキストから整った SVG 図をすぐに生成します。ノードはドラッグして固定できるため、ソースを書き換えずにレイアウトを手で細かく調整できます。
 
 [![ブラウザー、ゲートウェイ、カード、盾、星、データベース、書類の Shape を使った Custom service map](./docs/assets/custom-service-map.png)](./examples/extensions.html)
 
@@ -36,18 +36,18 @@ browser -> api: HTTPS
 api -> db: SQL</textarea>
 <div id="diagram"></div>
 
-<script src="./dist/tit.global.js"></script>
+<script src="./dist/finch.global.js"></script>
 <script>
   const source = document.querySelector("#source");
   const host = document.querySelector("#diagram");
-  const layoutKey = "tit-layout";
-  const diagram = Tit.render(source.value, "#diagram");
+  const layoutKey = "finch-layout";
+  const diagram = Finch.render(source.value, "#diagram");
 
   const saved = localStorage.getItem(layoutKey);
   if (saved) diagram.importLayout(saved);
 
   source.addEventListener("input", () => diagram.update(source.value));
-  host.addEventListener("tit:layoutchange", ({ detail }) => {
+  host.addEventListener("finch:layoutchange", ({ detail }) => {
     localStorage.setItem(layoutKey, JSON.stringify(detail.overlay));
   });
 </script>
@@ -63,25 +63,25 @@ api -> db: SQL</textarea>
 
 ## 環境構築
 
-npmからTit.jsをインストールします。
+npm から Finch.js をインストールします。
 
 ```bash
-npm install tit-js
+npm install finch-js
 ```
 
 デフォルトのインスタンスを読み込むか、独立したインスタンスを作成できます。
 
 ```js
-import Tit, { createTit } from "tit-js";
+import Finch, { createFinch } from "finch-js";
 ```
 
 ブラウザーグローバル版を使う場合は、バージョンを固定したCDN URLを指定します。
 
 ```html
-<script src="https://cdn.jsdelivr.net/npm/tit-js@0.1.0/dist/tit.global.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/finch-js@0.5.0/dist/finch.global.js"></script>
 ```
 
-Tit.js本体を開発する場合は、リポジトリの依存パッケージをインストールしてビルドします。
+Finch.js 本体を開発する場合は、リポジトリの依存パッケージをインストールしてビルドします。
 
 ```bash
 npm ci
@@ -98,39 +98,39 @@ python -m http.server 8000
 
 ## Codex スキル
 
-このリポジトリには、Tit.jsの図を描画するHTMLを作成・更新するための [Codexスキル `$tit`](./.agents/skills/tit/SKILL.md) が含まれています。図のソースは単独の `.tit` ファイルではなく、HTML内のJavaScript文字列として記述します。
+このリポジトリには、Finch.js の図を描く HTML を作成または更新するための [Codex スキル `$finch`](./.agents/skills/finch/SKILL.md) が含まれています。図のソースは単独の `.finch` ファイルではなく、HTML 内の JavaScript 文字列として書きます。
 
 ### このリポジトリ内で使う
 
-追加のインストール操作は不要です。このリポジトリ、またはその配下のディレクトリからCodexを起動すると、`.agents/skills/tit` が自動的に検出されます。次のように明示して呼び出せます。
+追加のインストール操作は不要です。このリポジトリ、またはその配下のディレクトリからCodexを起動すると、`.agents/skills/finch` が自動的に検出されます。次のように明示して呼び出せます。
 
 ```text
-$tit アクティビティ図をHTMLに描いて
+$finch アクティビティ図をHTMLに描いて
 ```
 
 リポジトリの取得や更新後にスキルが表示されない場合は、Codexを再起動してください。
 
 ### Skills CLIでインストールする
 
-[`skills` CLI](https://github.com/vercel-labs/skills) を使って、スキルの検出とインストールができます。ローカルに取得したTit.jsのディレクトリでは、次を実行します。
+[`skills` CLI](https://github.com/vercel-labs/skills) を使って、スキルの検出とインストールができます。ローカルに取得した Finch.js のディレクトリでは、次を実行します。
 
 ```bash
-npx skills add . --skill tit
+npx skills add . --skill finch
 ```
 
 リポジトリをGitHubで公開した後は、リポジトリ名を指定して直接インストールできます。
 
 ```bash
-npx skills add <owner>/<repository> --skill tit
+npx skills add <owner>/<repository> --skill finch
 ```
 
-すべてのリポジトリで `$tit` を使えるようにする場合は、`--global` を追加します。
+すべてのリポジトリで `$finch` を使えるようにする場合は、`--global` を追加します。
 
 ```bash
-npx skills add <owner>/<repository> --skill tit --global
+npx skills add <owner>/<repository> --skill finch --global
 ```
 
-インストールせずに利用可能なスキルを確認する場合は、`npx skills add <owner>/<repository> --list` を使います。Codexは新しく追加されたスキルを自動検出します。`$tit` が一覧に表示されない場合はCodexを再起動してください。Codexにおけるスキルのスコープと検出場所については、[OpenAI公式のスキルドキュメント](https://learn.chatgpt.com/ja-JP/docs/build-skills)を参照してください。
+インストールせずに利用可能なスキルを確認する場合は、`npx skills add <owner>/<repository> --list` を使います。Codexは新しく追加されたスキルを自動検出します。`$finch` が一覧に表示されない場合はCodexを再起動してください。Codexにおけるスキルのスコープと検出場所については、[OpenAI公式のスキルドキュメント](https://learn.chatgpt.com/ja-JP/docs/build-skills)を参照してください。
 
 ## ダイアグラムの種類
 
@@ -164,13 +164,33 @@ worker --> api: 受付完了
 server billing-api "請求 API"
 ```
 
+### 長いノードの表示名
+
+通常のノードでは、短い表示名を一行で表示します。表示名が長い場合は、単語の区切りで行を分けます。必要な場合は文字の間でも行を分け、すべての行を読めるようにノードの高さを広げます。
+
+### Deployment の配置ヒント
+
+Deployment のコンテナには `layout=row`、`layout=column`、`layout=grid` を指定できます。grid の列数は `columns`、直接の子 Shape の細かな位置は `order`、`row`、`column` で指定します。トップレベルのコンテナに `place=below` を付けると、後続の列を増やさず、接続元と同じ横位置の下側へ配置します。これらは自動配置へのヒントであり、正確な位置は従来どおりドラッグと固定で調整できます。
+
+Flowchart は上から下へ読む縦方向が既定です。主経路は縦に進み、同じ分岐段階の Shape だけを横方向へ展開します。
+
+State 図の fork/join 部分も縦方向に読みます。並行する State を上側の fork bar と下側の join bar で挟み、合流後の State をその下へ続けます。
+
 コメントは、行頭の `'`、または空白の後ろに置く `#` と `//` を使えます。
 
 ## 編集と保存
 
-既定の SVG はそのまま編集できます。
+新しい図はエディットONで始まります。`setEditable(false)` で閲覧モードにすると、通常の左ドラッグはノード移動ではなく、画像内のパンになります。拡大、縮小、100%へのリセットは引き続き利用でき、Fit、レイアウト変更、Pin、ノード選択は無効になります。
+
+```js
+diagram.setEditable(false);
+diagram.setEditable(true);
+```
+
+エディットONでは、SVGを次のように操作できます。
 
 - ノードをドラッグすると手動位置が記録されます。
+- Deployment の枠内にあるノードを枠外へ動かすと、その枠と外側の枠が追随して広がります。ドラッグ中に枠は縮小しません。詰め直す場合は自動レイアウトまたはレイアウトのリセットを実行します。
 - Ctrl／⌘／Shift を押しながらクリックすると複数選択でき、まとめて移動できます。
 - ノードをダブルクリックすると固定と解除を切り替えます。
 - 選択したノードは `P` で固定でき、`Escape` で選択を解除できます。
@@ -178,7 +198,7 @@ server billing-api "請求 API"
 - `autoLayout()` は、固定していないノードを再配置します。
 - `resetLayout()` は、すべての手動位置と固定を破棄します。
 
-意味を表す DSL と、人が調整した配置は分けて保存します。
+意味を表す DSL と、人が調整した配置は分けて保存します。`exportLayout()` には `editable` フラグも含まれるため、エディットOFFで保存した図は閲覧モードのまま復元されます。フラグのない旧形式のoverlayはエディットONとして読み込みます。
 
 ```js
 const json = diagram.exportLayout();
@@ -187,15 +207,42 @@ localStorage.setItem("diagram-layout", json);
 diagram.importLayout(localStorage.getItem("diagram-layout"));
 ```
 
-ドラッグ、固定、レイアウト操作で overlay が変わると、SVG から `tit:layoutchange` イベントがバブリングします。`detail` には `{ overlay, changedNodeIds }` が入ります。
+ドラッグ、固定、レイアウト操作、エディット切り替えでoverlayが変わると、SVGから `finch:layoutchange` イベントがバブリングします。`detail` には `{ overlay, changedNodeIds }` が入ります。エディット切り替え時は、ツールバー同期用の `finch:editchange` も発生し、`{ editable, overlay }` を受け取れます。
+
+明示的な編集セッションでは、`changedNodeIds` が空でないときだけ変更ありとして記録し、Edit ON から Edit OFF へ切り替える時点で `exportLayout()` を保存します。ポインター移動のたびに書き込まず、確定した変更を一度だけ保存できます。
 
 ```js
-diagram.svg.addEventListener("tit:layoutchange", ({ detail }) => {
+diagram.svg.addEventListener("finch:layoutchange", ({ detail }) => {
   localStorage.setItem("diagram-layout", JSON.stringify(detail.overlay));
 });
 ```
 
 ライブエディターでは `diagram.update(nextSource)` を使います。同じ ID のノードは、既存の配置を引き継ぎます。生成した SVG の文字列が必要な場合は `diagram.toSvgString()` を呼び出してください。
+
+### 線の経路
+
+組み込みの配置では、線を引くときに次の順で経路を選びます。
+
+1. ノードを避けます。
+2. 線どうしの交差を減らします。
+3. 曲がり角を減らします。
+4. 同じ条件なら短い経路を選びます。
+
+この処理は、最初の描画、`update()`、配置の読み込み、ノードを動かした後の引き直しで使います。まず、ノードのまわりに余白を取ります。場所が狭い場合は余白を縮めますが、ノード本体は避けます。始点と終点では線の向きを保つため、矢印はノードの外側から境界へ向かいます。ノード同士が重なり、安全な経路を作れない場合は、線を消さず、これまでの基本経路を使います。
+
+### PNG として保存する
+
+`downloadPng()` を呼ぶと、現在の図を PNG ファイルとして保存できます。ノードを移動したあとの位置も画像へ反映されます。画面の表示倍率は PNG の大きさへ影響しません。
+
+```js
+await diagram.downloadPng("system-map.png");
+```
+
+ファイルを自分で送信または保存する場合は、`toPngBlob()` で `Blob` を取得します。`scale` には画像の倍率を指定できます。背景を透明にする場合は `background: null` を指定します。
+
+```js
+const png = await diagram.toPngBlob({ scale: 2 });
+```
 
 表示倍率は、図の意味・座標・保存する layout overlay とは別に管理されます。初期の自動調整はコンテナより横に大きい図だけを縮小し、小さい図を100%より大きくしません。
 
@@ -208,14 +255,14 @@ diagram.fit("width");
 diagram.resetZoom();
 ```
 
-既定の範囲は25〜200%です。`Tit.render()` の `minZoom` と `maxZoom` で変更できます。`tit:zoomchange` イベントの `detail` には、操作バーとの同期に使える `{ zoom, mode }` が入ります。
+既定の範囲は25〜200%です。`Finch.render()` の `minZoom` と `maxZoom` で変更できます。`finch:zoomchange` イベントの `detail` には、操作バーとの同期に使える `{ zoom, mode }` が入ります。
 
 ## テーマと拡張
 
 組み込みテーマは描画時に選ぶほか、あとから切り替えられます。
 
 ```js
-const diagram = Tit.render(source, {
+const diagram = Finch.render(source, {
   target: "#diagram",
   theme: "midnight",
 });
@@ -227,20 +274,20 @@ diagram.setLayout("compact");
 共有の既定 registry に影響させたくない場合は、拡張専用の engine を作ります。
 
 ```js
-import { createTit } from "tit-js";
+import { createFinch } from "finch-js";
 
-const tit = createTit();
-tit.registerDiagram("custom", diagramPlugin);
-tit.registerShape("custom-shape", shapePlugin);
-tit.registerLayout("custom-layout", layoutPlugin);
-tit.registerTheme("brand", themePlugin);
+const finch = createFinch();
+finch.registerDiagram("custom", diagramPlugin);
+finch.registerShape("custom-shape", shapePlugin);
+finch.registerLayout("custom-layout", layoutPlugin);
+finch.registerTheme("brand", themePlugin);
 ```
 
-各 plugin の契約と実装例は [Tit.js の拡張](./docs/extensions_ja.md)で説明しています。custom diagram、カード型とアイコン型の shape、layout、theme をまとめて動かす[ブラウザー拡張例](./examples/extensions.html)も用意しています。
+各 plugin の契約と実装例は [Finch.js の拡張](./docs/extensions_ja.md)で説明しています。custom diagram、カード型とアイコン型の shape、layout、theme をまとめて動かす[ブラウザー拡張例](./examples/extensions.html)も用意しています。
 
 ## API の概要
 
-`Tit.render()` は `DiagramInstance` を返します。主な操作は次のとおりです。
+`Finch.render()` は `DiagramInstance` を返します。主な操作は次のとおりです。
 
 | 操作 | 用途 |
 | --- | --- |
@@ -250,13 +297,21 @@ tit.registerTheme("brand", themePlugin);
 | `pin(ids)` / `unpin(ids)` | 手動位置を固定・解除する |
 | `autoLayout()` / `resetLayout()` | 再配置する、または配置情報を消す |
 | `setZoom(value)` / `zoomIn()` / `zoomOut()` | 表示倍率を操作する |
+| `setEditable(value)` / `editable` | レイアウト編集とドラッグによる画像内移動を切り替える |
 | `fit("diagram")` / `fit("width")` / `resetZoom()` | 全体・幅に合わせる、または100%へ戻す |
 | `exportLayout()` / `importLayout(value)` | layout overlay を保存・復元する |
 | `saveLayout(target?)` | JSON の script 要素へ overlay を書き込む |
 | `toSvgString()` | 現在の SVG を文字列にする |
+| `toPngBlob(options?)` | 現在の図から PNG の `Blob` を作る |
+| `downloadPng(filename?, options?)` | 現在の図を PNG ファイルとして保存する |
 | `destroy()` | SVG を削除して instance を終了する |
 
 パッケージには、公開 API と plugin interface の TypeScript 宣言が含まれています。
+
+## 画像クレジット
+
+- ヘッダーのシルエットは、Julien Renoult による[グリーンムシクイフィンチの写真](https://www.inaturalist.org/observations/9398069)（[CC BY 4.0](https://creativecommons.org/licenses/by/4.0/)）を加工したものです。背景を除去し、鳥をシルエット化して単色化・再配置しています。
+- フッターのシルエットは、Andrew Katsis による[*Green warbler-finch on Santa Cruz Island*](https://commons.wikimedia.org/wiki/File:Green_warbler-finch_on_Santa_Cruz_Island.jpg)（[CC BY 4.0](https://creativecommons.org/licenses/by/4.0/)）を加工したものです。背景を除去し、鳥をシルエット化して単色化・再配置しています。
 
 ## 開発
 
@@ -270,5 +325,5 @@ npm run check
 `npm run check` は型検査、テスト、本番ビルドを順に実行します。ライセンスは [MIT](./LICENSE) です。
 
 <p align="right">
-  <img src="./docs/assets/shijukara-silhouette-flying-pink.png" alt="Tit.jsから飛び立つピンク色の鳥" width="180" />
+  <img src="./docs/assets/green-warbler-finch-silhouette-foraging-pink.png" alt="餌を探すグリーンムシクイフィンチのピンク色のシルエット" width="180" />
 </p>

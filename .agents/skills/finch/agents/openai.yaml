@@ -1,0 +1,4 @@
+interface:
+  display_name: "Finch.js"
+  short_description: "Create Finch.js diagrams directly inside HTML pages"
+  default_prompt: "Use $finch to draw the requested diagram directly in an HTML page."

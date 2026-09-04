@@ -1,4 +1,4 @@
-# Tit.js チュートリアル
+# Finch.js チュートリアル
 
 [English](./tutorial.md) · [README に戻る](../README_ja.md)
 
@@ -6,7 +6,7 @@
 
 ## 1. HTML にこれだけ書く
 
-リポジトリのルートに `tutorial.html` を作り、次の内容を貼り付けます。このHTMLは同じリポジトリにある `dist/tit.global.js` を読み込みます。
+リポジトリのルートに `tutorial.html` を作り、次の内容を貼り付けます。このHTMLは同じリポジトリにある `dist/finch.global.js` を読み込みます。
 
 ```html
 <!doctype html>
@@ -14,7 +14,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Tit.js</title>
+    <title>Finch.js</title>
     <style>
       body { display: grid; grid-template-columns: 320px 1fr; min-height: 100vh; margin: 0; }
       textarea { padding: 16px; font: 14px/1.6 monospace; }
@@ -31,12 +31,12 @@ browser -> api: HTTPS
 api -> db: SQL</textarea>
     <div id="diagram"></div>
 
-    <script src="./dist/tit.global.js"></script>
+    <script src="./dist/finch.global.js"></script>
     <script>
       const source = document.querySelector("#source");
       const host = document.querySelector("#diagram");
-      const layoutKey = "tit-tutorial-layout";
-      const diagram = Tit.render(source.value, "#diagram");
+      const layoutKey = "finch-tutorial-layout";
+      const diagram = Finch.render(source.value, "#diagram");
 
       const savedLayout = localStorage.getItem(layoutKey);
       if (savedLayout) diagram.importLayout(savedLayout);
@@ -45,7 +45,7 @@ api -> db: SQL</textarea>
         diagram.update(source.value);
       });
 
-      host.addEventListener("tit:layoutchange", ({ detail }) => {
+      host.addEventListener("finch:layoutchange", ({ detail }) => {
         localStorage.setItem(layoutKey, JSON.stringify(detail.overlay));
       });
     </script>
@@ -65,7 +65,7 @@ api -> db: SQL</textarea>
 
 ## 環境構築は後から
 
-`dist/tit.global.js` がまだない場合や、HTTPで配信して試したい場合は、リポジトリのルートで依存パッケージをインストールしてビルドします。
+`dist/finch.global.js` がまだない場合や、HTTPで配信して試したい場合は、リポジトリのルートで依存パッケージをインストールしてビルドします。
 
 ```bash
 npm install
@@ -80,4 +80,4 @@ python -m http.server 8000
 
 ブラウザーで `http://127.0.0.1:8000/tutorial.html` を開いてください。
 
-ほかの図を試す場合は、READMEの[ダイアグラムの種類](../README_ja.md#ダイアグラムの種類)または[発展例](../examples/README.md)へ進んでください。テーマや独自レイアウトを追加する方法は、[Tit.js の拡張](./extensions_ja.md)で説明しています。
+ほかの図を試す場合は、README の[ダイアグラムの種類](../README_ja.md#ダイアグラムの種類)または[発展例](../examples/README.md)へ進んでください。テーマや独自レイアウトを追加する方法は、[Finch.js の拡張](./extensions_ja.md)で説明しています。

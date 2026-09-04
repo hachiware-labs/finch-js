@@ -17,9 +17,9 @@ async function findRuntime(start) {
     try {
       const parsed = JSON.parse(await readFile(manifest, "utf8"));
       const candidates = [];
-      if (parsed.name === "tit-js") candidates.push(path.join(current, "dist", "tit.js"));
+      if (parsed.name === "finch-js") candidates.push(path.join(current, "dist", "finch.js"));
       const dependencies = { ...parsed.dependencies, ...parsed.devDependencies };
-      if (dependencies["tit-js"]) candidates.push(path.join(current, "node_modules", "tit-js", "dist", "tit.js"));
+      if (dependencies["finch-js"]) candidates.push(path.join(current, "node_modules", "finch-js", "dist", "finch.js"));
       for (const candidate of candidates) {
         try {
           await access(candidate);
@@ -29,11 +29,11 @@ async function findRuntime(start) {
         }
       }
     } catch {
-      // Continue upward until an installed Tit.js runtime is found.
+      // Continue upward until an installed Finch.js runtime is found.
     }
     const parent = path.dirname(current);
     if (parent === current) {
-      throw new Error("Could not find dist/tit.js or an installed tit-js dependency from the current working directory.");
+      throw new Error("Could not find dist/finch.js or an installed finch-js dependency from the current working directory.");
     }
     current = parent;
   }
@@ -60,7 +60,7 @@ function embeddedSources(html) {
 }
 
 const runtimePath = await findRuntime(process.cwd());
-const { default: Tit } = await import(pathToFileURL(runtimePath).href);
+const { default: Finch } = await import(pathToFileURL(runtimePath).href);
 
 let failed = false;
 for (const input of inputs) {
@@ -68,16 +68,16 @@ for (const input of inputs) {
   try {
     const html = await readFile(filePath, "utf8");
     const sources = embeddedSources(html);
-    if (sources.length === 0) throw new Error("No JavaScript template literal beginning with a Tit.js @directive was found.");
+    if (sources.length === 0) throw new Error("No JavaScript template literal beginning with a Finch.js @directive was found.");
 
     for (const entry of sources) {
       try {
-        Tit.parse(entry.source);
+        Finch.parse(entry.source);
       } catch (error) {
         throw new Error(`${entry.name}: ${error instanceof Error ? error.message : String(error)}`);
       }
     }
-    console.log(`OK ${filePath}: ${sources.length} Tit.js source block(s)`);
+    console.log(`OK ${filePath}: ${sources.length} Finch.js source block(s)`);
   } catch (error) {
     failed = true;
     console.error(`ERROR ${filePath}: ${error instanceof Error ? error.message : String(error)}`);

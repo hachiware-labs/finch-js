@@ -183,7 +183,7 @@ orders -> payments: authorize
 orders -> events: publish`,
   slide: `@slide
 
-title "Tit.js の価値" [align=center]
+title "Finch.js の価値" [align=center]
 subtitle "テキストから、そのまま使える図へ" [align=center]
 
 row journey [gap=76] {
@@ -275,22 +275,40 @@ const source = document.querySelector("#source");
 const error = document.querySelector("#error");
 let instance;
 let timer;
+let layoutDirty = false;
+
+function saveCurrentLayout() {
+  if (!instance) return;
+  localStorage.setItem(`finch-layout:${instance.model.kind}`, instance.exportLayout());
+  layoutDirty = false;
+}
 
 function updateZoomReadout() {
   const readout = document.querySelector("#zoom-value");
   if (readout && instance) readout.textContent = `${Math.round(instance.zoom * 100)}%`;
 }
 
+function updateEditControls() {
+  const toggle = document.querySelector("#edit-mode");
+  const editable = instance?.editable ?? true;
+  toggle.textContent = editable ? "Edit ON" : "Edit OFF";
+  toggle.setAttribute("aria-pressed", String(editable));
+  for (const selector of ["#fit-diagram", "#fit-width", "#pin", "#layout"]) {
+    document.querySelector(selector).disabled = !editable;
+  }
+}
+
 function render(value, restore = false) {
   try {
     if (instance) instance.update(value);
-    else instance = Tit.render(value, { target: "#diagram" });
+    else instance = Finch.render(value, { target: "#diagram" });
     if (restore) {
-      const saved = localStorage.getItem(`tit-layout:${instance.model.kind}`);
+      const saved = localStorage.getItem(`finch-layout:${instance.model.kind}`);
       if (saved) instance.importLayout(saved);
     }
     error.style.display = "none";
     updateZoomReadout();
+    updateEditControls();
   } catch (cause) {
     error.textContent = cause instanceof Error ? cause.message : String(cause);
     error.style.display = "inline";
@@ -301,6 +319,7 @@ function load(kind) {
   source.value = examples[kind];
   if (instance && instance.model.kind !== kind) instance.destroy();
   instance = undefined;
+  layoutDirty = false;
   render(source.value, true);
 }
 
@@ -321,17 +340,39 @@ document.querySelector("#activity").addEventListener("click", () => load("activi
 document.querySelector("#zoom-out").addEventListener("click", () => { instance?.zoomOut(); updateZoomReadout(); });
 document.querySelector("#zoom-in").addEventListener("click", () => { instance?.zoomIn(); updateZoomReadout(); });
 document.querySelector("#zoom-value").addEventListener("click", () => { instance?.resetZoom(); updateZoomReadout(); });
+document.querySelector("#edit-mode").addEventListener("click", () => {
+  if (!instance) return;
+  const leavingEditMode = instance.editable;
+  instance.setEditable(!instance.editable);
+  if (leavingEditMode && layoutDirty) saveCurrentLayout();
+});
 document.querySelector("#fit-diagram").addEventListener("click", () => { instance?.fit("diagram"); updateZoomReadout(); });
 document.querySelector("#fit-width").addEventListener("click", () => { instance?.fit("width"); updateZoomReadout(); });
-document.querySelector("#diagram").addEventListener("tit:zoomchange", updateZoomReadout);
+document.querySelector("#diagram").addEventListener("finch:zoomchange", updateZoomReadout);
+document.querySelector("#diagram").addEventListener("finch:editchange", updateEditControls);
+document.querySelector("#diagram").addEventListener("finch:layoutchange", (event) => {
+  if (event.detail.changedNodeIds.length) layoutDirty = true;
+});
 document.querySelector("#layout").addEventListener("click", () => instance?.autoLayout());
 document.querySelector("#pin").addEventListener("click", () => {
   if (!instance?.selection.length) return;
   for (const id of instance.selection) instance.isPinned(id) ? instance.unpin(id) : instance.pin(id);
 });
 document.querySelector("#save").addEventListener("click", () => {
+  saveCurrentLayout();
+});
+document.querySelector("#download-png").addEventListener("click", async (event) => {
   if (!instance) return;
-  localStorage.setItem(`tit-layout:${instance.model.kind}`, instance.exportLayout());
+  const button = event.currentTarget;
+  button.disabled = true;
+  try {
+    await instance.downloadPng(`${instance.model.kind}.png`);
+  } catch (cause) {
+    error.textContent = cause instanceof Error ? cause.message : String(cause);
+    error.style.display = "inline";
+  } finally {
+    button.disabled = false;
+  }
 });
 
 load("deployment");

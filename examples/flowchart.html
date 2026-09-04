@@ -3,10 +3,10 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Tit.js advanced flowchart example</title>
+    <title>Finch.js advanced flowchart example</title>
     <link rel="stylesheet" href="./example.css" />
   </head>
-  <body class="diagram-page" data-title="Flowchart" data-source="flowchart-advanced.tit">
+  <body class="diagram-page" data-title="Flowchart">
     <header>
       <a class="back" href="./index.html">← All examples</a>
       <span class="eyebrow">@flowchart</span>
@@ -14,11 +14,115 @@
       <p>Decision branches, exceptional paths, compensation, and retry cycles.</p>
     </header>
     <main class="diagram-layout">
-      <section id="diagram" class="canvas" aria-label="Diagram output"></section>
-      <details><summary>Show flowchart-advanced.tit</summary><pre id="source"></pre></details>
+      <section id="diagram" class="canvas" aria-label="Flowchart diagram output"></section>
+      <details><summary>Show Finch source</summary><pre id="source"></pre></details>
       <p id="error" class="error" hidden></p>
     </main>
-    <script src="../dist/tit.global.js?v=0.1.0-examples-2"></script>
-    <script src="./example-page.js"></script>
+    <script src="../dist/finch.global.js?v=0.5.0-examples-2"></script>
+    <script>
+      const flowchartSource = String.raw`
+@flowchart
+
+start begin "Request received"
+input payload "Read payload"
+process normalize "Normalize fields"
+decision valid "Schema valid?"
+process reject "Record validation error"
+decision risk "Risk acceptable?"
+process review "Manual review"
+decision approved "Review approved?"
+process execute "Execute transaction"
+decision settled "Settlement complete?"
+output receipt "Send receipt"
+process compensate "Run compensation"
+end success "Completed"
+end failure "Rejected"
+
+begin -> payload
+payload -> normalize
+normalize -> valid
+valid -> risk: Yes
+valid -> reject: No
+reject -> failure
+risk -> execute: Low risk
+risk -> review: Review
+review -> approved
+approved -> execute: Yes
+approved -> normalize: Retry
+approved -> failure: No
+execute -> settled
+settled -> receipt: Yes
+settled --> compensate: Timeout
+compensate -> execute: Retry
+compensate -> failure: Abort
+receipt -> success
+      `.trim();
+
+      const title = document.body.dataset.title ?? "Diagram";
+      const diagram = document.querySelector("#diagram");
+      const sourceView = document.querySelector("#source");
+      const errorView = document.querySelector("#error");
+      let instance;
+
+      const controls = document.createElement("div");
+      controls.className = "example-toolbar viewport-controls";
+      controls.innerHTML = `
+        <button type="button" data-zoom="out" aria-label="Zoom out">−</button>
+        <button type="button" data-zoom="reset" class="zoom-readout" aria-label="Reset zoom to 100%">100%</button>
+        <button type="button" data-zoom="in" aria-label="Zoom in">＋</button>
+        <button type="button" data-edit aria-pressed="true">Edit ON</button>
+        <button type="button" data-zoom="fit">Fit diagram</button>
+        <button type="button" data-zoom="width">Fit width</button>
+      `;
+      diagram.before(controls);
+
+      function updateZoomReadout() {
+        const readout = controls.querySelector(".zoom-readout");
+        if (readout && instance) readout.textContent = `${Math.round(instance.zoom * 100)}%`;
+      }
+
+      function updateEditControls() {
+        const toggle = controls.querySelector("[data-edit]");
+        const editable = instance?.editable ?? true;
+        if (toggle) {
+          toggle.textContent = editable ? "Edit ON" : "Edit OFF";
+          toggle.setAttribute("aria-pressed", String(editable));
+        }
+        for (const button of controls.querySelectorAll("[data-zoom='fit'], [data-zoom='width']")) {
+          button.disabled = !editable;
+        }
+      }
+
+      controls.addEventListener("click", (event) => {
+        if (event.target.closest("[data-edit]") && instance) {
+          instance.setEditable(!instance.editable);
+          return;
+        }
+        const action = event.target.closest("[data-zoom]")?.dataset.zoom;
+        if (!instance || !action) return;
+        if (action === "out") instance.zoomOut();
+        if (action === "in") instance.zoomIn();
+        if (action === "reset") instance.resetZoom();
+        if (action === "fit") instance.fit("diagram");
+        if (action === "width") instance.fit("width");
+        updateZoomReadout();
+      });
+
+      diagram.addEventListener("finch:zoomchange", updateZoomReadout);
+      diagram.addEventListener("finch:editchange", updateEditControls);
+
+      try {
+        sourceView.textContent = flowchartSource;
+        instance = Finch.render(flowchartSource, {
+          target: diagram,
+          ariaLabel: `${title} advanced example`,
+        });
+        updateZoomReadout();
+        updateEditControls();
+      } catch (error) {
+        errorView.hidden = false;
+        errorView.textContent = error instanceof Error ? error.message : String(error);
+      }
+    </script>
   </body>
 </html>

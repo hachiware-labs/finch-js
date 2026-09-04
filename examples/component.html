@@ -3,10 +3,10 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Tit.js advanced component example</title>
+    <title>Finch.js advanced component example</title>
     <link rel="stylesheet" href="./example.css" />
   </head>
-  <body class="diagram-page" data-title="Component" data-source="component-advanced.tit">
+  <body class="diagram-page" data-title="Component">
     <header>
       <a class="back" href="./index.html">← All examples</a>
       <span class="eyebrow">@component</span>
@@ -14,11 +14,130 @@
       <p>Nested system boundaries, logical components, interfaces, and external dependencies.</p>
     </header>
     <main class="diagram-layout">
-      <section id="diagram" class="canvas" aria-label="Diagram output"></section>
-      <details><summary>Show component-advanced.tit</summary><pre id="source"></pre></details>
+      <section id="diagram" class="canvas" aria-label="Component diagram output"></section>
+      <details><summary>Show Finch source</summary><pre id="source"></pre></details>
       <p id="error" class="error" hidden></p>
     </main>
-    <script src="../dist/tit.global.js?v=0.1.0-er-component-1"></script>
-    <script src="./example-page.js"></script>
+    <script src="../dist/finch.global.js?v=0.5.0-er-component-1"></script>
+    <script>
+      const componentSource = String.raw`
+@component
+
+external customer "Customer"
+external identity "Identity Provider"
+external payments "Payment Provider"
+external mail "Email Delivery"
+
+system commerce "Commerce Platform" {
+  system experience "Experience Layer" {
+    component web "Web Application"
+    component mobile "Mobile Application"
+    component bff "Backend for Frontend"
+  }
+
+  system core "Core Services" {
+    port public_port "HTTP"
+    component gateway "Public API"
+    component catalog "Catalog Component"
+    component orders "Order Component"
+    component notifications "Notification Component"
+    provided events "Order Events"
+    required payment_api "Payment API"
+    artifact contract "OpenAPI Contract"
+  }
+
+  system storage "Storage" {
+    database productdb "Product Database"
+    database orderdb "Order Database"
+    database cache "Redis Cache"
+  }
+}
+
+customer -> web: uses
+customer -> mobile: uses
+web -> bff: HTTPS
+mobile -> bff: HTTPS
+bff -> identity: OIDC
+bff -> public_port: JSON API
+public_port -> gateway
+gateway -> catalog: queries
+gateway -> orders: commands
+catalog -> productdb
+catalog -> cache
+orders -> orderdb
+orders -> payment_api: authorize
+payment_api -> payments: HTTPS
+orders -> events: publish
+gateway ..> contract: describes
+events -> notifications: subscribe
+notifications -> mail: send
+      `.trim();
+
+      const title = document.body.dataset.title ?? "Diagram";
+      const diagram = document.querySelector("#diagram");
+      const sourceView = document.querySelector("#source");
+      const errorView = document.querySelector("#error");
+      let instance;
+
+      const controls = document.createElement("div");
+      controls.className = "example-toolbar viewport-controls";
+      controls.innerHTML = `
+        <button type="button" data-zoom="out" aria-label="Zoom out">−</button>
+        <button type="button" data-zoom="reset" class="zoom-readout" aria-label="Reset zoom to 100%">100%</button>
+        <button type="button" data-zoom="in" aria-label="Zoom in">＋</button>
+        <button type="button" data-edit aria-pressed="true">Edit ON</button>
+        <button type="button" data-zoom="fit">Fit diagram</button>
+        <button type="button" data-zoom="width">Fit width</button>
+      `;
+      diagram.before(controls);
+
+      function updateZoomReadout() {
+        const readout = controls.querySelector(".zoom-readout");
+        if (readout && instance) readout.textContent = `${Math.round(instance.zoom * 100)}%`;
+      }
+
+      function updateEditControls() {
+        const toggle = controls.querySelector("[data-edit]");
+        const editable = instance?.editable ?? true;
+        if (toggle) {
+          toggle.textContent = editable ? "Edit ON" : "Edit OFF";
+          toggle.setAttribute("aria-pressed", String(editable));
+        }
+        for (const button of controls.querySelectorAll("[data-zoom='fit'], [data-zoom='width']")) {
+          button.disabled = !editable;
+        }
+      }
+
+      controls.addEventListener("click", (event) => {
+        if (event.target.closest("[data-edit]") && instance) {
+          instance.setEditable(!instance.editable);
+          return;
+        }
+        const action = event.target.closest("[data-zoom]")?.dataset.zoom;
+        if (!instance || !action) return;
+        if (action === "out") instance.zoomOut();
+        if (action === "in") instance.zoomIn();
+        if (action === "reset") instance.resetZoom();
+        if (action === "fit") instance.fit("diagram");
+        if (action === "width") instance.fit("width");
+        updateZoomReadout();
+      });
+
+      diagram.addEventListener("finch:zoomchange", updateZoomReadout);
+      diagram.addEventListener("finch:editchange", updateEditControls);
+
+      try {
+        sourceView.textContent = componentSource;
+        instance = Finch.render(componentSource, {
+          target: diagram,
+          ariaLabel: `${title} advanced example`,
+        });
+        updateZoomReadout();
+        updateEditControls();
+      } catch (error) {
+        errorView.hidden = false;
+        errorView.textContent = error instanceof Error ? error.message : String(error);
+      }
+    </script>
   </body>
 </html>

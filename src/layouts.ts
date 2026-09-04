@@ -178,17 +178,17 @@ function fitContainer(container: GeometryNode, nodes: GeometryNode[]): void {
   container.height = Math.max(container.height, bottom - top + 68);
 }
 
-type ContainerBounds = Pick<GeometryNode, "x" | "y" | "width" | "height">;
+type ContainerMinimumSize = Pick<GeometryNode, "width" | "height">;
 
 /**
- * Resize every container around moved descendants, using its automatic-layout
- * frame as the minimum bounds. Inner containers are processed first so nested
- * expansion and contraction propagate to every outer frame in the same move.
+ * Resize every container tightly around moved descendants while preserving the
+ * shape's measured minimum size. Inner containers are processed first so all
+ * four sides of every outer frame follow their current contents in one move.
  */
 export function resizeAncestorContainers(
   nodes: GeometryNode[],
   movedIds: Iterable<string>,
-  baseBounds: ReadonlyMap<string, ContainerBounds> = new Map(),
+  minimumSizes: ReadonlyMap<string, ContainerMinimumSize> = new Map(),
 ): string[] {
   const nodeMap = byId(nodes);
   const ancestors = new Set<string>();
@@ -224,11 +224,11 @@ export function resizeAncestorContainers(
     const desiredTop = Math.min(...children.map((node) => node.y)) - 42;
     const desiredRight = Math.max(...children.map((node) => node.x + node.width)) + 26;
     const desiredBottom = Math.max(...children.map((node) => node.y + node.height)) + 26;
-    const base = baseBounds.get(container.id) ?? container;
-    const nextLeft = Math.min(base.x, desiredLeft);
-    const nextTop = Math.min(base.y, desiredTop);
-    const nextRight = Math.max(base.x + base.width, desiredRight);
-    const nextBottom = Math.max(base.y + base.height, desiredBottom);
+    const minimum = minimumSizes.get(container.id) ?? container;
+    const nextLeft = desiredLeft;
+    const nextTop = desiredTop;
+    const nextRight = nextLeft + Math.max(minimum.width, desiredRight - desiredLeft);
+    const nextBottom = nextTop + Math.max(minimum.height, desiredBottom - desiredTop);
     if (nextLeft === container.x && nextTop === container.y
       && nextRight === container.x + container.width && nextBottom === container.y + container.height) continue;
     container.x = nextLeft;

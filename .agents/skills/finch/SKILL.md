@@ -55,7 +55,7 @@ receive -> done
 - For pages that persist edits, treat a `finch:layoutchange` with non-empty `changedNodeIds` as dirty. Save only when the user presses Save; switching Edit ON/OFF must never persist implicitly.
 - Use `instance.undoLayout()` and `instance.canUndo` for custom Undo controls. Use `instance.downloadSvg()` and `instance.downloadPng()` for explicit image export.
 - In edit mode, direct node dragging adjusts layout. In view mode, a plain left drag pans within the diagram and must not write node positions to the overlay.
-- When a node is dragged in a deployment container in edit mode, the containing frame and every ancestor frame resize to keep it enclosed. Frames may expand beyond their automatic-layout bounds and contract back to those bounds as their contents move inward.
+- When a node is dragged in a deployment container in edit mode, all four sides of the containing frame and every ancestor frame follow their current contents. Moving contents right, for example, advances the right edge while contracting unused space on the left. A frame must not become smaller than the measured size of its own shape and label.
 
 ## HTML-first constraints
 

@@ -54,7 +54,7 @@ export class DiagramInstance {
   private zoomValue = 1;
   private zoomMode: "auto" | "manual" | FitMode = "auto";
   private resizeObserver: ResizeObserver | undefined;
-  private containerBaseBounds = new Map<string, { x: number; y: number; width: number; height: number }>();
+  private containerMinimumSizes = new Map<string, { width: number; height: number }>();
   private destroyed = false;
 
   constructor(source: string, options: RenderOptions, registry: Registry) {
@@ -353,14 +353,9 @@ export class DiagramInstance {
     this.layoutName = this.options.layout ?? diagram.defaultLayout;
     const previous = this.geometryValue?.kind === kind ? this.geometryValue : undefined;
     const layout = this.registry.layout(this.layoutName);
-    const automaticGeometry = layout.layout(layoutModel, {
-      overlay: createOverlay(this.editableValue),
-      force: true,
-      preservePinned: false,
-    });
-    this.containerBaseBounds = new Map(automaticGeometry.nodes
-      .filter((node) => node.shape === "container")
-      .map((node) => [node.id, { x: node.x, y: node.y, width: node.width, height: node.height }]));
+    this.containerMinimumSizes = new Map(layoutModel.items
+      .filter((item) => item.shape === "container")
+      .map((item) => [item.id, { width: item.size.width, height: item.size.height }]));
     this.geometryValue = layout.layout(layoutModel, {
       overlay: this.overlayValue,
       ...(previous ? { previous } : {}),
@@ -495,7 +490,7 @@ export class DiagramInstance {
     for (const id of resizeAncestorContainers(
       this.geometryValue.nodes,
       this.drag.origins.keys(),
-      this.containerBaseBounds,
+      this.containerMinimumSizes,
     )) {
       this.drag.resizedContainerIds.add(id);
     }

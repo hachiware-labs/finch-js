@@ -261,7 +261,7 @@ orders -> users
     }
   });
 
-  it("expands and contracts nested deployment frames while a contained node is dragged", () => {
+  it("moves both sides of nested deployment frames with their current contents", () => {
     const host = document.querySelector<HTMLElement>("#diagram")!;
     const source = `
 @deployment
@@ -302,30 +302,28 @@ container platform "Production Platform" {
 
     instance.svg.querySelector<SVGGElement>('[data-node-id="edgebox"]')!
       .dispatchEvent(pointer("pointerdown", 100, 100));
-    svg.dispatchEvent(pointer("pointermove", 520, 340));
+    svg.dispatchEvent(pointer("pointermove", 520, 100));
 
-    expect(node("edge").width).toBeGreaterThan(edgeWidth);
-    expect(node("platform").width).toBeGreaterThan(platformWidth);
+    expect(node("edge").x).toBeGreaterThan(edgeX);
+    expect(node("edge").x + node("edge").width).toBeGreaterThan(edgeX + edgeWidth);
+    expect(node("platform").x).toBeGreaterThan(platformX);
+    expect(node("platform").x + node("platform").width).toBeGreaterThan(platformX + platformWidth);
     expect(node("edge").x + node("edge").width).toBeGreaterThanOrEqual(node("edgebox").x + node("edgebox").width + 26);
     expect(node("platform").x + node("platform").width).toBeGreaterThanOrEqual(node("edge").x + node("edge").width + 26);
     const edgeFrame = svg.querySelector<SVGRectElement>('.finch-container[data-node-id="edge"] > rect')!;
     expect(Number(edgeFrame.getAttribute("width"))).toBe(node("edge").width);
 
-    svg.dispatchEvent(pointer("pointerup", 520, 340));
+    svg.dispatchEvent(pointer("pointerup", 520, 100));
     expect(changedIds).toEqual(expect.arrayContaining(["edgebox", "edge", "platform"]));
 
-    const expandedEdgeWidth = node("edge").width;
-    const expandedEdgeHeight = node("edge").height;
-    const expandedPlatformWidth = node("platform").width;
-    const expandedPlatformHeight = node("platform").height;
+    const shiftedEdgeX = node("edge").x;
+    const shiftedPlatformX = node("platform").x;
     instance.svg.querySelector<SVGGElement>('[data-node-id="edgebox"]')!
-      .dispatchEvent(pointer("pointerdown", 520, 340));
+      .dispatchEvent(pointer("pointerdown", 520, 100));
     svg.dispatchEvent(pointer("pointermove", 100, 100));
 
-    expect(node("edge").width).toBeLessThan(expandedEdgeWidth);
-    expect(node("edge").height).toBeLessThan(expandedEdgeHeight);
-    expect(node("platform").width).toBeLessThan(expandedPlatformWidth);
-    expect(node("platform").height).toBeLessThan(expandedPlatformHeight);
+    expect(node("edge").x).toBeLessThan(shiftedEdgeX);
+    expect(node("platform").x).toBeLessThan(shiftedPlatformX);
     expect(node("edge")).toMatchObject({ x: edgeX, y: edgeY, width: edgeWidth, height: edgeHeight });
     expect(node("platform")).toMatchObject({
       x: platformX,

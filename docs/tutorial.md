@@ -55,6 +55,12 @@ api -> db: SQL</textarea>
 
 Open `tutorial.html` in a browser. Finch.js turns the text on the left into a diagram on the right and redraws it as you edit.
 
+When using the tutorial outside this repository, replace the local runtime script with the published, version-pinned package URL:
+
+```html
+<script src="https://cdn.jsdelivr.net/npm/@hachiware-labs/finch-js@0.5.0/dist/finch.global.js"></script>
+```
+
 ## 2. Arrange and save the layout
 
 Drag nodes on the right to arrange them. Double-click a node to pin its position. Finch.js saves layout changes in the browser automatically and restores them after a reload.

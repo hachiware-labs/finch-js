@@ -18,7 +18,7 @@ import {
   type LayoutPlugin,
   type ShapePlugin,
   type ThemePlugin,
-} from "finch-js";
+} from "@hachiware-labs/finch-js";
 
 const finch = createFinch();
 ```

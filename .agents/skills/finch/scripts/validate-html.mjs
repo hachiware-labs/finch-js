@@ -5,6 +5,7 @@ import path from "node:path";
 import { pathToFileURL } from "node:url";
 
 const inputs = process.argv.slice(2);
+const packageName = "@hachiware-labs/finch-js";
 if (inputs.length === 0) {
   console.error("Usage: node validate-html.mjs <html-file> [...html-files]");
   process.exit(2);
@@ -17,9 +18,9 @@ async function findRuntime(start) {
     try {
       const parsed = JSON.parse(await readFile(manifest, "utf8"));
       const candidates = [];
-      if (parsed.name === "finch-js") candidates.push(path.join(current, "dist", "finch.js"));
+      if (parsed.name === packageName) candidates.push(path.join(current, "dist", "finch.js"));
       const dependencies = { ...parsed.dependencies, ...parsed.devDependencies };
-      if (dependencies["finch-js"]) candidates.push(path.join(current, "node_modules", "finch-js", "dist", "finch.js"));
+      if (dependencies[packageName]) candidates.push(path.join(current, "node_modules", ...packageName.split("/"), "dist", "finch.js"));
       for (const candidate of candidates) {
         try {
           await access(candidate);
@@ -33,7 +34,7 @@ async function findRuntime(start) {
     }
     const parent = path.dirname(current);
     if (parent === current) {
-      throw new Error("Could not find dist/finch.js or an installed finch-js dependency from the current working directory.");
+      throw new Error(`Could not find dist/finch.js or an installed ${packageName} dependency from the current working directory.`);
     }
     current = parent;
   }

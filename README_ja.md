@@ -66,19 +66,19 @@ api -> db: SQL</textarea>
 npm から Finch.js をインストールします。
 
 ```bash
-npm install finch-js
+npm install @hachiware-labs/finch-js
 ```
 
 デフォルトのインスタンスを読み込むか、独立したインスタンスを作成できます。
 
 ```js
-import Finch, { createFinch } from "finch-js";
+import Finch, { createFinch } from "@hachiware-labs/finch-js";
 ```
 
 ブラウザーグローバル版を使う場合は、バージョンを固定したCDN URLを指定します。
 
 ```html
-<script src="https://cdn.jsdelivr.net/npm/finch-js@0.5.0/dist/finch.global.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@hachiware-labs/finch-js@0.5.0/dist/finch.global.js"></script>
 ```
 
 Finch.js 本体を開発する場合は、リポジトリの依存パッケージをインストールしてビルドします。
@@ -121,16 +121,16 @@ npx skills add . --skill finch
 リポジトリをGitHubで公開した後は、リポジトリ名を指定して直接インストールできます。
 
 ```bash
-npx skills add <owner>/<repository> --skill finch
+npx skills add hachiware-labs/finch-js --skill finch
 ```
 
 すべてのリポジトリで `$finch` を使えるようにする場合は、`--global` を追加します。
 
 ```bash
-npx skills add <owner>/<repository> --skill finch --global
+npx skills add hachiware-labs/finch-js --skill finch --global
 ```
 
-インストールせずに利用可能なスキルを確認する場合は、`npx skills add <owner>/<repository> --list` を使います。Codexは新しく追加されたスキルを自動検出します。`$finch` が一覧に表示されない場合はCodexを再起動してください。Codexにおけるスキルのスコープと検出場所については、[OpenAI公式のスキルドキュメント](https://learn.chatgpt.com/ja-JP/docs/build-skills)を参照してください。
+インストールせずに利用可能なスキルを確認する場合は、`npx skills add hachiware-labs/finch-js --list` を使います。Codexは新しく追加されたスキルを自動検出します。`$finch` が一覧に表示されない場合はCodexを再起動してください。Codexにおけるスキルのスコープと検出場所については、[OpenAI公式のスキルドキュメント](https://learn.chatgpt.com/ja-JP/docs/build-skills)を参照してください。
 
 ## ダイアグラムの種類
 
@@ -274,7 +274,7 @@ diagram.setLayout("compact");
 共有の既定 registry に影響させたくない場合は、拡張専用の engine を作ります。
 
 ```js
-import { createFinch } from "finch-js";
+import { createFinch } from "@hachiware-labs/finch-js";
 
 const finch = createFinch();
 finch.registerDiagram("custom", diagramPlugin);

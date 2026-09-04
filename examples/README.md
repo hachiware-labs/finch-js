@@ -58,4 +58,10 @@ python -m http.server 8000
 
 Then open `http://127.0.0.1:8000/examples/` and choose one diagram page.
 
+The example pages intentionally load `../dist/finch.global.js` so they work from a source checkout and from the published package contents. When copying an example into another project, either install `@hachiware-labs/finch-js` or replace that local script URL with the version-pinned CDN URL:
+
+```html
+<script src="https://cdn.jsdelivr.net/npm/@hachiware-labs/finch-js@0.5.0/dist/finch.global.js"></script>
+```
+
 The leading apostrophe used in an embedded Finch source introduces a full-line comment. Inline `#` and `//` comments are also accepted when preceded by whitespace.

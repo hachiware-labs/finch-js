@@ -66,19 +66,19 @@ See the [two-step tutorial](./docs/tutorial.md) for details or browse the [advan
 Install Finch.js from npm:
 
 ```bash
-npm install finch-js
+npm install @hachiware-labs/finch-js
 ```
 
 Then import the default instance or create an isolated one:
 
 ```js
-import Finch, { createFinch } from "finch-js";
+import Finch, { createFinch } from "@hachiware-labs/finch-js";
 ```
 
 For a browser-global build, use a version-pinned CDN URL:
 
 ```html
-<script src="https://cdn.jsdelivr.net/npm/finch-js@0.5.0/dist/finch.global.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@hachiware-labs/finch-js@0.5.0/dist/finch.global.js"></script>
 ```
 
 When developing Finch.js itself, install the repository dependencies and build it:
@@ -121,16 +121,16 @@ npx skills add . --skill finch
 After the repository is available on GitHub, install it directly with the repository name:
 
 ```bash
-npx skills add <owner>/<repository> --skill finch
+npx skills add hachiware-labs/finch-js --skill finch
 ```
 
 Add `--global` to make `$finch` available across all of your repositories:
 
 ```bash
-npx skills add <owner>/<repository> --skill finch --global
+npx skills add hachiware-labs/finch-js --skill finch --global
 ```
 
-To inspect the available skills without installing them, use `npx skills add <owner>/<repository> --list`. Codex detects newly installed skills automatically; restart Codex if `$finch` is not listed. See the [official OpenAI skill documentation](https://learn.chatgpt.com/docs/build-skills) for Codex skill scopes and discovery locations.
+To inspect the available skills without installing them, use `npx skills add hachiware-labs/finch-js --list`. Codex detects newly installed skills automatically; restart Codex if `$finch` is not listed. See the [official OpenAI skill documentation](https://learn.chatgpt.com/docs/build-skills) for Codex skill scopes and discovery locations.
 
 ## Diagram types
 
@@ -274,7 +274,7 @@ diagram.setLayout("compact");
 Create an isolated engine when extensions should not modify the shared default registry:
 
 ```js
-import { createFinch } from "finch-js";
+import { createFinch } from "@hachiware-labs/finch-js";
 
 const finch = createFinch();
 finch.registerDiagram("custom", diagramPlugin);

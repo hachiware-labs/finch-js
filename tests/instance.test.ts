@@ -261,7 +261,7 @@ orders -> users
     }
   });
 
-  it("expands nested deployment frames while a contained node is dragged", () => {
+  it("expands and contracts nested deployment frames while a contained node is dragged", () => {
     const host = document.querySelector<HTMLElement>("#diagram")!;
     const source = `
 @deployment
@@ -287,8 +287,14 @@ container platform "Production Platform" {
       return event;
     };
     const node = (id: string) => instance.geometry.nodes.find((candidate) => candidate.id === id)!;
+    const edgeX = node("edge").x;
+    const edgeY = node("edge").y;
     const edgeWidth = node("edge").width;
+    const edgeHeight = node("edge").height;
+    const platformX = node("platform").x;
+    const platformY = node("platform").y;
     const platformWidth = node("platform").width;
+    const platformHeight = node("platform").height;
     let changedIds: string[] = [];
     host.addEventListener("finch:layoutchange", (event) => {
       changedIds = (event as CustomEvent<{ changedNodeIds: string[] }>).detail.changedNodeIds;
@@ -308,6 +314,29 @@ container platform "Production Platform" {
     svg.dispatchEvent(pointer("pointerup", 520, 340));
     expect(changedIds).toEqual(expect.arrayContaining(["edgebox", "edge", "platform"]));
 
+    const expandedEdgeWidth = node("edge").width;
+    const expandedEdgeHeight = node("edge").height;
+    const expandedPlatformWidth = node("platform").width;
+    const expandedPlatformHeight = node("platform").height;
+    instance.svg.querySelector<SVGGElement>('[data-node-id="edgebox"]')!
+      .dispatchEvent(pointer("pointerdown", 520, 340));
+    svg.dispatchEvent(pointer("pointermove", 100, 100));
+
+    expect(node("edge").width).toBeLessThan(expandedEdgeWidth);
+    expect(node("edge").height).toBeLessThan(expandedEdgeHeight);
+    expect(node("platform").width).toBeLessThan(expandedPlatformWidth);
+    expect(node("platform").height).toBeLessThan(expandedPlatformHeight);
+    expect(node("edge")).toMatchObject({ x: edgeX, y: edgeY, width: edgeWidth, height: edgeHeight });
+    expect(node("platform")).toMatchObject({
+      x: platformX,
+      y: platformY,
+      width: platformWidth,
+      height: platformHeight,
+    });
+
+    svg.dispatchEvent(pointer("pointerup", 100, 100));
+    expect(changedIds).toEqual(expect.arrayContaining(["edgebox", "edge", "platform"]));
+
     document.body.insertAdjacentHTML("beforeend", '<div id="restored"></div>');
     const restored = createBareFinch().render(source, { target: "#restored", overlay: instance.exportLayout() });
     const restoredNode = (id: string) => restored.geometry.nodes.find((candidate) => candidate.id === id)!;
@@ -315,6 +344,13 @@ container platform "Production Platform" {
       .toBeGreaterThanOrEqual(restoredNode("edgebox").x + restoredNode("edgebox").width + 26);
     expect(restoredNode("platform").x + restoredNode("platform").width)
       .toBeGreaterThanOrEqual(restoredNode("edge").x + restoredNode("edge").width + 26);
+    expect(restoredNode("edge")).toMatchObject({ x: edgeX, y: edgeY, width: edgeWidth, height: edgeHeight });
+    expect(restoredNode("platform")).toMatchObject({
+      x: platformX,
+      y: platformY,
+      width: platformWidth,
+      height: platformHeight,
+    });
   });
 
   it("honors deployment layout hints without requiring manual coordinates", () => {

@@ -178,12 +178,18 @@ function fitContainer(container: GeometryNode, nodes: GeometryNode[]): void {
   container.height = Math.max(container.height, bottom - top + 68);
 }
 
+type ContainerBounds = Pick<GeometryNode, "x" | "y" | "width" | "height">;
+
 /**
- * Grow every container around moved descendants without compacting an already
- * expanded frame. Inner containers are processed first so nested growth is
- * propagated to each outer frame during the same pointer move.
+ * Resize every container around moved descendants, using its automatic-layout
+ * frame as the minimum bounds. Inner containers are processed first so nested
+ * expansion and contraction propagate to every outer frame in the same move.
  */
-export function expandAncestorContainers(nodes: GeometryNode[], movedIds: Iterable<string>): string[] {
+export function resizeAncestorContainers(
+  nodes: GeometryNode[],
+  movedIds: Iterable<string>,
+  baseBounds: ReadonlyMap<string, ContainerBounds> = new Map(),
+): string[] {
   const nodeMap = byId(nodes);
   const ancestors = new Set<string>();
   for (const id of movedIds) {
@@ -218,10 +224,11 @@ export function expandAncestorContainers(nodes: GeometryNode[], movedIds: Iterab
     const desiredTop = Math.min(...children.map((node) => node.y)) - 42;
     const desiredRight = Math.max(...children.map((node) => node.x + node.width)) + 26;
     const desiredBottom = Math.max(...children.map((node) => node.y + node.height)) + 26;
-    const nextLeft = Math.min(container.x, desiredLeft);
-    const nextTop = Math.min(container.y, desiredTop);
-    const nextRight = Math.max(container.x + container.width, desiredRight);
-    const nextBottom = Math.max(container.y + container.height, desiredBottom);
+    const base = baseBounds.get(container.id) ?? container;
+    const nextLeft = Math.min(base.x, desiredLeft);
+    const nextTop = Math.min(base.y, desiredTop);
+    const nextRight = Math.max(base.x + base.width, desiredRight);
+    const nextBottom = Math.max(base.y + base.height, desiredBottom);
     if (nextLeft === container.x && nextTop === container.y
       && nextRight === container.x + container.width && nextBottom === container.y + container.height) continue;
     container.x = nextLeft;
@@ -231,6 +238,11 @@ export function expandAncestorContainers(nodes: GeometryNode[], movedIds: Iterab
     changed.push(container.id);
   }
   return changed;
+}
+
+/** @deprecated Use resizeAncestorContainers() to support contraction as well. */
+export function expandAncestorContainers(nodes: GeometryNode[], movedIds: Iterable<string>): string[] {
+  return resizeAncestorContainers(nodes, movedIds);
 }
 
 function resetContainerSize(container: GeometryNode, model: LayoutModel): void {

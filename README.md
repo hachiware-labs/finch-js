@@ -184,7 +184,7 @@ diagram.setEditable(true);
 With edit mode on, the SVG supports:
 
 - Drag a node to give it a manual position.
-- When a node inside a deployment container moves beyond its frame, that container and any outer container expand with it. Frames do not shrink during the drag; run automatic layout or reset the layout to compact them again.
+- When a node inside a deployment container moves, that container and every outer container resize with it. Frames expand beyond their automatic-layout bounds when needed and contract again as their contents move back inward.
 - Ctrl/⌘/Shift-click to select multiple nodes, then drag them together.
 - Double-click a node to toggle its pinned state.
 - Press `P` to pin selected nodes or `Escape` to clear the selection.

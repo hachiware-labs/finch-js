@@ -1,4 +1,4 @@
-import { expandAncestorContainers, rerouteGeometry } from "./layouts.js";
+import { resizeAncestorContainers, rerouteGeometry } from "./layouts.js";
 import { Registry } from "./registry.js";
 import { SvgRenderer } from "./renderer.js";
 import type {
@@ -22,7 +22,7 @@ interface DragState {
   pointerId: number;
   start: { x: number; y: number };
   origins: Map<string, { x: number; y: number }>;
-  expandedContainerIds: Set<string>;
+  resizedContainerIds: Set<string>;
   moved: boolean;
 }
 
@@ -54,6 +54,7 @@ export class DiagramInstance {
   private zoomValue = 1;
   private zoomMode: "auto" | "manual" | FitMode = "auto";
   private resizeObserver: ResizeObserver | undefined;
+  private containerBaseBounds = new Map<string, { x: number; y: number; width: number; height: number }>();
   private destroyed = false;
 
   constructor(source: string, options: RenderOptions, registry: Registry) {
@@ -351,7 +352,16 @@ export class DiagramInstance {
     });
     this.layoutName = this.options.layout ?? diagram.defaultLayout;
     const previous = this.geometryValue?.kind === kind ? this.geometryValue : undefined;
-    this.geometryValue = this.registry.layout(this.layoutName).layout(layoutModel, {
+    const layout = this.registry.layout(this.layoutName);
+    const automaticGeometry = layout.layout(layoutModel, {
+      overlay: createOverlay(this.editableValue),
+      force: true,
+      preservePinned: false,
+    });
+    this.containerBaseBounds = new Map(automaticGeometry.nodes
+      .filter((node) => node.shape === "container")
+      .map((node) => [node.id, { x: node.x, y: node.y, width: node.width, height: node.height }]));
+    this.geometryValue = layout.layout(layoutModel, {
       overlay: this.overlayValue,
       ...(previous ? { previous } : {}),
       force: layoutOptions.force,
@@ -454,7 +464,7 @@ export class DiagramInstance {
       pointerId: event.pointerId,
       start: this.rendererValue.clientPoint(event),
       origins,
-      expandedContainerIds: new Set(),
+      resizedContainerIds: new Set(),
       moved: false,
     };
     this.rendererValue.svg.setPointerCapture(event.pointerId);
@@ -482,8 +492,12 @@ export class DiagramInstance {
       node.x = Math.max(8, origin.x + dx);
       node.y = Math.max(8, origin.y + dy);
     }
-    for (const id of expandAncestorContainers(this.geometryValue.nodes, this.drag.origins.keys())) {
-      this.drag.expandedContainerIds.add(id);
+    for (const id of resizeAncestorContainers(
+      this.geometryValue.nodes,
+      this.drag.origins.keys(),
+      this.containerBaseBounds,
+    )) {
+      this.drag.resizedContainerIds.add(id);
     }
     rerouteGeometry(this.geometryValue);
     this.rendererValue.updateGeometry(this.geometryValue);
@@ -516,7 +530,21 @@ export class DiagramInstance {
         ...(previous?.height ? { height: previous.height } : {}),
       };
     }
-    this.emitLayoutChange([...new Set([...drag.origins.keys(), ...drag.expandedContainerIds])]);
+    for (const id of drag.resizedContainerIds) {
+      if (drag.origins.has(id)) continue;
+      const node = map.get(id);
+      if (!node) continue;
+      const previous = this.overlayValue.nodes[id];
+      this.overlayValue.nodes[id] = {
+        x: node.x,
+        y: node.y,
+        width: node.width,
+        height: node.height,
+        manual: true,
+        pinned: previous?.pinned ?? false,
+      };
+    }
+    this.emitLayoutChange([...new Set([...drag.origins.keys(), ...drag.resizedContainerIds])]);
   }
 
   private setPin(ids: string | string[], pinned: boolean): this {

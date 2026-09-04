@@ -7,6 +7,7 @@ const common = {
   sourcemap: true,
   target: "es2020",
   logLevel: "info",
+  loader: { ".png": "dataurl" },
 };
 
 const builds = [

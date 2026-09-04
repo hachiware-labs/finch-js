@@ -21,10 +21,9 @@
         <button type="button" data-pattern="quote" aria-pressed="false">Customer quote</button>
       </nav>
       <section id="diagram" class="canvas" aria-label="Slide pattern output"></section>
-      <details><summary>Show <span id="source-name">selected pattern</span> source</summary><pre id="source"></pre></details>
       <p id="error" class="error" hidden></p>
     </main>
-    <script src="../dist/finch.global.js?v=0.5.0-slide-patterns-1"></script>
+    <script src="../dist/finch.global.js?v=0.5.1-slide-patterns-1"></script>
     <script>
       const kpiSlideSource = String.raw`
 @slide
@@ -101,8 +100,6 @@ badge source "CUSTOMER INTERVIEW · JUNE 2026"
 
       const patterns = [...document.querySelectorAll("[data-pattern]")];
       const diagram = document.querySelector("#diagram");
-      const sourceView = document.querySelector("#source");
-      const sourceName = document.querySelector("#source-name");
       const errorView = document.querySelector("#error");
       let instance;
 
@@ -113,8 +110,6 @@ badge source "CUSTOMER INTERVIEW · JUNE 2026"
 
         try {
           errorView.hidden = true;
-          sourceView.textContent = source;
-          sourceName.textContent = button.textContent.trim();
           const ariaLabel = `${button.textContent.trim()} slide pattern`;
           if (instance) {
             instance.update(source);

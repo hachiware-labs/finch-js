@@ -74,6 +74,11 @@ valid -> done: Yes
 
 Declarations are `initial`, `state`, `choice`, `junction`, `fork`, `join`, `history`, `deep-history`, `final`, and `terminate`.
 Fork/join sections are arranged vertically: the fork bar sits above its parallel states, the join bar sits below them, and a single successor continues downward.
+Transitions connected to a fork or join use vertical ports automatically. Override either endpoint when needed with `fromPort` and `toPort`; accepted values are `top`, `right`, `bottom`, and `left`:
+
+```text
+audit -> merged [fromPort=bottom toPort=top]
+```
 
 ```text
 @state

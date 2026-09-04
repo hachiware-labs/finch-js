@@ -47,6 +47,7 @@ export class DiagramInstance {
   private themeValue!: Theme;
   private layoutName = "";
   private selectedIds = new Set<string>();
+  private layoutHistory: LayoutOverlay[] = [];
   private drag: DragState | undefined;
   private pan: PanState | undefined;
   private spacePressed = false;
@@ -105,6 +106,10 @@ export class DiagramInstance {
     return this.editableValue;
   }
 
+  get canUndo(): boolean {
+    return this.layoutHistory.length > 0;
+  }
+
   get viewportMode(): "auto" | "manual" | FitMode {
     return this.zoomMode;
   }
@@ -148,6 +153,7 @@ export class DiagramInstance {
     const nextKind = getDiagramKind(source);
     if (previousKind !== nextKind) {
       this.overlayValue = createOverlay(this.editableValue);
+      this.layoutHistory = [];
       this.selectedIds.clear();
     }
     this.rebuild({ force: false, preservePinned: true });
@@ -202,6 +208,7 @@ export class DiagramInstance {
   autoLayout(options: AutoLayoutOptions = {}): this {
     this.assertActive();
     if (!this.editableValue) return this;
+    this.rememberLayout();
     const preservePinned = options.preservePinned ?? true;
     for (const [id, state] of Object.entries(this.overlayValue.nodes)) {
       if (!preservePinned || !state.pinned) delete this.overlayValue.nodes[id];
@@ -213,6 +220,7 @@ export class DiagramInstance {
 
   resetLayout(): this {
     if (!this.editableValue) return this;
+    this.rememberLayout();
     this.overlayValue = createOverlay(this.editableValue);
     this.rebuild({ force: true, preservePinned: false });
     this.emitLayoutChange(this.geometryValue.nodes.map((node) => node.id));
@@ -233,7 +241,22 @@ export class DiagramInstance {
     this.editableValue = overlay.editable ?? true;
     overlay.editable = this.editableValue;
     this.overlayValue = overlay;
+    this.layoutHistory = [];
     this.rebuild({ force: false, preservePinned: true });
+    return this;
+  }
+
+  undoLayout(): this {
+    this.assertActive();
+    if (!this.editableValue || !this.layoutHistory.length) return this;
+    const current = this.overlayValue;
+    const previous = this.layoutHistory.pop()!;
+    previous.editable = this.editableValue;
+    this.overlayValue = previous;
+    this.rebuild({ force: false, preservePinned: true });
+    const changedNodeIds = [...new Set([...Object.keys(current.nodes), ...Object.keys(previous.nodes)])]
+      .filter((id) => JSON.stringify(current.nodes[id]) !== JSON.stringify(previous.nodes[id]));
+    this.emitLayoutChange(changedNodeIds);
     return this;
   }
 
@@ -268,7 +291,15 @@ export class DiagramInstance {
   }
 
   toSvgString(): string {
-    return new XMLSerializer().serializeToString(this.svg);
+    const clone = this.svg.cloneNode(true) as SVGSVGElement;
+    for (const control of clone.querySelectorAll("[data-finch-editor-trigger]")) control.remove();
+    return new XMLSerializer().serializeToString(clone);
+  }
+
+  downloadSvg(filename = `${this.modelValue.kind}.svg`): void {
+    this.assertActive();
+    const blob = new Blob([this.toSvgString()], { type: "image/svg+xml;charset=utf-8" });
+    this.downloadBlob(blob, filename);
   }
 
   toPngBlob(options: PngExportOptions = {}): Promise<Blob> {
@@ -278,6 +309,10 @@ export class DiagramInstance {
 
   async downloadPng(filename = `${this.modelValue.kind}.png`, options: PngExportOptions = {}): Promise<void> {
     const blob = await this.toPngBlob(options);
+    this.downloadBlob(blob, filename);
+  }
+
+  private downloadBlob(blob: Blob, filename: string): void {
     const url = URL.createObjectURL(blob);
     const link = this.svg.ownerDocument.createElement("a");
     link.href = url;
@@ -295,6 +330,7 @@ export class DiagramInstance {
 
   destroy(): void {
     if (this.destroyed) return;
+    this.rendererValue.svg.dispatchEvent(new CustomEvent("finch:destroy", { bubbles: true }));
     this.rendererValue.svg.remove();
     this.resizeObserver?.disconnect();
     this.selectedIds.clear();
@@ -340,6 +376,7 @@ export class DiagramInstance {
     for (const [id, state] of Object.entries(this.overlayValue.nodes)) this.rendererValue.setPinned(id, state.pinned);
     this.applyViewport(false);
     this.observeHost();
+    this.rendererValue.svg.dispatchEvent(new CustomEvent("finch:render", { bubbles: true }));
   }
 
   private bindInteractions(): void {
@@ -464,6 +501,7 @@ export class DiagramInstance {
     this.drag = undefined;
     if (this.rendererValue.svg.hasPointerCapture(event.pointerId)) this.rendererValue.svg.releasePointerCapture(event.pointerId);
     if (!drag.moved) return;
+    this.rememberLayout();
     const map = new Map(this.geometryValue.nodes.map((node) => [node.id, node]));
     for (const id of drag.origins.keys()) {
       const node = map.get(id);
@@ -485,8 +523,10 @@ export class DiagramInstance {
     if (!this.editableValue) return this;
     const values = typeof ids === "string" ? [ids] : ids;
     const map = new Map(this.geometryValue.nodes.map((node) => [node.id, node]));
-    const changed: string[] = [];
-    for (const id of values) {
+    const changed = values.filter((id) => map.has(id) && this.isPinned(id) !== pinned);
+    if (!changed.length) return this;
+    this.rememberLayout();
+    for (const id of changed) {
       const node = map.get(id);
       if (!node) continue;
       const existing = this.overlayValue.nodes[id];
@@ -499,10 +539,13 @@ export class DiagramInstance {
         ...(existing?.height ? { height: existing.height } : {}),
       };
       this.rendererValue.setPinned(id, pinned);
-      changed.push(id);
     }
-    if (changed.length) this.emitLayoutChange(changed);
+    this.emitLayoutChange(changed);
     return this;
+  }
+
+  private rememberLayout(): void {
+    this.layoutHistory.push(cloneOverlay(this.overlayValue));
   }
 
   private withContainerDescendants(ids: ReadonlySet<string>): Set<string> {

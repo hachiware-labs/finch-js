@@ -23,32 +23,26 @@ Create `quickstart.html` in the repository root and paste in the following:
 <!doctype html>
 <meta charset="UTF-8" />
 <style>
-  body { display: grid; grid-template-columns: 320px 1fr; min-height: 100vh; margin: 0; }
-  textarea { padding: 16px; font: 14px/1.6 monospace; }
-  #diagram { padding: 24px; }
+  body { min-height: 100vh; margin: 0; }
+  #diagram { min-height: 100vh; overflow: auto; padding: 24px; }
 </style>
 
-<textarea id="source">@deployment
+<div id="diagram" aria-label="Deployment diagram"></div>
+
+<script src="./dist/finch.global.js"></script>
+<script>
+  const deploymentSource = `
+@deployment
 node browser "Web Browser" [shape=rounded]
 server api "API Server"
 database db "PostgreSQL"
 browser -> api: HTTPS
-api -> db: SQL</textarea>
-<div id="diagram"></div>
+api -> db: SQL
+  `.trim();
 
-<script src="./dist/finch.global.js"></script>
-<script>
-  const source = document.querySelector("#source");
-  const host = document.querySelector("#diagram");
-  const layoutKey = "finch-layout";
-  const diagram = Finch.render(source.value, "#diagram");
-
-  const saved = localStorage.getItem(layoutKey);
-  if (saved) diagram.importLayout(saved);
-
-  source.addEventListener("input", () => diagram.update(source.value));
-  host.addEventListener("finch:layoutchange", ({ detail }) => {
-    localStorage.setItem(layoutKey, JSON.stringify(detail.overlay));
+  Finch.render(deploymentSource, {
+    target: "#diagram",
+    editor: { storageKey: "finch-quickstart" },
   });
 </script>
 ```
@@ -57,7 +51,7 @@ Open `quickstart.html` in a browser to turn the text into a diagram.
 
 ### 2. Drag and save
 
-Drag nodes to refine the layout. Finch.js saves the layout in the browser automatically and restores it after a reload. Edit the text on the left to redraw the diagram while retaining positions for stable node IDs.
+Drag nodes to refine the layout. Open the Finch button inside the diagram's lower-left to reveal the editor below the diagram, undo changes, and export SVG or PNG. Nothing is persisted until you press Save; saved source and layout are restored after a reload.
 
 See the [two-step tutorial](./docs/tutorial.md) for details or browse the [advanced examples](./examples/README.md) for complete diagrams.
 
@@ -78,7 +72,7 @@ import Finch, { createFinch } from "@hachiware-labs/finch-js";
 For a browser-global build, use a version-pinned CDN URL:
 
 ```html
-<script src="https://cdn.jsdelivr.net/npm/@hachiware-labs/finch-js@0.5.0/dist/finch.global.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@hachiware-labs/finch-js@0.5.1/dist/finch.global.js"></script>
 ```
 
 When developing Finch.js itself, install the repository dependencies and build it:
@@ -174,7 +168,7 @@ Deployment containers accept `layout=row`, `layout=column`, or `layout=grid`. Us
 
 Flowcharts use a vertical reading direction by default. The main path runs from top to bottom, while nodes in the same decision rank spread horizontally.
 
-In state diagrams, a fork/join section also reads vertically: parallel states sit between a fork bar above and a join bar below, followed by the joined successor.
+In state diagrams, a fork/join section also reads vertically: parallel states sit between a fork bar above and a join bar below, followed by the joined successor. Transitions touching a fork or join automatically use top/bottom ports. Override an endpoint when needed with `[fromPort=bottom toPort=top]`; each value may be `top`, `right`, `bottom`, or `left`.
 
 Comments can use a leading apostrophe on a full line, or `#` and `//` after whitespace.
 
@@ -209,15 +203,20 @@ diagram.importLayout(localStorage.getItem("diagram-layout"));
 
 When a drag, pin, layout command, or edit-mode change updates the overlay, the SVG emits a bubbling `finch:layoutchange` event. Its `detail` contains `{ overlay, changedNodeIds }`. Edit-mode changes also emit `finch:editchange` with `{ editable, overlay }` for toolbar synchronization.
 
-For an explicit editing session, mark the session dirty when `changedNodeIds` is non-empty and persist `exportLayout()` when the user switches from Edit ON to Edit OFF. This saves completed changes once without writing repeatedly during every pointer move.
+For an explicit editing session, mark the session dirty when `changedNodeIds` is non-empty and persist `exportLayout()` only when the user presses Save. Switching Edit ON/OFF does not imply saving.
+
+Use `diagram.update(nextSource)` for live editors. Nodes with the same stable ID retain their existing layout. Use `diagram.toSvgString()` when you need the generated SVG markup.
+
+The standard editor is added by `Finch.render()`. A Finch button is embedded inside the lower-left of the generated SVG and toggles the controls plus a source pane directly below the diagram. The diagram stays in view mode while this editor is closed and restores the editing-session state when it opens. Save persists the source and layout to `localStorage`; Edit ON/OFF never saves implicitly. SVG and PNG exports omit the UI-only Finch button.
 
 ```js
-diagram.svg.addEventListener("finch:layoutchange", ({ detail }) => {
-  localStorage.setItem("diagram-layout", JSON.stringify(detail.overlay));
+const diagram = Finch.render(source, {
+  target: "#diagram",
+  editor: { storageKey: "system-map" },
 });
 ```
 
-Use `diagram.update(nextSource)` for live editors. Nodes with the same stable ID retain their existing layout. Use `diagram.toSvgString()` when you need the generated SVG markup.
+The menu includes Undo, zoom, Fit, Pin, automatic layout, reset, SVG, and PNG actions. Use `editor: false` for a bare diagram, or `Finch.attachEditor()` when adding the editor later to an instance that was created without it.
 
 ### Edge routes
 
@@ -230,7 +229,13 @@ Built-in layouts choose an edge route in this order:
 
 This routing runs during the first render, `update()`, layout import, and rerouting after a node moves. It first keeps visual space around nodes. In a narrow gap, it reduces that space while still avoiding the node itself. The first and last segment keep their original heading, so an arrow approaches the node boundary from outside. If overlapping nodes leave no safe route, Finch.js keeps the established basic route instead of dropping the edge.
 
-### Save as PNG
+### Save as SVG or PNG
+
+Call `downloadSvg()` to save the current diagram as SVG. Editor UI, including the Finch button, is removed from the image output.
+
+```js
+diagram.downloadSvg("system-map.svg");
+```
 
 Call `downloadPng()` to save the current diagram as a PNG file. The image includes node positions after editing. Viewport zoom does not change the PNG dimensions.
 
@@ -295,15 +300,17 @@ See [Extending Finch.js](./docs/extensions.md) for complete plugin contracts and
 | `setTheme(theme)` / `setLayout(name)` | Change presentation |
 | `select(ids)` / `clearSelection()` | Manage selection from code |
 | `pin(ids)` / `unpin(ids)` | Protect or release manual positions |
-| `autoLayout()` / `resetLayout()` | Recalculate or clear layout state |
+| `autoLayout()` / `resetLayout()` / `undoLayout()` | Recalculate, clear, or undo layout state |
 | `setZoom(value)` / `zoomIn()` / `zoomOut()` | Control viewport magnification |
-| `setEditable(value)` / `editable` | Switch between layout editing and drag-to-pan viewing |
+| `setEditable(value)` / `editable` / `canUndo` | Switch edit mode and inspect whether Undo is available |
 | `fit("diagram")` / `fit("width")` / `resetZoom()` | Fit or reset the viewport |
 | `exportLayout()` / `importLayout(value)` | Persist the layout overlay |
 | `saveLayout(target?)` | Write the overlay into a JSON script element |
 | `toSvgString()` | Serialize the current SVG |
+| `downloadSvg(filename?)` | Save the current diagram as an SVG file |
 | `toPngBlob(options?)` | Create a PNG `Blob` from the current diagram |
 | `downloadPng(filename?, options?)` | Save the current diagram as a PNG file |
+| `Finch.attachEditor(instance, options?)` | Add the diagram-anchored HTML edit menu and source pane |
 | `destroy()` | Remove the SVG and disable the instance |
 
 The package includes TypeScript declarations for the public API and plugin interfaces.

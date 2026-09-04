@@ -6,6 +6,7 @@ import { builtInShapes } from "./shapes.js";
 import { defaultTheme, midnightTheme } from "./theme.js";
 import type { DiagramPlugin, LayoutPlugin, RenderOptions, ShapePlugin, ThemePlugin, FinchApi } from "./types.js";
 import { createOverlay } from "./utils.js";
+import { attachEditor } from "./editor.js";
 
 export class FinchEngine implements FinchApi {
   private readonly registry = new Registry();
@@ -31,7 +32,15 @@ export class FinchEngine implements FinchApi {
     const normalized: RenderOptions = typeof options === "string" || isElement(options)
       ? { target: options }
       : options;
-    return new DiagramInstance(source, normalized, this.registry);
+    const instance = new DiagramInstance(source, normalized, this.registry);
+    if (instance.host && normalized.editor !== false) {
+      attachEditor(instance, typeof normalized.editor === "object" ? normalized.editor : {});
+    }
+    return instance;
+  }
+
+  attachEditor(instance: DiagramInstance, options = {}) {
+    return attachEditor(instance, options);
   }
 
   parse(source: string) {
@@ -71,6 +80,7 @@ export const Finch = createFinch();
 export default Finch;
 
 export { DiagramInstance } from "./instance.js";
+export { attachEditor } from "./editor.js";
 export { defaultTheme, midnightTheme } from "./theme.js";
 export { parseActivity, parseClass, parseComponent, parseDeployment, parseEr, parseFlowchart, parseSequence, parseSlide, parseState, parseUsecase } from "./parser.js";
 export type * from "./types.js";

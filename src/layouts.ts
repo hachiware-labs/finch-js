@@ -588,7 +588,6 @@ interface DeploymentEdgePlan {
   target: GeometryNode;
   sourceSide: PortSide;
   targetSide: PortSide;
-  horizontal: boolean;
 }
 
 interface PortRequest {
@@ -854,15 +853,30 @@ function routeDeployment(nodes: GeometryNode[], model: LayoutModel): GeometryEdg
     if (!source || !target) continue;
     const sourceCenter = center(source);
     const targetCenter = center(target);
-    const horizontal = edge.from === edge.to
-      || Math.abs(targetCenter.x - sourceCenter.x) >= Math.abs(targetCenter.y - sourceCenter.y) * 0.55;
+    const requestedSourceSide = portSide(edge.attributes?.fromPort);
+    const requestedTargetSide = portSide(edge.attributes?.toPort);
+    const stateBarConnection = model.kind === "state" && (source.shape === "uml-bar" || target.shape === "uml-bar");
+    const horizontal = !stateBarConnection && (edge.from === edge.to
+      || Math.abs(targetCenter.x - sourceCenter.x) >= Math.abs(targetCenter.y - sourceCenter.y) * 0.55);
     if (horizontal) {
       const forward = targetCenter.x >= sourceCenter.x;
-      plans.push({ edge, source, target, sourceSide: forward ? "right" : "left", targetSide: forward ? "left" : "right", horizontal });
+      plans.push({
+        edge,
+        source,
+        target,
+        sourceSide: requestedSourceSide ?? (forward ? "right" : "left"),
+        targetSide: requestedTargetSide ?? (forward ? "left" : "right"),
+      });
       continue;
     }
     const forward = targetCenter.y >= sourceCenter.y;
-    plans.push({ edge, source, target, sourceSide: forward ? "bottom" : "top", targetSide: forward ? "top" : "bottom", horizontal });
+    plans.push({
+      edge,
+      source,
+      target,
+      sourceSide: requestedSourceSide ?? (forward ? "bottom" : "top"),
+      targetSide: requestedTargetSide ?? (forward ? "top" : "bottom"),
+    });
   }
 
   const requestsByPort = new Map<string, PortRequest[]>();
@@ -871,8 +885,8 @@ function routeDeployment(nodes: GeometryNode[], model: LayoutModel): GeometryEdg
     const sourceTargetCenter = center(plan.target);
     const targetSourceCenter = center(plan.source);
     const requests: PortRequest[] = [
-      { plan, endpoint: "source", node: plan.source, side: plan.sourceSide, sortValue: plan.horizontal ? sourceTargetCenter.y : sourceTargetCenter.x },
-      { plan, endpoint: "target", node: plan.target, side: plan.targetSide, sortValue: plan.horizontal ? targetSourceCenter.y : targetSourceCenter.x },
+      { plan, endpoint: "source", node: plan.source, side: plan.sourceSide, sortValue: horizontalPort(plan.sourceSide) ? sourceTargetCenter.y : sourceTargetCenter.x },
+      { plan, endpoint: "target", node: plan.target, side: plan.targetSide, sortValue: horizontalPort(plan.targetSide) ? targetSourceCenter.y : targetSourceCenter.x },
     ];
     for (const request of requests) {
       const key = `${request.node.id}:${request.side}:${request.endpoint}`;
@@ -907,7 +921,7 @@ function routeDeployment(nodes: GeometryNode[], model: LayoutModel): GeometryEdg
         { x: sourceCenter.x, y: source.y - 18 },
         { x: sourceCenter.x, y: source.y },
       ];
-    } else if (plan.horizontal) {
+    } else if (horizontalPort(plan.sourceSide) && horizontalPort(plan.targetSide)) {
       const start = allocatedPorts.get(`${edge.id}:source`) ?? portPoint(source, plan.sourceSide, 0, 1);
       const end = allocatedPorts.get(`${edge.id}:target`) ?? portPoint(target, plan.targetSide, 0, 1);
       const sourceBundle = ["er", "slide"].includes(model.kind) ? 0 : requestsByPort.get(`${source.id}:${plan.sourceSide}:source`)?.length ?? 0;
@@ -915,7 +929,7 @@ function routeDeployment(nodes: GeometryNode[], model: LayoutModel): GeometryEdg
         ? start.x + (plan.sourceSide === "right" ? 24 : -24)
         : (start.x + end.x) / 2;
       points = [start, { x: middleX, y: start.y }, { x: middleX, y: end.y }, end];
-    } else {
+    } else if (!horizontalPort(plan.sourceSide) && !horizontalPort(plan.targetSide)) {
       const start = allocatedPorts.get(`${edge.id}:source`) ?? portPoint(source, plan.sourceSide, 0, 1);
       const end = allocatedPorts.get(`${edge.id}:target`) ?? portPoint(target, plan.targetSide, 0, 1);
       const sourceBundle = ["er", "slide"].includes(model.kind) ? 0 : requestsByPort.get(`${source.id}:${plan.sourceSide}:source`)?.length ?? 0;
@@ -923,11 +937,37 @@ function routeDeployment(nodes: GeometryNode[], model: LayoutModel): GeometryEdg
         ? start.y + (plan.sourceSide === "bottom" ? 24 : -24)
         : (start.y + end.y) / 2;
       points = [start, { x: start.x, y: middleY }, { x: end.x, y: middleY }, end];
+    } else {
+      const start = allocatedPorts.get(`${edge.id}:source`) ?? portPoint(source, plan.sourceSide, 0, 1);
+      const end = allocatedPorts.get(`${edge.id}:target`) ?? portPoint(target, plan.targetSide, 0, 1);
+      const startOutside = offsetPort(start, plan.sourceSide, 24);
+      const endOutside = offsetPort(end, plan.targetSide, 24);
+      points = horizontalPort(plan.sourceSide)
+        ? [start, startOutside, { x: endOutside.x, y: startOutside.y }, endOutside, end]
+        : [start, startOutside, { x: startOutside.x, y: endOutside.y }, endOutside, end];
     }
     const routed = { ...edge, points: chooseSmartRoute(points, source, target, nodes, routedEdges) };
     routedEdges.push(routed);
   }
   return routedEdges;
+}
+
+function portSide(value: string | undefined): PortSide | undefined {
+  const normalized = value?.toLowerCase();
+  return normalized === "left" || normalized === "right" || normalized === "top" || normalized === "bottom"
+    ? normalized
+    : undefined;
+}
+
+function horizontalPort(side: PortSide): boolean {
+  return side === "left" || side === "right";
+}
+
+function offsetPort(point: Point, side: PortSide, distance: number): Point {
+  if (side === "left") return { x: point.x - distance, y: point.y };
+  if (side === "right") return { x: point.x + distance, y: point.y };
+  if (side === "top") return { x: point.x, y: point.y - distance };
+  return { x: point.x, y: point.y + distance };
 }
 
 function portPoint(node: GeometryNode, side: PortSide, index: number, count: number): Point {

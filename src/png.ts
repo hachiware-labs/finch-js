@@ -25,6 +25,7 @@ export async function svgToPngBlob(
   clone.style.maxWidth = "none";
   clone.style.background = background ?? "transparent";
   for (const node of clone.querySelectorAll(".finch-node")) node.classList.remove("is-selected");
+  for (const control of clone.querySelectorAll("[data-finch-editor-trigger]")) control.remove();
 
   const markup = new XMLSerializer().serializeToString(clone);
   const source = new Blob([markup], { type: "image/svg+xml;charset=utf-8" });

@@ -41,17 +41,19 @@ receive -> done
 
 ## Layout intent
 
-- Treat reading direction as part of the diagram's meaning. Flowcharts normally progress from top to bottom, with only same-rank branches spreading horizontally. In state diagrams, keep fork/join regions vertical: fork above, parallel states across one or more middle rows, join below, then the joined successor.
+- Treat reading direction as part of the diagram's meaning. Flowcharts normally progress from top to bottom, with only same-rank branches spreading horizontally. In state diagrams, keep fork/join regions vertical: fork above, parallel states across one or more middle rows, join below, then the joined successor. Connections touching a state fork or join use top/bottom ports automatically; when an endpoint needs an explicit side, use `fromPort` or `toPort` with `top`, `right`, `bottom`, or `left` as documented in the syntax reference.
 - Avoid unnecessarily wide output. During visual inspection, consider the SVG's intrinsic width and height as well as its responsive viewport size. Prefer a compact or portrait-oriented result when it preserves hierarchy and readable edge routing.
 - For deployment diagrams, use source-level container layout hints when the automatic hierarchy becomes too wide or obscures subsystem structure. Prefer `layout`, `columns`, `order`, `row`, `column`, and `place` over fixed coordinates; read the Deployment section of [references/diagram-syntax.md](references/diagram-syntax.md) for their semantics.
 - Keep exact manual coordinates in the layout overlay. Do not encode `x` and `y` into semantic Finch source merely to repair one rendering.
 
 ## Edit mode and persistence
 
-- When adding viewport controls, include an `Edit ON/OFF` toggle next to zoom controls. New diagrams start editable. In view mode, leave zoom in, zoom out, and reset available; disable Fit and layout-editing controls.
+- `Finch.render()` adds the standard editor automatically. It embeds a compact Finch icon inside the lower-left of the generated SVG; the icon toggles an HTML menu directly below the diagram, with the source-editing pane below its controls. The active icon reverses its foreground/background colors. Pass `editor: { storageKey: "..." }` to configure persistence, or `editor: false` only when the page explicitly needs a bare diagram. SVG and PNG exports omit this UI-only icon.
+- The built-in menu includes zoom, Edit ON/OFF, Undo, Pin/Unpin, automatic layout, reset, Fit, explicit Save, SVG export, and PNG export. A diagram using the standard editor is view-only while its menu is closed; opening the menu restores the editing state from that editing session. In view mode, zoom in, zoom out, and reset remain available; Fit and layout-editing controls are disabled.
 - Use `instance.setEditable()` and reflect `instance.editable` with `aria-pressed`. Listen for `finch:editchange` when the toolbar must stay synchronized.
 - Save and restore edit mode through the layout overlay. `exportLayout()` includes `editable`, and `importLayout()` restores it; an older overlay without the field means edit mode on.
-- For pages that persist edits, treat a `finch:layoutchange` with non-empty `changedNodeIds` as dirty. When the user switches from Edit ON to Edit OFF, save `exportLayout()` once if dirty, then clear the dirty state.
+- For pages that persist edits, treat a `finch:layoutchange` with non-empty `changedNodeIds` as dirty. Save only when the user presses Save; switching Edit ON/OFF must never persist implicitly.
+- Use `instance.undoLayout()` and `instance.canUndo` for custom Undo controls. Use `instance.downloadSvg()` and `instance.downloadPng()` for explicit image export.
 - In edit mode, direct node dragging adjusts layout. In view mode, a plain left drag pans within the diagram and must not write node positions to the overlay.
 - When a node is dragged beyond a deployment container frame in edit mode, the containing frame and every ancestor frame expand to keep it enclosed. This interaction is grow-only; use automatic layout or reset to compact frames again.
 

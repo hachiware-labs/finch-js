@@ -6,6 +6,6 @@
     "declarationDir": "dist",
     "types": []
   },
-  "include": ["src/index.ts", "src/browser.ts"],
+  "include": ["src/index.ts", "src/browser.ts", "src/assets.d.ts"],
   "exclude": ["tests"]
 }

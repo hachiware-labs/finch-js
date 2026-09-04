@@ -66,6 +66,7 @@ describe("PNG export", () => {
     expect(context.drawImage).toHaveBeenCalledWith(expect.any(TestImage), 0, 0, instance.geometry.width, instance.geometry.height);
     expect(markup).toContain("translate(321 123)");
     expect(markup).not.toMatch(/class="[^"]*is-selected/);
+    expect(markup).not.toContain("data-finch-editor-trigger");
     expect(instance.svg.querySelector(".is-selected")).not.toBeNull();
     expect(revokeObjectUrl).toHaveBeenCalledWith("blob:diagram");
   });
@@ -87,5 +88,25 @@ describe("PNG export", () => {
     expect(document.querySelector("a[download]")).toBeNull();
     await vi.runAllTimersAsync();
     expect(revokeObjectUrl).toHaveBeenCalledWith("blob:png");
+  });
+
+  it("downloads the SVG with the requested file name", async () => {
+    vi.useFakeTimers();
+    const instance = createFinch().render('@deployment\nnode api "API"', "#diagram");
+    const createObjectUrl = vi.fn((_blob: Blob | MediaSource) => "blob:svg");
+    const revokeObjectUrl = vi.fn();
+    vi.stubGlobal("URL", { createObjectURL: createObjectUrl, revokeObjectURL: revokeObjectUrl });
+    let downloadedName = "";
+    vi.spyOn(HTMLAnchorElement.prototype, "click").mockImplementation(function (this: HTMLAnchorElement) {
+      downloadedName = this.download;
+    });
+
+    instance.downloadSvg("edited-diagram.svg");
+    expect(downloadedName).toBe("edited-diagram.svg");
+    expect(createObjectUrl).toHaveBeenCalledWith(expect.objectContaining({ type: "image/svg+xml;charset=utf-8" }));
+    const svgBlob = createObjectUrl.mock.calls[0]?.[0] as Blob;
+    expect(await svgBlob.text()).not.toContain("data-finch-editor-trigger");
+    await vi.runAllTimersAsync();
+    expect(revokeObjectUrl).toHaveBeenCalledWith("blob:svg");
   });
 });

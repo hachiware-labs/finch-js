@@ -16,54 +16,45 @@ Create `tutorial.html` in the repository root and paste in the following. The pa
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Finch.js</title>
     <style>
-      body { display: grid; grid-template-columns: 320px 1fr; min-height: 100vh; margin: 0; }
-      textarea { padding: 16px; font: 14px/1.6 monospace; }
-      #diagram { overflow: auto; padding: 24px; }
+      body { min-height: 100vh; margin: 0; }
+      #diagram { min-height: 100vh; overflow: auto; padding: 24px; }
     </style>
   </head>
   <body>
-    <textarea id="source" spellcheck="false">@deployment
+    <div id="diagram" aria-label="Deployment diagram"></div>
+
+    <script src="./dist/finch.global.js"></script>
+    <script>
+      const deploymentSource = `
+@deployment
 node browser "Web Browser" [shape=rounded]
 server api "API Server"
 database db "PostgreSQL"
 
 browser -> api: HTTPS
-api -> db: SQL</textarea>
-    <div id="diagram"></div>
+api -> db: SQL
+      `.trim();
 
-    <script src="./dist/finch.global.js"></script>
-    <script>
-      const source = document.querySelector("#source");
-      const host = document.querySelector("#diagram");
-      const layoutKey = "finch-tutorial-layout";
-      const diagram = Finch.render(source.value, "#diagram");
-
-      const savedLayout = localStorage.getItem(layoutKey);
-      if (savedLayout) diagram.importLayout(savedLayout);
-
-      source.addEventListener("input", () => {
-        diagram.update(source.value);
-      });
-
-      host.addEventListener("finch:layoutchange", ({ detail }) => {
-        localStorage.setItem(layoutKey, JSON.stringify(detail.overlay));
+      Finch.render(deploymentSource, {
+        target: "#diagram",
+        editor: { storageKey: "finch-tutorial" },
       });
     </script>
   </body>
 </html>
 ```
 
-Open `tutorial.html` in a browser. Finch.js turns the text on the left into a diagram on the right and redraws it as you edit.
+Open `tutorial.html` in a browser. Finch.js draws the diagram and adds a Finch button inside its lower-left; the button reveals the editor below the diagram. The diagram stays in view mode while the editor is closed.
 
 When using the tutorial outside this repository, replace the local runtime script with the published, version-pinned package URL:
 
 ```html
-<script src="https://cdn.jsdelivr.net/npm/@hachiware-labs/finch-js@0.5.0/dist/finch.global.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@hachiware-labs/finch-js@0.5.1/dist/finch.global.js"></script>
 ```
 
 ## 2. Arrange and save the layout
 
-Drag nodes on the right to arrange them. Double-click a node to pin its position. Finch.js saves layout changes in the browser automatically and restores them after a reload.
+Drag nodes to arrange them. Double-click a node to pin its position. Open the Finch menu to edit the source or undo a layout change. Press Save explicitly to persist the source and layout; Edit ON/OFF does not save them. SVG and PNG export only the diagram image, without the Finch editor icon.
 
 In the source, `api` is the node ID and `"API Server"` is its visible label. Keep the ID stable when changing the label so the node retains its position.
 

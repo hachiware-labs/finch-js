@@ -271,108 +271,25 @@ prepared -> charge
 charge -> done`,
 };
 
-const source = document.querySelector("#source");
-const error = document.querySelector("#error");
 let instance;
-let timer;
-let layoutDirty = false;
-
-function saveCurrentLayout() {
-  if (!instance) return;
-  localStorage.setItem(`finch-layout:${instance.model.kind}`, instance.exportLayout());
-  layoutDirty = false;
-}
-
-function updateZoomReadout() {
-  const readout = document.querySelector("#zoom-value");
-  if (readout && instance) readout.textContent = `${Math.round(instance.zoom * 100)}%`;
-}
-
-function updateEditControls() {
-  const toggle = document.querySelector("#edit-mode");
-  const editable = instance?.editable ?? true;
-  toggle.textContent = editable ? "Edit ON" : "Edit OFF";
-  toggle.setAttribute("aria-pressed", String(editable));
-  for (const selector of ["#fit-diagram", "#fit-width", "#pin", "#layout"]) {
-    document.querySelector(selector).disabled = !editable;
-  }
-}
-
-function render(value, restore = false) {
-  try {
-    if (instance) instance.update(value);
-    else instance = Finch.render(value, { target: "#diagram" });
-    if (restore) {
-      const saved = localStorage.getItem(`finch-layout:${instance.model.kind}`);
-      if (saved) instance.importLayout(saved);
-    }
-    error.style.display = "none";
-    updateZoomReadout();
-    updateEditControls();
-  } catch (cause) {
-    error.textContent = cause instanceof Error ? cause.message : String(cause);
-    error.style.display = "inline";
-  }
-}
 
 function load(kind) {
-  source.value = examples[kind];
-  if (instance && instance.model.kind !== kind) instance.destroy();
-  instance = undefined;
-  layoutDirty = false;
-  render(source.value, true);
+  instance?.destroy();
+  instance = Finch.render(examples[kind], {
+    target: "#diagram",
+    editor: {
+      storageKey: `finch-playground:${kind}`,
+      svgFilename: `${kind}.svg`,
+      pngFilename: `${kind}.png`,
+    },
+  });
+  for (const button of document.querySelectorAll(".stage .toolbar button")) {
+    button.setAttribute("aria-pressed", String(button.id === kind));
+  }
 }
 
-source.addEventListener("input", () => {
-  clearTimeout(timer);
-  timer = setTimeout(() => render(source.value), 180);
-});
-document.querySelector("#deployment").addEventListener("click", () => load("deployment"));
-document.querySelector("#sequence").addEventListener("click", () => load("sequence"));
-document.querySelector("#flowchart").addEventListener("click", () => load("flowchart"));
-document.querySelector("#state").addEventListener("click", () => load("state"));
-document.querySelector("#er").addEventListener("click", () => load("er"));
-document.querySelector("#component").addEventListener("click", () => load("component"));
-document.querySelector("#slide").addEventListener("click", () => load("slide"));
-document.querySelector("#class").addEventListener("click", () => load("class"));
-document.querySelector("#usecase").addEventListener("click", () => load("usecase"));
-document.querySelector("#activity").addEventListener("click", () => load("activity"));
-document.querySelector("#zoom-out").addEventListener("click", () => { instance?.zoomOut(); updateZoomReadout(); });
-document.querySelector("#zoom-in").addEventListener("click", () => { instance?.zoomIn(); updateZoomReadout(); });
-document.querySelector("#zoom-value").addEventListener("click", () => { instance?.resetZoom(); updateZoomReadout(); });
-document.querySelector("#edit-mode").addEventListener("click", () => {
-  if (!instance) return;
-  const leavingEditMode = instance.editable;
-  instance.setEditable(!instance.editable);
-  if (leavingEditMode && layoutDirty) saveCurrentLayout();
-});
-document.querySelector("#fit-diagram").addEventListener("click", () => { instance?.fit("diagram"); updateZoomReadout(); });
-document.querySelector("#fit-width").addEventListener("click", () => { instance?.fit("width"); updateZoomReadout(); });
-document.querySelector("#diagram").addEventListener("finch:zoomchange", updateZoomReadout);
-document.querySelector("#diagram").addEventListener("finch:editchange", updateEditControls);
-document.querySelector("#diagram").addEventListener("finch:layoutchange", (event) => {
-  if (event.detail.changedNodeIds.length) layoutDirty = true;
-});
-document.querySelector("#layout").addEventListener("click", () => instance?.autoLayout());
-document.querySelector("#pin").addEventListener("click", () => {
-  if (!instance?.selection.length) return;
-  for (const id of instance.selection) instance.isPinned(id) ? instance.unpin(id) : instance.pin(id);
-});
-document.querySelector("#save").addEventListener("click", () => {
-  saveCurrentLayout();
-});
-document.querySelector("#download-png").addEventListener("click", async (event) => {
-  if (!instance) return;
-  const button = event.currentTarget;
-  button.disabled = true;
-  try {
-    await instance.downloadPng(`${instance.model.kind}.png`);
-  } catch (cause) {
-    error.textContent = cause instanceof Error ? cause.message : String(cause);
-    error.style.display = "inline";
-  } finally {
-    button.disabled = false;
-  }
-});
+for (const kind of Object.keys(examples)) {
+  document.querySelector(`#${kind}`).addEventListener("click", () => load(kind));
+}
 
 load("deployment");

@@ -1,7 +1,19 @@
 // @vitest-environment jsdom
 
 import { beforeEach, describe, expect, it } from "vitest";
-import { createFinch } from "../src/index";
+import { createFinch as createFinchEngine } from "../src/index";
+
+function createBareFinch() {
+  const finch = createFinchEngine();
+  const render = finch.render.bind(finch);
+  finch.render = (source, options = {}) => {
+    const normalized = typeof options === "string" || options instanceof Element
+      ? { target: options, editor: false as const }
+      : { ...options, editor: false as const };
+    return render(source, normalized);
+  };
+  return finch;
+}
 
 describe("diagram instance", () => {
   beforeEach(() => {
@@ -9,7 +21,7 @@ describe("diagram instance", () => {
   });
 
   it("renders an accessible SVG", () => {
-    const finch = createFinch();
+    const finch = createBareFinch();
     const instance = finch.render("@deployment\nnode api \"API\"\nnode db \"DB\"\napi -> db", "#diagram");
 
     expect(instance.svg.getAttribute("role")).toBe("img");
@@ -19,7 +31,7 @@ describe("diagram instance", () => {
   });
 
   it("wraps long node labels while keeping short labels unchanged", () => {
-    const finch = createFinch();
+    const finch = createBareFinch();
     const instance = finch.render(`
 @deployment
 node short "API"
@@ -51,7 +63,7 @@ english -> japanese
   });
 
   it("renders automatic sequence activations and typed frames", () => {
-    const finch = createFinch();
+    const finch = createBareFinch();
     const instance = finch.render(`
 @sequence
 A -> B: Request
@@ -69,7 +81,7 @@ B --> A: Response
   });
 
   it("retains a stable-id position after label and edge changes", () => {
-    const finch = createFinch();
+    const finch = createBareFinch();
     const instance = finch.render("@deployment\nnode api \"API\"\nnode db \"DB\"\napi -> db", "#diagram");
     const api = instance.geometry.nodes.find((node) => node.id === "api")!;
     instance.importLayout({
@@ -87,7 +99,7 @@ B --> A: Response
   });
 
   it("exports only active layout state and supports reset", () => {
-    const finch = createFinch();
+    const finch = createBareFinch();
     const instance = finch.render("@sequence\nA -> B: hello", "#diagram");
     instance.pin("A");
     const exported = JSON.parse(instance.exportLayout()) as { diagram: string; nodes: Record<string, unknown> };
@@ -99,7 +111,7 @@ B --> A: Response
   });
 
   it("persists edit mode with the layout overlay and defaults old overlays to editable", () => {
-    const finch = createFinch();
+    const finch = createBareFinch();
     const host = document.querySelector<HTMLElement>("#diagram")!;
     const instance = finch.render('@deployment\nnode api "API"', host);
     let changed: boolean | undefined;
@@ -133,11 +145,29 @@ B --> A: Response
     expect(configured.editable).toBe(false);
   });
 
+  it("undoes layout edits one step at a time", () => {
+    const instance = createBareFinch().render('@deployment\nnode api "API"\nnode db "DB"\napi -> db', "#diagram");
+
+    expect(instance.canUndo).toBe(false);
+    instance.pin("api");
+    instance.pin("db");
+    expect(instance.canUndo).toBe(true);
+
+    instance.undoLayout();
+    expect(instance.isPinned("api")).toBe(true);
+    expect(instance.isPinned("db")).toBe(false);
+    expect(instance.canUndo).toBe(true);
+
+    instance.undoLayout();
+    expect(instance.isPinned("api")).toBe(false);
+    expect(instance.canUndo).toBe(false);
+  });
+
   it("uses a plain left drag to pan instead of editing while edit mode is off", () => {
     const host = document.querySelector<HTMLElement>("#diagram")!;
     host.scrollLeft = 80;
     host.scrollTop = 60;
-    const instance = createFinch().render('@deployment\nnode api "API"', host);
+    const instance = createBareFinch().render('@deployment\nnode api "API"', host);
     instance.setEditable(false);
     const svg = instance.svg;
     Object.defineProperty(svg, "setPointerCapture", { configurable: true, value: () => undefined });
@@ -159,7 +189,7 @@ B --> A: Response
   });
 
   it("packs independent container children into a compact grid", () => {
-    const finch = createFinch();
+    const finch = createBareFinch();
     const instance = finch.render(`
 @deployment
 container app "Application" {
@@ -197,7 +227,7 @@ g -> worker
   });
 
   it("separates sibling blocks inside a nested deployment container", () => {
-    const finch = createFinch();
+    const finch = createBareFinch();
     const instance = finch.render(`
 @deployment
 container platform "Platform" {
@@ -241,7 +271,7 @@ container platform "Production Platform" {
   }
 }
 `;
-    const instance = createFinch().render(source, host);
+    const instance = createBareFinch().render(source, host);
     const svg = instance.svg;
     Object.defineProperty(svg, "createSVGPoint", {
       configurable: true,
@@ -279,7 +309,7 @@ container platform "Production Platform" {
     expect(changedIds).toEqual(expect.arrayContaining(["edgebox", "edge", "platform"]));
 
     document.body.insertAdjacentHTML("beforeend", '<div id="restored"></div>');
-    const restored = createFinch().render(source, { target: "#restored", overlay: instance.exportLayout() });
+    const restored = createBareFinch().render(source, { target: "#restored", overlay: instance.exportLayout() });
     const restoredNode = (id: string) => restored.geometry.nodes.find((candidate) => candidate.id === id)!;
     expect(restoredNode("edge").x + restoredNode("edge").width)
       .toBeGreaterThanOrEqual(restoredNode("edgebox").x + restoredNode("edgebox").width + 26);
@@ -288,7 +318,7 @@ container platform "Production Platform" {
   });
 
   it("honors deployment layout hints without requiring manual coordinates", () => {
-    const finch = createFinch();
+    const finch = createBareFinch();
     const instance = finch.render(`
 @deployment
 container platform "Platform" [layout=grid columns=2] {
@@ -320,7 +350,7 @@ platform --> observe: telemetry
   });
 
   it("distributes multiple connections across distinct ports", () => {
-    const finch = createFinch();
+    const finch = createBareFinch();
     const instance = finch.render(`
 @deployment
 node mobile "Mobile App"
@@ -340,7 +370,7 @@ cdn -> waf
   });
 
   it("bundles fan-out edges into one visible trunk", () => {
-    const finch = createFinch();
+    const finch = createBareFinch();
     const instance = finch.render(`
 @deployment
 server gateway "API Gateway"
@@ -360,7 +390,7 @@ gateway -> order
   });
 
   it("renders flowchart decision and input-output shapes", () => {
-    const finch = createFinch();
+    const finch = createBareFinch();
     const instance = finch.render(`
 @flowchart
 start begin "Start"
@@ -378,7 +408,7 @@ valid -> done: Yes
   });
 
   it("lays out flowcharts from top to bottom and keeps branches on one row", () => {
-    const finch = createFinch();
+    const finch = createBareFinch();
     const instance = finch.render(`
 @flowchart
 start begin "Start"
@@ -407,7 +437,7 @@ reject -> done
   });
 
   it("keeps cyclic state transitions on multiple ranks", () => {
-    const finch = createFinch();
+    const finch = createBareFinch();
     const instance = finch.render(`
 @state
 initial start
@@ -426,7 +456,7 @@ busy -> done: finish
   });
 
   it("merges state transitions at one junction port", () => {
-    const finch = createFinch();
+    const finch = createBareFinch();
     const instance = finch.render(`
 @state
 state completed "Completed"
@@ -446,7 +476,7 @@ finish -> done
   });
 
   it("stacks state fork and join sections vertically", () => {
-    const finch = createFinch();
+    const finch = createBareFinch();
     const instance = finch.render(`
 @state
 state ready "Ready"
@@ -473,10 +503,33 @@ merged -> done
     expect(centerX("split")).toBe(centerX("merged"));
     expect(centerX("merged")).toBe(centerX("done"));
     expect(centerX("ready")).toBe(centerX("split"));
+
+    for (const edge of instance.geometry.edges.filter((candidate) => candidate.from === "split" || candidate.to === "merged")) {
+      const source = node(edge.from);
+      const target = node(edge.to);
+      expect(edge.points[0]?.y).toBe(source.y + source.height);
+      expect(edge.points[edge.points.length - 1]?.y).toBe(target.y);
+    }
+  });
+
+  it("honors explicit state transition port sides", () => {
+    const instance = createBareFinch().render(`
+@state
+state source "Source"
+state target "Target"
+source -> target: vertical route [fromPort=bottom toPort=top]
+`, "#diagram");
+    const edge = instance.geometry.edges[0]!;
+    const source = instance.geometry.nodes.find((node) => node.id === "source")!;
+    const target = instance.geometry.nodes.find((node) => node.id === "target")!;
+
+    expect(edge.points[0]?.y).toBe(source.y + source.height);
+    expect(edge.points[edge.points.length - 1]?.y).toBe(target.y);
+    expect(edge.label).toBe("vertical route");
   });
 
   it("renders ER entity rows and relationship cardinalities", () => {
-    const finch = createFinch();
+    const finch = createBareFinch();
     const instance = finch.render(`
 @er
 entity users "Users" {
@@ -496,7 +549,7 @@ users 1 -> many orders: places
   });
 
   it("renders component and external system shapes", () => {
-    const finch = createFinch();
+    const finch = createBareFinch();
     const instance = finch.render(`
 @component
 system platform "Platform" {
@@ -512,7 +565,7 @@ api -> payments: HTTPS
   });
 
   it("renders a presentation slide with compositional layout", () => {
-    const finch = createFinch();
+    const finch = createBareFinch();
     const instance = finch.render(`
 @slide
 title "From text to presentation"
@@ -537,7 +590,7 @@ callout result "One source, one clear story" [body="Keep the structure readable 
   });
 
   it("renders common presentation patterns as native slide elements", () => {
-    const finch = createFinch();
+    const finch = createBareFinch();
     const instance = finch.render(`
 @slide
 row metrics {
@@ -563,7 +616,7 @@ row roadmap {
   });
 
   it("renders UML class compartments, multiplicities, and relationship markers", () => {
-    const finch = createFinch();
+    const finch = createBareFinch();
     const instance = finch.render(`
 @class
 interface Repository {
@@ -592,7 +645,7 @@ Order ..|> Repository
   });
 
   it("renders use cases inside a system boundary", () => {
-    const finch = createFinch();
+    const finch = createBareFinch();
     const instance = finch.render(`
 @usecase
 actor user "Customer"
@@ -609,7 +662,7 @@ user -> checkout
   });
 
   it("lays out UML activities from top to bottom with parallel branches on one row", () => {
-    const finch = createFinch();
+    const finch = createBareFinch();
     const instance = finch.render(`
 @activity
 start begin
@@ -640,7 +693,7 @@ finish -> done
     const host = document.querySelector<HTMLElement>("#diagram")!;
     Object.defineProperty(host, "clientWidth", { configurable: true, value: 420 });
     Object.defineProperty(host, "clientHeight", { configurable: true, value: 300 });
-    const finch = createFinch();
+    const finch = createBareFinch();
     const instance = finch.render(`
 @deployment
 node web "Web"

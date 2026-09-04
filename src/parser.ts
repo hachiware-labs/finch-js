@@ -228,13 +228,31 @@ function parseSimpleDirectedGraph(
     if (relation) {
       const from = relation[1] ?? "";
       const to = relation[3] ?? "";
+      const rawLabel = (relation[4] ?? relation[5])?.trim();
+      let label = rawLabel;
+      let attributes: Record<string, string> | undefined;
+      const portBlock = rawLabel?.match(/^(.*?)(?:\s*)\[([^\]]*(?:fromPort|from-port|toPort|to-port)\s*=.+)\]$/i);
+      if (portBlock) {
+        const parsed = attributesFrom(portBlock[2]);
+        const fromPort = parsed.fromPort ?? parsed["from-port"];
+        const toPort = parsed.toPort ?? parsed["to-port"];
+        const validPorts = new Set(["top", "right", "bottom", "left"]);
+        if (fromPort && !validPorts.has(fromPort.toLowerCase())) throw new Error(`Line ${line.number}: invalid fromPort "${fromPort}".`);
+        if (toPort && !validPorts.has(toPort.toLowerCase())) throw new Error(`Line ${line.number}: invalid toPort "${toPort}".`);
+        attributes = {
+          ...(fromPort ? { fromPort: fromPort.toLowerCase() } : {}),
+          ...(toPort ? { toPort: toPort.toLowerCase() } : {}),
+        };
+        label = portBlock[1]?.trim() || undefined;
+      }
       connections.push({
         id: connectionId(from, to, connections.length),
         from,
         to,
-        ...((relation[4] ?? relation[5])?.trim() ? { label: unquote((relation[4] ?? relation[5])?.trim(), "") } : {}),
+        ...(label ? { label: unquote(label, "") } : {}),
         dashed: (relation[2] ?? "").includes("--") || (relation[2] ?? "").includes(".."),
         order: connections.length,
+        ...(attributes ? { attributes } : {}),
       });
       continue;
     }

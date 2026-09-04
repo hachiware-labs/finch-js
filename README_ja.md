@@ -23,32 +23,26 @@
 <!doctype html>
 <meta charset="UTF-8" />
 <style>
-  body { display: grid; grid-template-columns: 320px 1fr; min-height: 100vh; margin: 0; }
-  textarea { padding: 16px; font: 14px/1.6 monospace; }
-  #diagram { padding: 24px; }
+  body { min-height: 100vh; margin: 0; }
+  #diagram { min-height: 100vh; overflow: auto; padding: 24px; }
 </style>
 
-<textarea id="source">@deployment
+<div id="diagram" aria-label="デプロイメント図"></div>
+
+<script src="./dist/finch.global.js"></script>
+<script>
+  const deploymentSource = `
+@deployment
 node browser "Web ブラウザー" [shape=rounded]
 server api "API サーバー"
 database db "PostgreSQL"
 browser -> api: HTTPS
-api -> db: SQL</textarea>
-<div id="diagram"></div>
+api -> db: SQL
+  `.trim();
 
-<script src="./dist/finch.global.js"></script>
-<script>
-  const source = document.querySelector("#source");
-  const host = document.querySelector("#diagram");
-  const layoutKey = "finch-layout";
-  const diagram = Finch.render(source.value, "#diagram");
-
-  const saved = localStorage.getItem(layoutKey);
-  if (saved) diagram.importLayout(saved);
-
-  source.addEventListener("input", () => diagram.update(source.value));
-  host.addEventListener("finch:layoutchange", ({ detail }) => {
-    localStorage.setItem(layoutKey, JSON.stringify(detail.overlay));
+  Finch.render(deploymentSource, {
+    target: "#diagram",
+    editor: { storageKey: "finch-quickstart" },
   });
 </script>
 ```
@@ -57,7 +51,7 @@ api -> db: SQL</textarea>
 
 ### 2. ドラッグして保存する
 
-図のノードをドラッグして配置を整えます。レイアウトはブラウザーへ自動保存され、ページを再読み込みしても復元されます。左のテキストを書き換えると、同じIDの配置を保ったまま図が更新されます。
+図のノードをドラッグして配置を整えます。図の左下にある Finch ボタンを開くと、図の直下へソース編集、Undo、SVG/PNG 出力が現れます。Save を押すまでは保存されず、保存後はページを再読み込みしても source と layout が復元されます。
 
 詳しい説明は[2ステップのチュートリアル](./docs/tutorial_ja.md)、ほかの完成例は[発展例](./examples/README.md)で確認できます。
 
@@ -78,7 +72,7 @@ import Finch, { createFinch } from "@hachiware-labs/finch-js";
 ブラウザーグローバル版を使う場合は、バージョンを固定したCDN URLを指定します。
 
 ```html
-<script src="https://cdn.jsdelivr.net/npm/@hachiware-labs/finch-js@0.5.0/dist/finch.global.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@hachiware-labs/finch-js@0.5.1/dist/finch.global.js"></script>
 ```
 
 Finch.js 本体を開発する場合は、リポジトリの依存パッケージをインストールしてビルドします。
@@ -174,7 +168,7 @@ Deployment のコンテナには `layout=row`、`layout=column`、`layout=grid` 
 
 Flowchart は上から下へ読む縦方向が既定です。主経路は縦に進み、同じ分岐段階の Shape だけを横方向へ展開します。
 
-State 図の fork/join 部分も縦方向に読みます。並行する State を上側の fork bar と下側の join bar で挟み、合流後の State をその下へ続けます。
+State 図の fork/join 部分も縦方向に読みます。並行する State を上側の fork bar と下側の join bar で挟み、合流後の State をその下へ続けます。fork または join に接続する遷移は、自動的に上下の Port を使います。必要なら `[fromPort=bottom toPort=top]` で端点ごとに上書きでき、値には `top`、`right`、`bottom`、`left` を指定できます。
 
 コメントは、行頭の `'`、または空白の後ろに置く `#` と `//` を使えます。
 
@@ -209,15 +203,20 @@ diagram.importLayout(localStorage.getItem("diagram-layout"));
 
 ドラッグ、固定、レイアウト操作、エディット切り替えでoverlayが変わると、SVGから `finch:layoutchange` イベントがバブリングします。`detail` には `{ overlay, changedNodeIds }` が入ります。エディット切り替え時は、ツールバー同期用の `finch:editchange` も発生し、`{ editable, overlay }` を受け取れます。
 
-明示的な編集セッションでは、`changedNodeIds` が空でないときだけ変更ありとして記録し、Edit ON から Edit OFF へ切り替える時点で `exportLayout()` を保存します。ポインター移動のたびに書き込まず、確定した変更を一度だけ保存できます。
+明示的な編集セッションでは、`changedNodeIds` が空でないときだけ変更ありとして記録し、利用者が Save を押したときだけ `exportLayout()` を保存します。Edit ON/OFF の切り替えでは保存しません。
+
+ライブエディターでは `diagram.update(nextSource)` を使います。同じ ID のノードは、既存の配置を引き継ぎます。生成した SVG の文字列が必要な場合は `diagram.toSvgString()` を呼び出してください。
+
+`Finch.render()` は標準エディターも追加します。生成された SVG 内の左下に Finch ボタンが組み込まれ、各種操作とソース編集ペインを図の直下へ開閉できます。エディターを閉じている間は閲覧モードになり、開くとその編集セッションの状態を復元します。Save は source と layout を `localStorage` へ保存し、Edit ON/OFF の切り替えでは暗黙に保存しません。UI 専用の Finch ボタンは SVG/PNG 出力から除外されます。
 
 ```js
-diagram.svg.addEventListener("finch:layoutchange", ({ detail }) => {
-  localStorage.setItem("diagram-layout", JSON.stringify(detail.overlay));
+const diagram = Finch.render(source, {
+  target: "#diagram",
+  editor: { storageKey: "system-map" },
 });
 ```
 
-ライブエディターでは `diagram.update(nextSource)` を使います。同じ ID のノードは、既存の配置を引き継ぎます。生成した SVG の文字列が必要な場合は `diagram.toSvgString()` を呼び出してください。
+メニューには Undo、Zoom、Fit、Pin、自動配置、Reset、SVG、PNG の操作が含まれます。編集UIが不要な図では `editor: false` を指定し、あとから追加する場合だけ `Finch.attachEditor()` を使います。
 
 ### 線の経路
 
@@ -230,7 +229,13 @@ diagram.svg.addEventListener("finch:layoutchange", ({ detail }) => {
 
 この処理は、最初の描画、`update()`、配置の読み込み、ノードを動かした後の引き直しで使います。まず、ノードのまわりに余白を取ります。場所が狭い場合は余白を縮めますが、ノード本体は避けます。始点と終点では線の向きを保つため、矢印はノードの外側から境界へ向かいます。ノード同士が重なり、安全な経路を作れない場合は、線を消さず、これまでの基本経路を使います。
 
-### PNG として保存する
+### SVG または PNG として保存する
+
+`downloadSvg()` は現在の図を SVG として保存します。Finch ボタンを含む編集 UI は画像出力から除外されます。
+
+```js
+diagram.downloadSvg("system-map.svg");
+```
 
 `downloadPng()` を呼ぶと、現在の図を PNG ファイルとして保存できます。ノードを移動したあとの位置も画像へ反映されます。画面の表示倍率は PNG の大きさへ影響しません。
 
@@ -295,15 +300,17 @@ finch.registerTheme("brand", themePlugin);
 | `setTheme(theme)` / `setLayout(name)` | 表示を切り替える |
 | `select(ids)` / `clearSelection()` | コードから選択状態を操作する |
 | `pin(ids)` / `unpin(ids)` | 手動位置を固定・解除する |
-| `autoLayout()` / `resetLayout()` | 再配置する、または配置情報を消す |
+| `autoLayout()` / `resetLayout()` / `undoLayout()` | 再配置する、配置情報を消す、直前のレイアウト編集を戻す |
 | `setZoom(value)` / `zoomIn()` / `zoomOut()` | 表示倍率を操作する |
-| `setEditable(value)` / `editable` | レイアウト編集とドラッグによる画像内移動を切り替える |
+| `setEditable(value)` / `editable` / `canUndo` | 編集モードを切り替え、Undo の可否を得る |
 | `fit("diagram")` / `fit("width")` / `resetZoom()` | 全体・幅に合わせる、または100%へ戻す |
 | `exportLayout()` / `importLayout(value)` | layout overlay を保存・復元する |
 | `saveLayout(target?)` | JSON の script 要素へ overlay を書き込む |
 | `toSvgString()` | 現在の SVG を文字列にする |
+| `downloadSvg(filename?)` | 現在の図を SVG ファイルとして保存する |
 | `toPngBlob(options?)` | 現在の図から PNG の `Blob` を作る |
 | `downloadPng(filename?, options?)` | 現在の図を PNG ファイルとして保存する |
+| `Finch.attachEditor(instance, options?)` | 図に追従する HTML 編集メニューとソースペインを追加する |
 | `destroy()` | SVG を削除して instance を終了する |
 
 パッケージには、公開 API と plugin interface の TypeScript 宣言が含まれています。

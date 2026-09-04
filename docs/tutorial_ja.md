@@ -16,54 +16,45 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Finch.js</title>
     <style>
-      body { display: grid; grid-template-columns: 320px 1fr; min-height: 100vh; margin: 0; }
-      textarea { padding: 16px; font: 14px/1.6 monospace; }
-      #diagram { overflow: auto; padding: 24px; }
+      body { min-height: 100vh; margin: 0; }
+      #diagram { min-height: 100vh; overflow: auto; padding: 24px; }
     </style>
   </head>
   <body>
-    <textarea id="source" spellcheck="false">@deployment
+    <div id="diagram" aria-label="デプロイメント図"></div>
+
+    <script src="./dist/finch.global.js"></script>
+    <script>
+      const deploymentSource = `
+@deployment
 node browser "Web ブラウザー" [shape=rounded]
 server api "API サーバー"
 database db "PostgreSQL"
 
 browser -> api: HTTPS
-api -> db: SQL</textarea>
-    <div id="diagram"></div>
+api -> db: SQL
+      `.trim();
 
-    <script src="./dist/finch.global.js"></script>
-    <script>
-      const source = document.querySelector("#source");
-      const host = document.querySelector("#diagram");
-      const layoutKey = "finch-tutorial-layout";
-      const diagram = Finch.render(source.value, "#diagram");
-
-      const savedLayout = localStorage.getItem(layoutKey);
-      if (savedLayout) diagram.importLayout(savedLayout);
-
-      source.addEventListener("input", () => {
-        diagram.update(source.value);
-      });
-
-      host.addEventListener("finch:layoutchange", ({ detail }) => {
-        localStorage.setItem(layoutKey, JSON.stringify(detail.overlay));
+      Finch.render(deploymentSource, {
+        target: "#diagram",
+        editor: { storageKey: "finch-tutorial" },
       });
     </script>
   </body>
 </html>
 ```
 
-`tutorial.html` をブラウザーで開くと、左のテキストから右側に図が生成されます。テキストを書き換えると図もすぐに更新されます。
+`tutorial.html` をブラウザーで開くと図が生成され、SVG 内の左下にある Finch ボタンから図の直下へエディターを開けます。エディターを閉じている間、図は閲覧モードになります。
 
 このリポジトリの外でチュートリアルを使う場合は、ローカルのランタイムを読み込むscript要素を、公開済みバージョンを固定した次のURLへ置き換えます。
 
 ```html
-<script src="https://cdn.jsdelivr.net/npm/@hachiware-labs/finch-js@0.5.0/dist/finch.global.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@hachiware-labs/finch-js@0.5.1/dist/finch.global.js"></script>
 ```
 
 ## 2. レイアウトを整えて保存する
 
-右側のノードをドラッグして配置を整えます。ダブルクリックすると位置を固定できます。変更したレイアウトはブラウザーへ自動保存されるため、ページを再読み込みしても復元されます。
+ノードをドラッグして配置を整えます。ダブルクリックすると位置を固定できます。Finch メニューではソース編集や Undo ができ、Save を押したときだけ source と layout を保存します。Edit ON/OFF の切り替えでは保存しません。SVG/PNG には図だけを書き出し、Finch の編集アイコンは含めません。
 
 テキストにある `api` はノードのID、`"API サーバー"` は表示名です。表示名を変えても配置を引き継げるよう、IDは変えずに使います。
 

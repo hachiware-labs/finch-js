@@ -15,10 +15,9 @@
     </header>
     <main class="diagram-layout">
       <section id="diagram" class="canvas" aria-label="Slide diagram output"></section>
-      <details><summary>Show Finch source</summary><pre id="source"></pre></details>
       <p id="error" class="error" hidden></p>
     </main>
-    <script src="../dist/finch.global.js?v=0.5.0-slide-1"></script>
+    <script src="../dist/finch.global.js?v=0.5.1-slide-1"></script>
     <script>
       const slideSource = String.raw`
 @slide
@@ -55,65 +54,14 @@ row tags [gap=12] {
 
       const title = document.body.dataset.title ?? "Diagram";
       const diagram = document.querySelector("#diagram");
-      const sourceView = document.querySelector("#source");
       const errorView = document.querySelector("#error");
       let instance;
 
-      const controls = document.createElement("div");
-      controls.className = "example-toolbar viewport-controls";
-      controls.innerHTML = `
-        <button type="button" data-zoom="out" aria-label="Zoom out">−</button>
-        <button type="button" data-zoom="reset" class="zoom-readout" aria-label="Reset zoom to 100%">100%</button>
-        <button type="button" data-zoom="in" aria-label="Zoom in">＋</button>
-        <button type="button" data-edit aria-pressed="true">Edit ON</button>
-        <button type="button" data-zoom="fit">Fit diagram</button>
-        <button type="button" data-zoom="width">Fit width</button>
-      `;
-      diagram.before(controls);
-
-      function updateZoomReadout() {
-        const readout = controls.querySelector(".zoom-readout");
-        if (readout && instance) readout.textContent = `${Math.round(instance.zoom * 100)}%`;
-      }
-
-      function updateEditControls() {
-        const toggle = controls.querySelector("[data-edit]");
-        const editable = instance?.editable ?? true;
-        if (toggle) {
-          toggle.textContent = editable ? "Edit ON" : "Edit OFF";
-          toggle.setAttribute("aria-pressed", String(editable));
-        }
-        for (const button of controls.querySelectorAll("[data-zoom='fit'], [data-zoom='width']")) {
-          button.disabled = !editable;
-        }
-      }
-
-      controls.addEventListener("click", (event) => {
-        if (event.target.closest("[data-edit]") && instance) {
-          instance.setEditable(!instance.editable);
-          return;
-        }
-        const action = event.target.closest("[data-zoom]")?.dataset.zoom;
-        if (!instance || !action) return;
-        if (action === "out") instance.zoomOut();
-        if (action === "in") instance.zoomIn();
-        if (action === "reset") instance.resetZoom();
-        if (action === "fit") instance.fit("diagram");
-        if (action === "width") instance.fit("width");
-        updateZoomReadout();
-      });
-
-      diagram.addEventListener("finch:zoomchange", updateZoomReadout);
-      diagram.addEventListener("finch:editchange", updateEditControls);
-
       try {
-        sourceView.textContent = slideSource;
         instance = Finch.render(slideSource, {
           target: diagram,
           ariaLabel: `${title} advanced example`,
         });
-        updateZoomReadout();
-        updateEditControls();
       } catch (error) {
         errorView.hidden = false;
         errorView.textContent = error instanceof Error ? error.message : String(error);

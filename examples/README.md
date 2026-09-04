@@ -2,6 +2,8 @@
 
 These examples intentionally combine several supported DSL features while remaining small enough to study and modify. Each page keeps its Finch source and rendering code together in one HTML file.
 
+Every rendered diagram uses the standard Finch editor: the compact icon in the SVG's lower-left opens the connected editor below the image. A closed editor keeps the diagram in view mode. Save is explicit, and SVG/PNG exports omit the editor icon.
+
 ## Software (UML / ER)
 
 | File | Concepts |
@@ -61,7 +63,7 @@ Then open `http://127.0.0.1:8000/examples/` and choose one diagram page.
 The example pages intentionally load `../dist/finch.global.js` so they work from a source checkout and from the published package contents. When copying an example into another project, either install `@hachiware-labs/finch-js` or replace that local script URL with the version-pinned CDN URL:
 
 ```html
-<script src="https://cdn.jsdelivr.net/npm/@hachiware-labs/finch-js@0.5.0/dist/finch.global.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@hachiware-labs/finch-js@0.5.1/dist/finch.global.js"></script>
 ```
 
 The leading apostrophe used in an embedded Finch source introduces a full-line comment. Inline `#` and `//` comments are also accepted when preceded by whitespace.

@@ -22,9 +22,6 @@ header p { max-width: 720px; margin: 0; color: #64748b; }
 .diagram-layout { display: grid; gap: 0; max-width: 1520px; margin: 24px auto 60px; padding: 0 clamp(14px, 3vw, 36px); }
 .canvas { min-height: 300px; max-height: 760px; overflow: auto; padding: 26px; background-color: #f8fafc; background-image: radial-gradient(#cbd5e1 0.65px, transparent 0.65px); background-size: 18px 18px; border: 1px solid #dbe3ee; border-radius: 16px 16px 0 0; box-shadow: 0 10px 32px rgb(15 23 42 / 7%); }
 .canvas svg { min-width: 0; border-radius: 10px; box-shadow: 0 5px 20px rgb(15 23 42 / 8%); }
-details { background: #fff; border: 1px solid #dbe3ee; border-top: 0; border-radius: 0 0 16px 16px; }
-summary { padding: 13px 20px; color: #475569; font-size: 13px; font-weight: 650; cursor: pointer; }
-pre { overflow: auto; max-height: 560px; margin: 0; padding: 18px 20px; color: #dbeafe; background: #111827; font: 12px/1.65 ui-monospace, SFMono-Regular, Consolas, monospace; }
 .error { margin: 14px 0 0; padding: 14px 18px; color: #b91c1c; background: #fef2f2; border: 1px solid #fecaca; border-radius: 10px; }
 .extension-notes { display: flex; flex-wrap: wrap; gap: 8px; padding: 0 0 12px; }
 .extension-notes span { padding: 7px 10px; color: #475569; background: #fff; border: 1px solid #dbe3ee; border-radius: 999px; font-size: 12px; }

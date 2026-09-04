@@ -195,6 +195,7 @@ export interface RenderOptions {
   zoom?: number | "auto" | "fit" | "width";
   minZoom?: number;
   maxZoom?: number;
+  editor?: boolean | EditorOptions;
 }
 
 export type FitMode = "diagram" | "width";
@@ -213,6 +214,26 @@ export interface PngExportOptions {
   background?: string | null;
 }
 
+export interface EditorOptions {
+  storageKey?: string;
+  restore?: boolean;
+  sourcePane?: boolean;
+  initiallyOpen?: boolean;
+  updateDelay?: number;
+  svgFilename?: string;
+  pngFilename?: string;
+}
+
+export interface EditorController {
+  readonly element: HTMLElement;
+  readonly dirty: boolean;
+  open(): void;
+  close(): void;
+  save(): void;
+  setSource(value: string): void;
+  destroy(): void;
+}
+
 export interface LayoutChangeDetail {
   overlay: LayoutOverlay;
   changedNodeIds: string[];
@@ -225,6 +246,7 @@ export interface EditChangeDetail {
 
 export interface FinchApi {
   render(source: string, options?: RenderOptions | Element | string): import("./instance.js").DiagramInstance;
+  attachEditor(instance: import("./instance.js").DiagramInstance, options?: EditorOptions): EditorController;
   registerDiagram(name: string, plugin: DiagramPlugin): void;
   registerShape(name: string, plugin: ShapePlugin): void;
   registerLayout(name: string, plugin: LayoutPlugin): void;

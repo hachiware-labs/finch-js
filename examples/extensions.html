@@ -26,10 +26,9 @@
         <button id="theme">Toggle theme</button>
       </div>
       <section id="diagram" class="canvas" aria-label="Custom service map output"></section>
-      <details><summary>Show Finch source</summary><pre id="source"></pre></details>
       <p id="error" class="error" hidden></p>
     </main>
-    <script src="../dist/finch.global.js?v=0.5.0-extensions-1"></script>
+    <script src="../dist/finch.global.js?v=0.5.1-extensions-1"></script>
     <script>
       const SVG_NS = "http://www.w3.org/2000/svg";
       const layoutKey = "finch-services-extension-layout";
@@ -506,8 +505,6 @@ orders -> order-db: Store order
 billing -> ledger: Record charge
 billing --> orders: Accepted
       `.trim();
-
-      const sourceView = document.querySelector("#source");
       const errorView = document.querySelector("#error");
       const host = document.querySelector("#diagram");
       let diagram;
@@ -515,27 +512,20 @@ billing --> orders: Accepted
 
       function start() {
         try {
-          sourceView.textContent = servicesSource;
           diagram = finch.render(servicesSource, {
             target: host,
             theme: "ocean",
             ariaLabel: "Custom service map extension",
+            editor: { storageKey: layoutKey },
           });
-          const saved = localStorage.getItem(layoutKey);
-          if (saved) diagram.importLayout(saved);
         } catch (error) {
           errorView.hidden = false;
           errorView.textContent = error instanceof Error ? error.message : String(error);
         }
       }
 
-      host.addEventListener("finch:layoutchange", (event) => {
-        localStorage.setItem(layoutKey, JSON.stringify(event.detail.overlay));
-      });
-
       document.querySelector("#layout").addEventListener("click", () => diagram?.autoLayout());
       document.querySelector("#reset").addEventListener("click", () => {
-        localStorage.removeItem(layoutKey);
         diagram?.resetLayout();
       });
       document.querySelector("#theme").addEventListener("click", () => {

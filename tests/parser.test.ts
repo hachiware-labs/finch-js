@@ -151,6 +151,25 @@ finish -> done
 
     expect(model.nodes.find((node) => node.id === "finish")).toMatchObject({ label: "", shape: "junction-state" });
   });
+
+  it("parses explicit transition ports without turning them into labels", () => {
+    const model = parseState(`
+@state
+state idle "Idle"
+state busy "Busy"
+idle -> busy: run [fromPort=bottom toPort=top]
+busy -> idle [from-port=left to-port=right]
+`);
+
+    expect(model.connections[0]).toMatchObject({
+      label: "run",
+      attributes: { fromPort: "bottom", toPort: "top" },
+    });
+    expect(model.connections[1]).toMatchObject({
+      attributes: { fromPort: "left", toPort: "right" },
+    });
+    expect(model.connections[1]?.label).toBeUndefined();
+  });
 });
 
 describe("ER DSL", () => {

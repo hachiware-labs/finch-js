@@ -1,6 +1,6 @@
 {
   "name": "@hachiware-labs/finch-js",
-  "version": "0.5.1",
+  "version": "0.7.0",
   "description": "Fast, beautiful, editable diagrams from concise text.",
   "homepage": "https://github.com/hachiware-labs/finch-js#readme",
   "bugs": {
@@ -12,7 +12,8 @@
   },
   "type": "module",
   "sideEffects": [
-    "./dist/finch.global.js"
+    "./dist/finch.global.js",
+    "./icon-packs/*.js"
   ],
   "main": "./dist/finch.js",
   "module": "./dist/finch.js",
@@ -29,6 +30,12 @@
         "types": "./dist/browser.d.ts",
         "default": "./dist/finch.global.js"
       }
+    },
+    "./icon-packs/*": {
+      "import": {
+        "types": "./icon-packs/*.d.mts",
+        "default": "./icon-packs/*.mjs"
+      }
     }
   },
   "typesVersions": {
@@ -44,7 +51,9 @@
     "examples",
     "README.md",
     "README_ja.md",
-    "LICENSE"
+    "LICENSE",
+    "LUCIDE-LICENSE.txt",
+    "icon-packs"
   ],
   "scripts": {
     "build": "node scripts/build.mjs && tsc -p tsconfig.build.json",

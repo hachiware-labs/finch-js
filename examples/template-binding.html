@@ -1,0 +1,14 @@
+<!doctype html><html lang="ja"><meta charset="utf-8"><title>Template binding — Finch.js</title>
+<style>body{font:15px sans-serif;background:#f3f6fb;padding:32px}main{background:white;padding:24px;max-width:1000px;margin:auto}</style>
+<main><h1>テンプレートへの実引数を示す</h1><div id="binding" aria-label="Repositoryのテンプレート束縛"></div></main>
+<script src="../dist/finch.global.js"></script><script>
+const bindingSource = `@class
+interface Repository<K, V> {
+ +find(key: K): V
+}
+class Users {
+ +find(key: String): User
+}
+bind Users Repository "K=String, V=User"`;
+Finch.render(bindingSource,{target:'#binding'});
+</script></html>

@@ -1,0 +1,22 @@
+{
+  "capturedAt": "2026-09-05T00:37:45.817Z",
+  "head": "1f4befa9c2c9cf2171624bf29ffd1c6e146971a8",
+  "finchPackage": "0.5.1 + working-tree snapshot",
+  "finchBundleSha256": "0dc59a9d3c228a840e88b009dbb02604ae29cb5a6f48d900992afaca9a88f864",
+  "styleStudySha256": "c8e9d97657244255abc3040f10db37e19071ba63a514b45fd81d346bc4ef4b0d",
+  "mermaid": "11.17.2",
+  "d2": "0.8.2",
+  "d2Engines": [
+    "dagre (default)",
+    "elk (alternative)"
+  ],
+  "viewport": 1280,
+  "manualPositions": false,
+  "notes": [
+    "Synthetic Japanese business examples, not user business data.",
+    "Identical labels and connections across products. Natural shapes and explicit top-to-bottom direction; no manual line breaks.",
+    "Finch Business is study theme + font weight / shadow CSS, without sample-specific emphasis.",
+    "D2 outer padding normalized to 24, defaults otherwise.",
+    "Layout quality and default visual styles are observed jointly; not a speed/LLM reliability benchmark."
+  ]
+}

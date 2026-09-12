@@ -1,0 +1,24 @@
+direction: down
+customer: "顧客"
+sales: "営業部" {
+  inquiry: "依頼内容を確認"
+  quote: "見積を作成"
+}
+ops: "業務部" {
+  order: "受注を登録"
+  arrange: "出荷を手配"
+  stock: "在庫管理" {shape: cylinder}
+}
+accounting: "経理部" {
+  invoice: "請求書を発行"
+  paid: "入金を確認"
+}
+customer -> sales.inquiry: "依頼"
+sales.inquiry -> sales.quote
+sales.quote -> ops.order: "受注確定"
+ops.order -> ops.arrange
+ops.arrange -> ops.stock: "在庫引当"
+ops.order -> accounting.invoice: "請求依頼"
+accounting.invoice -> customer: "請求書"
+customer -> accounting.paid: "支払い"
+accounting.paid -> ops.order: "入金状況"

@@ -1,0 +1,21 @@
+<!doctype html><html lang="ja"><meta charset="utf-8"><title>Shared headings — Finch.js</title>
+<style>body{font:15px sans-serif;background:#f3f6fb;padding:32px}main{background:white;padding:24px;max-width:1100px;margin:auto}</style><main><h1>クラス図のタイトルと凡例</h1><div id="headings" aria-label="注文モデル"></div></main>
+<script src="../dist/finch.global.js"></script><script>
+const headingSource = `@class
+header "Domain model"
+title "Order processing"
+legend
+An order contains its items
+Items belong to one order
+end legend
+footer "Architecture / v1"
+class Order {
+ id: UUID
+ submit()
+}
+class Item {
+ quantity: Integer
+}
+Order *-- Item`;
+Finch.render(headingSource,{target:'#headings'});
+</script></html>

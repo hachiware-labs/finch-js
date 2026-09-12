@@ -1,0 +1,21 @@
+{
+  "groupOverlaps": [
+    [
+      "sales",
+      "accounting"
+    ],
+    [
+      "ops",
+      "accounting"
+    ]
+  ],
+  "approvalSharedBranchSegment": {
+    "from": "amount",
+    "branches": [
+      "manager",
+      "finance"
+    ],
+    "verticalPixels": 64
+  },
+  "textViewportOverflowCount": 0
+}

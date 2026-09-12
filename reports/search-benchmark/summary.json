@@ -1,0 +1,214 @@
+[
+  {
+    "case": "05",
+    "mode": "off",
+    "pairs": 0,
+    "evaluations": 0,
+    "searchMs": 0,
+    "totalMs": 18.983500000000276,
+    "score": 7869.8,
+    "minMs": 0,
+    "maxMs": 0
+  },
+  {
+    "case": "05",
+    "mode": "full",
+    "patterns": [
+      2,
+      3
+    ],
+    "pairs": 36,
+    "evaluations": 108,
+    "searchMs": 1033.6713,
+    "totalMs": 1055.4948999999997,
+    "score": 5735.8,
+    "minMs": 1023.8821000000007,
+    "maxMs": 1071.6705000000002
+  },
+  {
+    "case": "05",
+    "mode": "same",
+    "patterns": [
+      2,
+      3
+    ],
+    "pairs": 4,
+    "evaluations": 12,
+    "searchMs": 138.10279999999966,
+    "totalMs": 162.40129999999954,
+    "score": 6310.866666666667,
+    "minMs": 124.77760000000035,
+    "maxMs": 153.0704999999998
+  },
+  {
+    "case": "05",
+    "mode": "views",
+    "patterns": [
+      2,
+      3
+    ],
+    "pairs": 6,
+    "evaluations": 18,
+    "searchMs": 195.8065000000006,
+    "totalMs": 216.5599999999995,
+    "score": 6310.866666666667,
+    "minMs": 180.1633999999999,
+    "maxMs": 209.70109999999931
+  },
+  {
+    "case": "08-edges",
+    "mode": "off",
+    "pairs": 0,
+    "evaluations": 0,
+    "searchMs": 0,
+    "totalMs": 13.126500000000306,
+    "score": 5626,
+    "minMs": 0,
+    "maxMs": 0
+  },
+  {
+    "case": "08-edges",
+    "mode": "full",
+    "patterns": [
+      2,
+      3
+    ],
+    "pairs": 36,
+    "evaluations": 108,
+    "searchMs": 749.096599999999,
+    "totalMs": 764.5900000000001,
+    "score": 3982,
+    "minMs": 721.8577999999998,
+    "maxMs": 771.1472999999987
+  },
+  {
+    "case": "08-edges",
+    "mode": "same",
+    "patterns": [
+      2,
+      3
+    ],
+    "pairs": 4,
+    "evaluations": 12,
+    "searchMs": 99.89960000000065,
+    "totalMs": 114.69869999999901,
+    "score": 3982,
+    "minMs": 98.17300000000068,
+    "maxMs": 113.72119999999995
+  },
+  {
+    "case": "08-edges",
+    "mode": "views",
+    "patterns": [
+      2,
+      3
+    ],
+    "pairs": 6,
+    "evaluations": 18,
+    "searchMs": 140.30040000000008,
+    "totalMs": 154.46659999999974,
+    "score": 3982,
+    "minMs": 136.9447,
+    "maxMs": 143.2482999999993
+  },
+  {
+    "case": "rotated",
+    "mode": "off",
+    "pairs": 0,
+    "evaluations": 0,
+    "searchMs": 0,
+    "totalMs": 16.983499999998457,
+    "score": 7869.8,
+    "minMs": 0,
+    "maxMs": 0
+  },
+  {
+    "case": "rotated",
+    "mode": "full",
+    "patterns": [
+      2,
+      3
+    ],
+    "pairs": 36,
+    "evaluations": 108,
+    "searchMs": 1056.8552999999993,
+    "totalMs": 1074.496500000001,
+    "score": 5735.8,
+    "minMs": 1045.7440000000024,
+    "maxMs": 1132.862000000001
+  },
+  {
+    "case": "rotated",
+    "mode": "same",
+    "patterns": [
+      2,
+      3
+    ],
+    "pairs": 4,
+    "evaluations": 12,
+    "searchMs": 136.2508999999991,
+    "totalMs": 156.09330000000045,
+    "score": 6310.866666666667,
+    "minMs": 130.2029999999977,
+    "maxMs": 138.5809999999983
+  },
+  {
+    "case": "rotated",
+    "mode": "views",
+    "patterns": [
+      2,
+      3
+    ],
+    "pairs": 6,
+    "evaluations": 18,
+    "searchMs": 191.1232999999993,
+    "totalMs": 207.6241000000009,
+    "score": 5796,
+    "minMs": 180.3132000000005,
+    "maxMs": 211.69350000000122
+  },
+  {
+    "case": "easy",
+    "mode": "off",
+    "pairs": 0,
+    "evaluations": 0,
+    "searchMs": 0,
+    "totalMs": 2.3220000000001164,
+    "score": 368,
+    "minMs": 0,
+    "maxMs": 0
+  },
+  {
+    "case": "easy",
+    "mode": "full",
+    "pairs": 0,
+    "evaluations": 0,
+    "searchMs": 0.005600000000413274,
+    "totalMs": 2.197100000001228,
+    "score": 368,
+    "minMs": 0.0031999999991967343,
+    "maxMs": 0.0067000000017287675
+  },
+  {
+    "case": "easy",
+    "mode": "same",
+    "pairs": 0,
+    "evaluations": 0,
+    "searchMs": 0.007099999998899875,
+    "totalMs": 3.2487999999975727,
+    "score": 368,
+    "minMs": 0.003400000001420267,
+    "maxMs": 0.007300000001123408
+  },
+  {
+    "case": "easy",
+    "mode": "views",
+    "pairs": 0,
+    "evaluations": 0,
+    "searchMs": 0.006300000000919681,
+    "totalMs": 4.815699999999197,
+    "score": 368,
+    "minMs": 0.0039000000033411197,
+    "maxMs": 0.007099999998899875
+  }
+]

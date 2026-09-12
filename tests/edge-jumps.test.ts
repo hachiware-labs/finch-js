@@ -76,3 +76,19 @@ describe("edge jumps", () => {
     expect(renderer.svg.querySelector('[data-edge-id="upper"]')?.getAttribute("d")).toBe(pathFromPoints(upper.points));
   });
 });
+
+
+it('ignores hidden connections and fragment rows during initial drawing and route updates',()=>{
+ for(const attributes of [{hidden:'true'},{messageKind:'ref'},{messageKind:'delay'},{messageKind:'divider'}]){
+  const lower=edge('lower',[{x:10,y:50},{x:90,y:50}]);lower.attributes=attributes;
+  const upper=edge('upper',[{x:50,y:10},{x:50,y:90}]);
+  expect(pathWithEdgeJumps(upper,[lower])).toBe(pathFromPoints(upper.points));
+  const geometry:Geometry={kind:'deployment',nodes:[],groups:[],edges:[lower,upper],width:100,height:100};
+  const renderer=new SvgRenderer(document,defaultTheme,()=>{throw Error('No shapes');},'Hidden crossing');
+  renderer.draw(geometry);
+  expect(renderer.svg.querySelector('[data-edge-id="lower"]')).toBeNull();
+  expect(renderer.svg.querySelector('[data-edge-id="upper"]')!.getAttribute('d')).not.toContain(' A ');
+  upper.points=[{x:60,y:10},{x:60,y:90}];renderer.updateGeometry(geometry);
+  expect(renderer.svg.querySelector('[data-edge-id="upper"]')!.getAttribute('d')).not.toContain(' A ');
+ }
+});

@@ -1,0 +1,18 @@
+[
+  {
+    "id": "05",
+    "source": "@graph\na \"注文API\"\nb \"管理API\"\nc \"集計API\"\nx \"注文DB\"\ny \"顧客DB\"\nz \"監査DB\"\na -> x: 更新\na -> y: 参照\na -> z: 記録\nb -> x: 参照\nb -> y: 更新\nb -> z: 記録\nc -> x: 集計\nc -> y: 集計\nc -> z: 記録"
+  },
+  {
+    "id": "08-edges",
+    "source": "@graph\na \"注文API\"\nb \"管理API\"\nc \"集計API\"\nx \"注文DB\"\ny \"顧客DB\"\nz \"監査DB\"\na -> x: 更新\na -> y: 参照\na -> z: 記録\nb -> x: 参照\nb -> y: 更新\nb -> z: 記録\nc -> x: 集計\nc -> y: 集計\n"
+  },
+  {
+    "id": "rotated",
+    "source": "@graph\na \"注文API\"\nb \"管理API\"\nc \"集計API\"\nx \"注文DB\"\ny \"顧客DB\"\nz \"監査DB\"\na -> x: 参照\na -> y: 更新\na -> z: 記録\nb -> x: 参照\nb -> y: 記録\nb -> z: 更新\nc -> x: 集計\nc -> y: 集計\nc -> z: 記録"
+  },
+  {
+    "id": "easy",
+    "source": "@graph\na \"入力\"\nb \"変換\"\nc \"出力\"\na -> b: 変換\nb -> c: 保存"
+  }
+]

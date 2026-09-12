@@ -1,0 +1,135 @@
+{
+  "before": {
+    "approval-finch-default": {
+      "groupOverlaps": [],
+      "sharedBranchPixels": 64,
+      "borderContacts": [],
+      "diamondOverflow": [
+        {
+          "node": "valid",
+          "text": "必要な情報は揃っている？",
+          "maxCorner": 1.014253906976609
+        }
+      ]
+    },
+    "approval-finch-business": {
+      "groupOverlaps": [],
+      "sharedBranchPixels": 64,
+      "borderContacts": [
+        {
+          "edge": "fix-check-4",
+          "node": "fix",
+          "pixels": 204
+        }
+      ],
+      "diamondOverflow": []
+    },
+    "departments-finch-default": {
+      "groupOverlaps": [
+        [
+          "sales",
+          "accounting"
+        ],
+        [
+          "ops",
+          "accounting"
+        ]
+      ],
+      "sharedBranchPixels": 0,
+      "borderContacts": [],
+      "diamondOverflow": []
+    },
+    "departments-finch-business": {
+      "groupOverlaps": [
+        [
+          "sales",
+          "accounting"
+        ],
+        [
+          "ops",
+          "accounting"
+        ]
+      ],
+      "sharedBranchPixels": 0,
+      "borderContacts": [],
+      "diamondOverflow": []
+    },
+    "long-labels-finch-default": {
+      "groupOverlaps": [],
+      "sharedBranchPixels": 64,
+      "borderContacts": [],
+      "diamondOverflow": [
+        {
+          "node": "valid",
+          "text": "申請に必要な情報と領収書が",
+          "maxCorner": 1.2687369583421086
+        },
+        {
+          "node": "amount",
+          "text": "今回の申請金額は税込みで10",
+          "maxCorner": 1.2606380295075803
+        }
+      ]
+    },
+    "long-labels-finch-business": {
+      "groupOverlaps": [],
+      "sharedBranchPixels": 64,
+      "borderContacts": [],
+      "diamondOverflow": [
+        {
+          "node": "valid",
+          "text": "申請に必要な情報と領収書",
+          "maxCorner": 1.2537477178996326
+        },
+        {
+          "node": "valid",
+          "text": "がすべて揃っている？",
+          "maxCorner": 1.0239634194447065
+        },
+        {
+          "node": "amount",
+          "text": "今回の申請金額は税込みで",
+          "maxCorner": 1.263887476669915
+        }
+      ]
+    }
+  },
+  "after": {
+    "approval-finch-default": {
+      "groupOverlaps": [],
+      "sharedBranchPixels": 0,
+      "borderContacts": [],
+      "diamondOverflow": []
+    },
+    "approval-finch-business": {
+      "groupOverlaps": [],
+      "sharedBranchPixels": 0,
+      "borderContacts": [],
+      "diamondOverflow": []
+    },
+    "departments-finch-default": {
+      "groupOverlaps": [],
+      "sharedBranchPixels": 0,
+      "borderContacts": [],
+      "diamondOverflow": []
+    },
+    "departments-finch-business": {
+      "groupOverlaps": [],
+      "sharedBranchPixels": 0,
+      "borderContacts": [],
+      "diamondOverflow": []
+    },
+    "long-labels-finch-default": {
+      "groupOverlaps": [],
+      "sharedBranchPixels": 0,
+      "borderContacts": [],
+      "diamondOverflow": []
+    },
+    "long-labels-finch-business": {
+      "groupOverlaps": [],
+      "sharedBranchPixels": 0,
+      "borderContacts": [],
+      "diamondOverflow": []
+    }
+  }
+}

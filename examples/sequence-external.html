@@ -1,0 +1,20 @@
+<!doctype html><html lang="ja"><meta charset="utf-8"><title>External messages — Finch.js</title>
+<style>body{font:15px sans-serif;background:#f3f6fb;padding:32px}main{background:white;padding:24px;max-width:1000px;margin:auto}</style>
+<main><h1>図外とのメッセージ</h1><div id="external" aria-label="外部リクエストの処理"></div></main>
+<script src="../dist/finch.global.js"></script><script>
+const externalSource = `@sequence
+participant api "API"
+participant worker "Worker"
+autonumber 1.1 "REQ-{n}"
+[ -> api: request
+anchor requestReceived
+api -> worker: process
+worker --> api: result
+api --> ]: response
+anchor responseSent
+duration requestReceived responseSent "100 ms max"
+autonumber inc A
+? ->> api: found event
+api -> ?: lost message`;
+Finch.render(externalSource,{target:'#external'});
+</script></html>

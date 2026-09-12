@@ -1,0 +1,169 @@
+<!doctype html>
+<html lang="ja">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Finch — 部品の形と余白を確認する</title>
+<style>
+*{box-sizing:border-box}body{margin:0;background:#f4f6fa;color:#172b4d;font:14px Inter,"Segoe UI","Hiragino Sans","Noto Sans JP",sans-serif}main{max-width:1400px;margin:auto;padding:32px}h1{font-size:30px}p{line-height:1.8;color:#5f6e85}a{color:#2457d6}header{position:sticky;top:0;background:#f4f6faf5;padding:16px 0;z-index:2;display:flex;gap:24px;align-items:center;flex-wrap:wrap}select{font:inherit;padding:8px;border:1px solid #c8d2e0;border-radius:6px;background:white}article{background:white;border:1px solid #d7dfea;border-radius:10px;margin-bottom:20px;overflow:hidden}h2{font-size:17px;margin:0;padding:18px 22px;border-bottom:1px solid #e5eaf1}h2 small{color:#5f6e85;font:12px monospace;margin-left:16px}.pair{display:grid;grid-template-columns:1fr 1fr}.cell{min-width:0;padding:16px}.cell+ .cell{border-left:1px solid #e5eaf1}.cell b{font-size:12px}.canvas{overflow:auto;min-height:145px;margin-top:8px;display:flex;align-items:center}.canvas svg{flex-shrink:0;display:block}.note{padding:12px 22px;border-top:1px solid #e5eaf1;margin:0;font-size:12px}.metrics{font:11px monospace;color:#5f6e85;margin-top:8px}.error{color:#b42318} [hidden]{display:none!important} @media(max-width:800px){main{padding:16px}.pair{grid-template-columns:1fr}.cell+.cell{border-left:0;border-top:1px solid #e5eaf1}}
+</style>
+<main>
+<a href="./style-study.html">← テーマ比較</a>
+<h1>部品の形と余白、影を確認する</h1>
+<p>38種類の組み込み形状と、シーケンスの参加者・ライフライン・活性区間・フレームを確認します。左右は同じ寸法、表示倍率100%。幅の広い部品は横スクロールで確認できます。記号や透明なグループには、元の描画どおり影が付きません。</p>
+<header>
+<label>分類 <select id="category"><option value="basic">基本形状・UML</option><option value="symbols">状態・接続記号</option><option value="structured">区画・グループ</option><option value="slide">スライド部品</option><option value="sequence">シーケンス</option><option value="all">すべて</option></select></label>
+<label>ラベル <select id="text-mode"><option value="short">短いラベル</option><option value="long">長い日本語・折り返し</option></select></label>
+<label>形状 <select id="shape"><option value="all">分類内すべて</option></select></label>
+<span id="count"></span>
+</header>
+<section id="gallery"></section>
+</main>
+<script src="../dist/finch.global.js?v=component-refinement-1"></script>
+<script>
+const theme = {...Finch.defaultTheme,name:'component-business',fontFamily:'Inter,"Segoe UI","Hiragino Sans","Noto Sans JP",sans-serif',fontSize:14,labelColor:'#172b4d',mutedColor:'#5f6e85',nodeFill:'#ffffff',nodeStroke:'#c8d2e0',nodeStrokeWidth:1,nodeRadius:6,nodePaddingX:22,nodePaddingY:13,containerFill:'#f8fafc',containerStroke:'#c9d3e1',edgeColor:'#7a8aa3',edgeWidth:1.25,accentColor:'#2457d6',canvasColor:'#ffffff',shadow:'none',gapX:84,gapY:48};
+const shadow='drop-shadow(0 1px 1px rgba(23,43,77,.10)) drop-shadow(1px 5px 4px rgba(26,52,104,.22))';
+// Plain label shapes use the same text so silhouette and whitespace remain comparable.
+const inventory=[
+['rectangle','長方形','basic','基準。本文14px、左右22px・上下13px、角丸6px。'],
+['rounded','丸端','basic','端部の丸みは高さの半分、上限24px。長方形と意味を区別する。'],
+['database','データベース','basic','上蓋10px。蓋の下と底面の上にテーマの上下余白を確保。'],
+['actor','人物','basic','人物の線はテーマのedgeColorを使い、太さは1.7px。長い文は人物の下に続く。'],
+['server','サーバー','basic','左の青い線と本文の間隔。短文・長文で干渉しないか確認。'],
+['diamond','判断','basic','既定の折り返し120px。斜辺の余白を守りながら長文の横広がりを抑える。'],
+['parallelogram','入出力','basic','傾斜16px。左右の見かけの余白を確認。'],
+['circle','円','basic','既定の折り返し120px。内接領域を守り、長文時の直径を抑える。'],
+['component','コンポーネント','basic','右上の部品記号と文字の距離。'],
+['external','外部システム','basic','種別ラベルと本文の上下関係。角丸はテーマ値＋5px。'],
+['usecase','ユースケース','basic','楕円の端部に対する文字の逃げを確認。'],
+['uml-artifact','成果物','basic','折り返し角と本文・種別ラベルの余白。'],
+['uml-device','デバイス','basic','立体表現の線と影の重なり。'],
+['uml-execution','実行環境','basic','内枠6px。複数行で上下の余白を確認。'],
+['uml-object','オブジェクト','basic','下線は各文字行に追従。複数行でも本文を横切らない。'],
+['initial-state','開始','symbols','24×24。塗り記号、影なしが仕様。'],
+['final-state','終了','symbols','28×28。外環1.8px、影なし。'],
+['junction-state','結合点','symbols','16×16。小記号、影なし。'],
+['choice-state','選択点','symbols','32×32。本文を入れない判断記号。'],
+['history-state','履歴','symbols','36×36、H。文字重みを本文の規則で上書きしない。'],
+['deep-history-state','深い履歴','symbols','36×36、H*。'],
+['uml-port','ポート','symbols','26×26。接続用の小記号。'],
+['uml-required-interface','要求インターフェース','symbols','半円の上端は原点から4px下。文字を大きくした場合も、半円の下に文字の場所を確保する。'],
+['uml-bar','フォーク／ジョイン','symbols','96×14。バー本体は高さ8px。'],
+['container','コンテナ','structured','子要素とヘッダーの距離を実際のグループで確認。'],
+['entity','ERエンティティ','structured','列名・型・キー記号、行区切りと見出し。'],
+['uml-class','クラス','structured','タイトル・属性・操作の区画。本文一律のウェイト上書きは避ける。'],
+['slide-group','スライドグループ','structured','透明な配置用部品。グループ自体に可視の面はない。'],
+['slide-title','タイトル','slide','30px。幅は指定値で、本文テーマの余白とは別。'],
+['slide-subtitle','サブタイトル','slide','16px。単独テキスト、影なし。'],
+['slide-card','カード','slide','左アクセント・バッジ・本文の余白。'],
+['slide-note','注記','slide','小さな色印と本文。元の描画では影なし。'],
+['slide-callout','コールアウト','slide','太い強調枠と本文。元の描画では影なし。'],
+['slide-badge','バッジ','slide','丸端と短い文字。元の描画では影なし。'],
+['slide-metric','指標','slide','大きい数値・説明・増減バッジの階層。'],
+['slide-bar','棒指標','slide','値・単位・バーの位置。元の描画では影なし。'],
+['slide-quote','引用','slide','引用符を7px下げ、文字の領域が枠に収まるようにした。本文と署名の間隔も確認する。'],
+['slide-milestone','期間を示すカード','slide','期間と見出しと本文を7px下げ、期間の上に余白を確保。期間がない場合の文字位置は同じ。'],
+['sequence','参加者・メッセージ','sequence','参加者の面に影、ライフライン・活性区間・メッセージには影なし。']
+];
+const entitySource=`
+@er
+entity orders "注文情報" {
+ id uuid pk
+ customer_id uuid fk
+ status varchar(32)
+}
+`.trim();
+const classSource=`
+@class
+class Order {
+ -id: UUID
+ -status: String
+ +submit(): void
+}
+`.trim();
+const containerSource=`
+@deployment
+container service "受注サービス" {
+ server api "注文受付"
+ database db "注文DB"
+}
+api -> db: 保存
+`.trim();
+const slideGroupSource=`
+@slide
+grid group [columns=2] {
+ card first "注文を確認" [body="受注内容を確認する"]
+ card second "出荷を手配" [body="在庫引当と配送依頼"]
+}
+`.trim();
+const sequenceSource=`
+@sequence
+participant sales "営業担当"
+participant order "受注システム"
+sales -> order: 注文を登録
+opt 在庫あり
+order --> sales: 受付結果を通知
+end
+`.trim();
+const special={entity:entitySource,'uml-class':classSource,container:containerSource,'slide-group':slideGroupSource,sequence:sequenceSource};
+const extras={
+ 'slide-title':'width=380','slide-subtitle':'width=380',
+ 'slide-card':'body="注文内容と在庫状況を確認します。" badge="確認"',
+ 'slide-note':'body="配送予定日を確認してください。"',
+ 'slide-callout':'body="在庫の確保後に配送を依頼します。"',
+ 'slide-metric':'label="月間受注数" delta="+12%"',
+ 'slide-bar':'value=68 max=100 suffix="%"',
+ 'slide-quote':'by="営業担当" role="受注チーム"',
+ 'slide-milestone':'period="2026 Q3" body="新しい受注フローの運用開始"'
+};
+let instances=[];
+function sourceFor(name,long){
+ if(special[name]) return long ? special[name].replaceAll('注文情報','法人顧客から受け付けた注文の管理情報').replaceAll('受注サービス','法人顧客向け注文受付と出荷管理サービス').replaceAll('Order {','CorporateCustomerOrder {').replaceAll('注文を確認','法人顧客の注文内容と配送先を確認').replaceAll('出荷を手配','在庫を引き当てて配送会社へ出荷を依頼').replaceAll('営業担当','法人顧客向け営業窓口').replaceAll('受注システム','注文受付と出荷管理システム') : special[name];
+ const text=name==='slide-metric'?'12,480':long?'法人顧客の注文内容と配送先を確認して出荷を手配':'注文を確認';
+ return ['@graph','sample "'+text+'" [shape='+name+(['circle','diamond'].includes(name)?' ':' wrapWidth=180 ')+(extras[name]||'')+']'].join('\n');
+}
+function render(){
+ instances.forEach(instance=>instance.destroy());instances=[];
+ const gallery=document.querySelector('#gallery');gallery.replaceChildren();
+ const category=document.querySelector('#category').value;
+ const long=document.querySelector('#text-mode').value==='long';
+ const selected=document.querySelector('#shape').value;
+ const rows=inventory.filter(row=>(category==='all'||row[2]===category)&&(selected==='all'||row[0]===selected));
+ document.querySelector('#count').textContent=rows.length+'項目 / 100%表示';
+ rows.forEach(([name,title,group,note])=>{
+  const article=document.createElement('article');article.dataset.shape=name;
+  const h=document.createElement('h2');h.textContent=title;const small=document.createElement('small');small.textContent=name;h.append(small);article.append(h);
+  const pair=document.createElement('div');pair.className='pair';article.append(pair);gallery.append(article);
+  [false,true].forEach(on=>{
+   const cell=document.createElement('div');cell.className='cell';pair.append(cell);
+   const label=document.createElement('b');label.textContent=on?'business-shadow':'business';cell.append(label);
+   const target=document.createElement('div');target.className='canvas';cell.append(target);
+   try{
+    const source=sourceFor(name,long);
+    const instance=Finch.render(source,{target,theme,editor:false,interactive:false,zoom:1,padding:24});instances.push(instance);
+    const svg=instance.svg;const suffix=name+(on?'-shadow':'-flat');svg.id='sample-'+suffix;
+    // Keep definitions and references local even with dozens of inline SVGs.
+    svg.querySelectorAll('defs [id]').forEach(def=>{const old=def.id;def.id=old+'-'+suffix;svg.querySelectorAll('[filter],[marker-start],[marker-end]').forEach(el=>['filter','marker-start','marker-end'].forEach(attr=>{if(el.getAttribute(attr)==='url(#'+old+')')el.setAttribute(attr,'url(#'+def.id+')');}));});
+    const faces=Array.from(svg.querySelectorAll('.finch-node [filter]'));
+    faces.forEach(face=>{face.removeAttribute('filter');face.style.filter=on?shadow:'none';});
+    // Match the study's body weight without flattening ER/class/slide text hierarchy.
+    if(group==='basic') svg.querySelectorAll('.finch-node text').forEach(text=>{if(text.getAttribute('font-size')==='14')text.style.fontWeight='550';});
+    // Remove the diagram engine's minimum canvas area without scaling the component.
+    const content=svg.getBBox();
+    svg.setAttribute('viewBox',[content.x-24,content.y-24,content.width+48,content.height+48].join(' '));
+    svg.style.width=(content.width+48)+'px';svg.style.height=(content.height+48)+'px';
+    svg.style.aspectRatio='auto';
+    const metric=document.createElement('div');metric.className='metrics';
+    const root=svg.querySelector('.finch-node');const box=root?.getBBox();
+    metric.textContent='描画外接 '+(box?Math.round(box.width)+' × '+Math.round(box.height)+'px':'配置用グループ')+' · 影の対象 '+faces.length+'面';cell.append(metric);
+   }catch(error){target.classList.add('error');target.textContent=String(error);}
+  });
+  const p=document.createElement('p');p.className='note';p.textContent=note;article.append(p);
+ });
+}
+inventory.forEach(([name,title])=>{const option=document.createElement('option');option.value=name;option.textContent=title;document.querySelector('#shape').append(option);});
+document.querySelector('#category').addEventListener('change',()=>{document.querySelector('#shape').value='all';render();});
+document.querySelector('#shape').addEventListener('change',()=>{document.querySelector('#category').value='all';render();});
+document.querySelector('#text-mode').addEventListener('change',render);
+render();
+</script>
+</html>

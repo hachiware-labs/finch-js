@@ -20,7 +20,7 @@
     <script src="../dist/finch.global.js?v=0.5.1-examples-2"></script>
     <script>
       const stateSource = String.raw`
-@state
+@state validation=strict
 
 initial start
 state draft "Draft"
@@ -32,11 +32,15 @@ state rejected "Rejected"
 state cancelled "Cancelled"
 junction resolved
 fork publish
-state audit "Write audit log"
-state archiving "Archiving outcome"
+state persistence "Persist outcome" {
+ region logging "Logging" {
+  state audit "Write audit log"
+ }
+ region storage "Storage" {
+  state archiving "Archiving outcome"
+ }
+}
 join published
-history previous
-deep-history deep
 final done
 
 start -> draft
@@ -51,14 +55,12 @@ changes -> cancelled: cancel
 approved -> resolved
 rejected -> resolved
 cancelled -> resolved
-resolved -> publish: persist outcome
+resolved -> publish: / persist outcome
 publish -> archiving
 publish -> audit
 archiving -> published
 audit -> published
 published -> done
-draft -> previous: resume
-previous -> deep
       `.trim();
 
       const title = document.body.dataset.title ?? "Diagram";

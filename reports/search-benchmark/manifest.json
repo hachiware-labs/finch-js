@@ -1,0 +1,10 @@
+{
+  "node": "v22.17.1",
+  "platform": "win32",
+  "cpu": "AMD RYZEN AI MAX+ 395 w/ Radeon 8060S          ",
+  "sourceHash": "b1d47d438e71da8315a3b8ea332531e1dc0a5f9affaf44e6b8e2a6290c85184a",
+  "bundleHash": "c374e51035a96f37fbb63866298e0494d7d3d073028f5a61c17c0f1bacdcff5b",
+  "date": "2026-09-12",
+  "warmup": 1,
+  "repeats": 5
+}

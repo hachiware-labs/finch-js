@@ -1,0 +1,20 @@
+direction: down
+submit: "領収書と費用の内訳を添付して経費精算を申請" {shape: oval}
+check: "申請内容と添付された証憑の整合性を確認"
+valid: "申請に必要な情報と領収書がすべて揃っている？" {shape: diamond}
+fix: "差し戻し理由を確認し不足している情報を追記"
+amount: "今回の申請金額は税込みで10万円以上？" {shape: diamond}
+manager: "部門長が利用目的と予算の妥当性を確認して承認"
+finance: "経理担当が勘定科目と支払先の口座情報を確認"
+pay: "次回の支払日に合わせて振込処理を手配"
+done: "振込予定日と処理結果を申請者へ通知" {shape: oval}
+submit -> check
+check -> valid
+valid -> fix: "不足情報や確認が必要な項目がある"
+fix -> check: "不足情報を追記して再申請"
+valid -> amount: "必要事項と証憑を確認できた"
+amount -> manager: "税込み10万円以上"
+amount -> finance: "税込み10万円未満"
+manager -> finance: "部門長による承認が完了"
+finance -> pay
+pay -> done

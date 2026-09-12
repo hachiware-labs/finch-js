@@ -1,0 +1,381 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Finch — Theme shadow study</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --page: #f4f6fa;
+      --ink: #172b4d;
+      --muted: #5f6e85;
+      --line: #d7dfea;
+      --primary: #2457d6;
+      --primary-pale: #eaf0ff;
+    }
+    * { box-sizing: border-box; }
+    body { margin: 0; background: var(--page); color: var(--ink); font-family: Inter, "Segoe UI", "Hiragino Sans", "Noto Sans JP", sans-serif; }
+    button, select { font: inherit; }
+    button { color: inherit; }
+    main { max-width: 1480px; margin: auto; padding: 44px 36px 64px; }
+    .masthead { display: flex; justify-content: space-between; gap: 20px; border-bottom: 1px solid var(--line); padding-bottom: 18px; color: var(--muted); font-size: 11px; letter-spacing: .14em; }
+    .masthead a { color: inherit; text-decoration: none; }
+    h1 { margin: 34px 0 12px; max-width: 820px; font-size: clamp(30px, 4.2vw, 48px); line-height: 1.16; letter-spacing: -.035em; }
+    .intro { max-width: 780px; margin: 0 0 28px; color: var(--muted); font-size: 14px; line-height: 1.9; }
+    .toolbar { display: flex; align-items: center; justify-content: space-between; gap: 18px; flex-wrap: wrap; padding: 14px; margin-bottom: 20px; border: 1px solid var(--line); border-radius: 10px; background: rgba(255,255,255,.78); }
+    .control-set { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+    [hidden] { display: none !important; }
+    .control-label { color: var(--muted); font-size: 11px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; }
+    select, .segment button { min-height: 38px; border: 1px solid #c8d2e0; background: #fff; font-size: 12px; }
+    select { min-width: 150px; padding: 8px 34px 8px 12px; border-radius: 7px; }
+    .segment { display: inline-flex; }
+    .segment button { padding: 8px 14px; cursor: pointer; }
+    .segment button:first-child { border-radius: 7px 0 0 7px; }
+    .segment button:last-child { margin-left: -1px; border-radius: 0 7px 7px 0; }
+    .segment button[aria-pressed="true"] { position: relative; z-index: 1; border-color: var(--primary); background: var(--primary-pale); color: #1746b8; font-weight: 700; }
+    button:hover, select:hover { border-color: #7891b3; }
+    :focus-visible { outline: 2px solid var(--primary); outline-offset: 2px; }
+    .grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px; }
+    .theme-card { overflow: hidden; border: 1px solid var(--line); border-radius: 12px; background: #fff; }
+    .card-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 18px; padding: 20px 22px 16px; border-bottom: 1px solid #e5eaf1; }
+    .theme-index { margin: 0 0 7px; color: var(--muted); font-size: 10px; font-weight: 700; letter-spacing: .12em; }
+    h2 { margin: 0; font-size: 18px; letter-spacing: -.015em; }
+    .switch { display: inline-flex; flex: 0 0 auto; align-items: center; gap: 8px; padding: 0; border: 0; background: transparent; cursor: pointer; }
+    .switch-label { min-width: 38px; color: var(--muted); font-size: 11px; font-weight: 700; }
+    .switch-track { position: relative; width: 38px; height: 22px; border: 1px solid #bac6d7; border-radius: 999px; background: #dfe5ee; transition: background .16s, border-color .16s; }
+    .switch-dot { position: absolute; top: 3px; left: 3px; width: 14px; height: 14px; border-radius: 50%; background: #fff; box-shadow: 0 1px 2px rgba(23,43,77,.22); transition: transform .16s; }
+    .switch[aria-checked="true"] .switch-track { border-color: var(--primary); background: var(--primary); }
+    .switch[aria-checked="true"] .switch-dot { transform: translateX(16px); }
+    .diagram { display: flex; align-items: center; justify-content: center; min-height: 285px; padding: 26px 20px; overflow: auto; }
+    .diagram svg { display: block; max-width: 100%; max-height: 430px; }
+    .card-foot { display: grid; grid-template-columns: 1fr auto; gap: 18px; align-items: end; min-height: 96px; padding: 15px 22px 18px; border-top: 1px solid #e5eaf1; }
+    .description { margin: 0; color: var(--muted); font-size: 12px; line-height: 1.75; }
+    .shadow-spec { display: block; margin-top: 4px; color: #718096; font-size: 10px; font-family: ui-monospace, SFMono-Regular, Consolas, monospace; }
+    .export { padding: 7px 10px; border: 1px solid #c8d2e0; border-radius: 6px; background: #fff; color: var(--muted); font-size: 11px; cursor: pointer; }
+    #error { margin: 16px 0 0; padding: 12px 14px; border: 1px solid #e8b6b1; border-radius: 8px; background: #fff3f2; color: #8f2922; white-space: pre-wrap; }
+    details { margin-top: 22px; color: var(--muted); font-size: 12px; }
+    summary { cursor: pointer; }
+    pre { overflow: auto; padding: 18px; border-radius: 8px; background: #e8edf4; color: #24364f; line-height: 1.7; }
+    .page-note { margin: 24px 0 0; color: var(--muted); font-size: 11px; line-height: 1.7; }
+    @media (max-width: 980px) { .grid { grid-template-columns: 1fr; } }
+    @media (max-width: 620px) {
+      main { padding: 26px 14px 44px; }
+      .toolbar { align-items: stretch; }
+      .control-set { width: 100%; justify-content: space-between; }
+      .diagram { justify-content: flex-start; }
+      .diagram svg { min-width: 620px; }
+      .card-foot { grid-template-columns: 1fr; }
+      .export { justify-self: start; }
+    }
+  </style>
+</head>
+<body>
+<main>
+  <div class="masthead"><a href="./index.html">FINCH / DRAWING STUDIES</a><span>02 — SHADOW</span></div>
+  <h1>影が、図の印象をどう変えるか。</h1>
+  <p><a href="./component-study.html">形状・余白をコンポーネント別に確認 →</a></p>
+  <p class="intro">Default、Business、Precision、Editorialを同じ内容で比較します。各テーマのスイッチは独立しているため、影だけを加えたり外したりして輪郭・余白・配色との相性を確認できます。</p>
+
+  <div class="toolbar" aria-label="比較条件">
+    <div class="control-set">
+      <label class="control-label" for="kind">図の種類</label>
+      <select id="kind">
+        <option value="graph">構成図</option>
+        <option value="sequence" selected>シーケンス図</option>
+        <option value="flowchart">フローチャート</option>
+      </select>
+    </div>
+    <label class="control-set" id="lane-control"><input type="checkbox" id="lanes" checked>参加者レーン</label>
+    <div class="control-set">
+      <span class="control-label">全テーマ</span>
+      <div class="segment" role="group" aria-label="全テーマの影">
+        <button type="button" data-all-shadow="off" aria-pressed="false">影なし</button>
+        <button type="button" data-all-shadow="on" aria-pressed="false">影あり</button>
+      </div>
+    </div>
+  </div>
+
+  <section class="grid" aria-label="テーマ別の影比較">
+    <article class="theme-card" data-theme-card="default">
+      <div class="card-head"><div><p class="theme-index">01 / CURRENT</p><h2>Default</h2></div><button class="switch" type="button" role="switch" aria-checked="true" data-shadow-toggle="default"><span class="switch-label">影あり</span><span class="switch-track" aria-hidden="true"><span class="switch-dot"></span></span></button></div>
+      <section id="diagram-default" class="diagram" aria-label="Defaultテーマの比較図"></section>
+      <div class="card-foot"><p class="description">現在の汎用スタイル。淡い輪郭と、ごく薄いニュートラルな影。<span class="shadow-spec" data-shadow-spec="default"></span></p><button class="export" type="button" data-export="default">SVG保存</button></div>
+    </article>
+
+    <article class="theme-card" data-theme-card="business">
+      <div class="card-head"><div><p class="theme-index">02 / BUSINESS</p><h2>Business</h2></div><button class="switch" type="button" role="switch" aria-checked="true" data-shadow-toggle="business"><span class="switch-label">影あり</span><span class="switch-track" aria-hidden="true"><span class="switch-dot"></span></span></button></div>
+      <section id="diagram-business" class="diagram" aria-label="Businessテーマの比較図"></section>
+      <div class="card-foot"><p class="description">白い面と青い輪郭。影ありでは、輪郭を支える小さな影と青みのある柔らかな影を重ねます。<span class="shadow-spec" data-shadow-spec="business"></span></p><button class="export" type="button" data-export="business">SVG保存</button></div>
+    </article>
+
+    <article class="theme-card" data-theme-card="precision">
+      <div class="card-head"><div><p class="theme-index">03 / TECHNICAL</p><h2>Precision</h2></div><button class="switch" type="button" role="switch" aria-checked="false" data-shadow-toggle="precision"><span class="switch-label">影なし</span><span class="switch-track" aria-hidden="true"><span class="switch-dot"></span></span></button></div>
+      <section id="diagram-precision" class="diagram" aria-label="Precisionテーマの比較図"></section>
+      <div class="card-foot"><p class="description">直線的な輪郭と青灰色。影ありでは小さく硬い影を使用。<span class="shadow-spec" data-shadow-spec="precision"></span></p><button class="export" type="button" data-export="precision">SVG保存</button></div>
+    </article>
+
+    <article class="theme-card" data-theme-card="editorial">
+      <div class="card-head"><div><p class="theme-index">04 / EDITORIAL</p><h2>Editorial</h2></div><button class="switch" type="button" role="switch" aria-checked="false" data-shadow-toggle="editorial"><span class="switch-label">影なし</span><span class="switch-track" aria-hidden="true"><span class="switch-dot"></span></span></button></div>
+      <section id="diagram-editorial" class="diagram" aria-label="Editorialテーマの比較図"></section>
+      <div class="card-foot"><p class="description">温かい紙色と深緑。影ありでは緑をわずかに含む柔らかな影。<span class="shadow-spec" data-shadow-spec="editorial"></span></p><button class="export" type="button" data-export="editorial">SVG保存</button></div>
+    </article>
+  </section>
+
+  <p id="error" role="alert" hidden></p>
+  <details><summary>現在の図のソースを見る</summary><pre id="source"></pre></details>
+  <p class="page-note">影の値は検討用です。影なしではノードのfilter属性を無効化し、影ありではテーマごとの色・距離・ぼかしを画面上のpx値で適用しています。</p>
+</main>
+
+<script src="../dist/finch.global.js"></script>
+<script>
+  const graphSource = `
+@graph direction=LR
+receive "注文を受け付ける"
+review "注文内容を確認"
+arrange "出荷を手配" [emphasis=primary]
+inventory "在庫管理" [shape=database]
+delivery "配送管理"
+receive -> review: 受注
+review -> arrange: 確認済み
+arrange -> inventory: 引当
+arrange -> delivery: 依頼
+  `.trim();
+
+  const sequenceSource = `
+@sequence
+participant sales "営業担当"
+participant order "受注システム"
+participant shipping "出荷管理"
+participant inventory "在庫管理"
+sales -> order: 注文を登録
+order -> inventory: 在庫を照会
+inventory --> order: 在庫あり
+order -> shipping: 出荷を依頼
+shipping --> order: 出荷予定日
+order --> sales: 受付結果と出荷予定
+  `.trim();
+
+  const flowchartSource = `
+@flowchart
+start begin "注文を受け付ける"
+decision stock "在庫はある？"
+process arrange "出荷を手配" [emphasis=primary]
+process review "入荷予定を確認"
+end complete "顧客へ案内"
+begin -> stock
+stock -> arrange: はい
+stock -> review: いいえ
+arrange -> complete
+review -> complete
+  `.trim();
+
+  const sans = 'Inter, "Segoe UI", "Hiragino Sans", "Noto Sans JP", sans-serif';
+  const themes = {
+    default: {
+      theme: Finch.defaultTheme,
+      focus: null,
+      shadow: 'drop-shadow(0 2px 2.5px rgba(15, 23, 42, 0.10))',
+      shadowLabel: '0 2px 2.5px · Ink 10%',
+    },
+    business: {
+      theme: { ...Finch.defaultTheme, name: 'study-business', fontFamily: sans, fontSize: 14,
+        labelColor: '#172b4d', mutedColor: '#5f6e85', nodeFill: '#ffffff', nodeStroke: '#c8d2e0',
+        nodeStrokeWidth: 1, nodeRadius: 6, nodePaddingX: 22, nodePaddingY: 13,
+        containerFill: '#f8fafc', containerStroke: '#c9d3e1', edgeColor: '#7a8aa3', edgeWidth: 1.25,
+        accentColor: '#2457d6', canvasColor: '#ffffff', shadow: 'none', gapX: 84, gapY: 48 },
+      focus: 'outline',
+      shadow: 'drop-shadow(0 1px 1px rgba(23, 43, 77, 0.10)) drop-shadow(1px 5px 4px rgba(26, 52, 104, 0.22))',
+      shadowLabel: '輪郭 0 / 1 / 1px · 10% ＋ 広がり 1 / 5 / 4px · 22%',
+    },
+    precision: {
+      theme: { ...Finch.defaultTheme, name: 'study-precision', fontFamily: sans, fontSize: 14,
+        labelColor: '#20374b', mutedColor: '#576b7c', nodeFill: '#ffffff', nodeStroke: '#8b9eaf',
+        nodeStrokeWidth: 1, nodeRadius: 0, nodePaddingX: 22, nodePaddingY: 14,
+        containerFill: '#f0f4f8', containerStroke: '#a8b7c5', edgeColor: '#607b92', edgeWidth: 1.35,
+        accentColor: '#245b88', canvasColor: '#f7f9fc', shadow: 'none', gapX: 76, gapY: 42 },
+      focus: 'filled',
+      shadow: 'drop-shadow(0 3px 2px rgba(32, 63, 89, 0.20))',
+      shadowLabel: '0 3px 2px · Blue gray 20%',
+    },
+    editorial: {
+      theme: { ...Finch.defaultTheme, name: 'study-editorial', fontFamily: sans, fontSize: 14,
+        labelColor: '#243d33', mutedColor: '#5d6c60', nodeFill: '#faf9f5', nodeStroke: '#8b9b8d',
+        nodeStrokeWidth: 1, nodeRadius: 2, nodePaddingX: 24, nodePaddingY: 16,
+        containerFill: '#f0f1e9', containerStroke: '#adb6a7', edgeColor: '#617869', edgeWidth: 1.2,
+        accentColor: '#294f40', canvasColor: '#faf9f5', shadow: 'none', gapX: 82, gapY: 46 },
+      focus: 'filled',
+      shadow: 'drop-shadow(0 4px 5px rgba(41, 79, 64, 0.18))',
+      shadowLabel: '0 4px 5px · Deep green 18%',
+    },
+  };
+
+  const diagrams = { graph: graphSource, sequence: sequenceSource, flowchart: flowchartSource };
+  const instances = {};
+  const shadowEnabled = { default: true, business: false, precision: false, editorial: false };
+
+  function namespaceSvgDefinitions(svg, suffix) {
+    const definitions = [
+      ['finch-shadow', 'filter'],
+      ['finch-arrow', 'marker-end'],
+      ['finch-triangle', 'marker-end'],
+      ['finch-diamond-open', 'marker-start'],
+      ['finch-diamond-filled', 'marker-start'],
+    ];
+    definitions.forEach(([id, attribute]) => {
+      const definition = svg.querySelector('#' + id);
+      if (!definition) return;
+      const uniqueId = id + '-' + suffix;
+      definition.id = uniqueId;
+      svg.querySelectorAll('[' + attribute + ']').forEach(element => {
+        if (element.getAttribute(attribute) === 'url(#' + id + ')') element.setAttribute(attribute, 'url(#' + uniqueId + ')');
+      });
+    });
+  }
+
+  function addLabelBackplates(svg, color) {
+    svg.querySelectorAll('.finch-edge-label').forEach(label => {
+      const box = label.getBBox();
+      const plate = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
+      plate.setAttribute('x', String(box.x - 5));
+      plate.setAttribute('y', String(box.y - 2));
+      plate.setAttribute('width', String(box.width + 10));
+      plate.setAttribute('height', String(box.height + 4));
+      plate.setAttribute('rx', '2');
+      plate.setAttribute('fill', color);
+      label.parentNode.insertBefore(plate, label);
+    });
+  }
+
+  function applyThemeTreatment(svg, name, kind) {
+    const spec = themes[name];
+    // Inline SVG styles share the document cascade; scope every rule to its specimen.
+    svg.id = 'specimen-' + name;
+    const style = document.createElementNS('http://www.w3.org/2000/svg', 'style');
+    const scope = '#' + svg.id + ' ';
+    style.textContent = scope + '.finch-node text{font-weight:' + (name === 'business' ? '550' : '500') + '}' + scope + '.finch-edge{stroke-linejoin:round;stroke-linecap:round}' + scope + '.finch-edge-label{font-weight:400;paint-order:normal;stroke:none}';
+    svg.append(style);
+
+    const focusId = kind === 'graph' || kind === 'flowchart' ? 'arrange' : 'shipping';
+    const focus = svg.querySelector('[data-node-id="' + focusId + '"].finch-node');
+    const face = focus?.querySelector(':scope > rect');
+    if (face && spec.focus === 'outline') {
+      face.setAttribute('fill', '#ffffff');
+      face.setAttribute('stroke', '#2457d6');
+      face.setAttribute('stroke-width', '2');
+      focus.querySelectorAll('text').forEach(text => { text.setAttribute('fill', '#1746b8'); text.style.fontWeight = '600'; });
+    }
+    if (face && spec.focus === 'filled') {
+      const color = name === 'editorial' ? '#294f40' : '#203f59';
+      face.setAttribute('fill', color);
+      face.setAttribute('stroke', color);
+      focus.querySelectorAll('text').forEach(text => { text.setAttribute('fill', '#ffffff'); text.style.fontWeight = '600'; });
+    }
+    if (name === 'business') {
+      addLabelBackplates(svg, '#ffffff');
+      svg.querySelector('#finch-arrow-business path')?.setAttribute('fill', '#536881');
+      svg.querySelectorAll('.finch-lifeline').forEach(line => {
+        line.setAttribute('stroke', '#b7c3d3');
+        line.setAttribute('stroke-dasharray', '3 5');
+      });
+    }
+  }
+
+  function addSequenceLanes(svg, name) {
+    if (!document.querySelector('#lanes').checked) return;
+    const lines = Array.from(svg.querySelectorAll('.finch-lifeline')).sort((a, b) => Number(a.getAttribute('x1')) - Number(b.getAttribute('x1')));
+    if (!lines.length) return;
+    const layer = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+    layer.setAttribute('class', 'study-lanes');
+    layer.setAttribute('pointer-events', 'none');
+    const centers = lines.map(line => Number(line.getAttribute('x1')));
+    const view = svg.viewBox.baseVal;
+    lines.forEach((line, index) => {
+      const center = centers[index];
+      const left = index ? (centers[index - 1] + center) / 2 : Math.max(view.x + 12, center - (centers[1] - center || 160) / 2);
+      const right = index < centers.length - 1 ? (center + centers[index + 1]) / 2 : Math.min(view.x + view.width - 12, center + (center - centers[index - 1] || 160) / 2);
+      const top = Number(line.getAttribute('y1')) + 8;
+      const rect = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
+      Object.entries({ x: left + 3, y: top, width: right - left - 6, height: Math.max(0, Number(line.getAttribute('y2')) - top), rx: 4, fill: themes[name].theme.accentColor, 'fill-opacity': index % 2 ? 0.045 : 0.025 }).forEach(([key, value]) => rect.setAttribute(key, String(value)));
+      layer.append(rect);
+    });
+    svg.insertBefore(layer, svg.querySelector('.finch-lifelines'));
+  }
+
+  function syncShadowControls() {
+    Object.entries(shadowEnabled).forEach(([name, enabled]) => {
+      const toggle = document.querySelector('[data-shadow-toggle="' + name + '"]');
+      toggle.setAttribute('aria-checked', String(enabled));
+      toggle.setAttribute('aria-label', name + 'の影');
+      toggle.querySelector('.switch-label').textContent = enabled ? '影あり' : '影なし';
+      document.querySelector('[data-shadow-spec="' + name + '"]').textContent = enabled ? themes[name].shadowLabel : 'none';
+    });
+    document.querySelectorAll('[data-all-shadow]').forEach(button => {
+      const enabled = button.dataset.allShadow === 'on';
+      button.setAttribute('aria-pressed', String(Object.values(shadowEnabled).every(value => value === enabled)));
+    });
+  }
+
+  function applyShadow(name) {
+    const svg = document.querySelector('#diagram-' + name + ' svg');
+    if (!svg) return;
+    svg.querySelectorAll('.finch-node [filter]').forEach(face => {
+      face.setAttribute('data-shadow-face', '');
+      face.removeAttribute('filter');
+    });
+    svg.querySelectorAll('[data-shadow-face]').forEach(face => {
+      face.style.filter = shadowEnabled[name] ? themes[name].shadow : 'none';
+    });
+    syncShadowControls();
+  }
+
+  function renderTheme(name, source, kind) {
+    instances[name]?.destroy();
+    const target = document.querySelector('#diagram-' + name);
+    const spec = themes[name];
+    target.closest('.theme-card').style.background = spec.theme.canvasColor;
+    instances[name] = Finch.render(source, { target, theme: spec.theme, editor: false, interactive: false, padding: 34, ariaLabel: name + 'テーマの' + kind + '比較図' });
+    const svg = target.querySelector('svg');
+    namespaceSvgDefinitions(svg, name);
+    applyThemeTreatment(svg, name, kind);
+    if (kind === 'sequence') addSequenceLanes(svg, name);
+    applyShadow(name);
+  }
+
+  function renderAll() {
+    const kind = document.querySelector('#kind').value;
+    document.querySelector('#lane-control').hidden = kind !== 'sequence';
+    const source = diagrams[kind];
+    const error = document.querySelector('#error');
+    error.hidden = true;
+    document.querySelector('#source').textContent = source;
+    try {
+      Object.keys(themes).forEach(name => renderTheme(name, source, kind));
+    } catch (cause) {
+      error.hidden = false;
+      error.textContent = cause instanceof Error ? cause.message : String(cause);
+    }
+  }
+
+  document.querySelectorAll('[data-shadow-toggle]').forEach(toggle => toggle.addEventListener('click', () => {
+    const name = toggle.dataset.shadowToggle;
+    shadowEnabled[name] = !shadowEnabled[name];
+    applyShadow(name);
+  }));
+
+  document.querySelectorAll('[data-all-shadow]').forEach(button => button.addEventListener('click', () => {
+    const enabled = button.dataset.allShadow === 'on';
+    Object.keys(shadowEnabled).forEach(name => { shadowEnabled[name] = enabled; applyShadow(name); });
+  }));
+
+  document.querySelectorAll('[data-export]').forEach(button => button.addEventListener('click', () => {
+    const name = button.dataset.export;
+    instances[name]?.downloadSvg('finch-' + name + '-' + document.querySelector('#kind').value + '-' + (shadowEnabled[name] ? 'shadow' : 'flat') + '.svg');
+  }));
+
+  document.querySelector('#kind').addEventListener('change', renderAll);
+  document.querySelector('#lanes').addEventListener('change', renderAll);
+  renderAll();
+</script>
+</body>
+</html>

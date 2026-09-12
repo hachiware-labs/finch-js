@@ -1,0 +1,41 @@
+<!doctype html><html lang="ja"><meta charset="utf-8"><title>Reusable sequence — Finch.js</title>
+<style>body{font:15px sans-serif;background:#f3f6fb;padding:32px}main{background:white;padding:24px;max-width:1100px;margin:auto}</style>
+<main><h1>共通部品で環境別の処理を描く</h1><p>ENVをtestに変えると監査通知を省きます。参加者はforeachでまとめて宣言し、要求・応答の共通部品には引数と既定値を使います。</p><div id="reuse" aria-label="共通部品から組み立てる要求応答シーケンス"></div></main>
+<script src="../dist/finch.global.js"></script><script>
+const reusableSource = `@sequence
+show footbox
+title "Order processing"
+header "Architecture / Production"
+footer "Finch.js — reusable source"
+legend "Solid: request / notification\\nDashed: response"
+!define ENV prod
+!function budget(base, attempts=2)
+!return base * attempts
+!endfunction
+!let TIMEOUT = budget(50)
+!assert TIMEOUT > 0 : "TIMEOUT must be positive"
+!procedure actor(id, label="{{id}}")
+participant {{id}} "{{label}}"
+!endprocedure
+!procedure exchange(caller, callee, request, response="ok")
+{{caller}} -> {{callee}}: {{request}}
+{{callee}} --> {{caller}}: {{response}}
+!endprocedure
+!foreach ID in ["client", "api", "store"]
+!call actor("{{ID}}")
+!endfor
+!if ENV == "prod"
+!call actor("audit", "Audit")
+!endif
+autonumber 1.1
+client -> api: submit [delay=24]
+anchor received receive
+!call exchange("api", "store", "save", "saved")
+!if ENV == "prod" && TIMEOUT >= 100
+api ->> audit: recorded
+!endif
+api --> client: accepted
+anchor completed send
+duration received completed "{{TIMEOUT}} ms max"`;
+Finch.render(reusableSource,{target:'#reuse',preprocess:{}});
+</script></html>

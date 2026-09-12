@@ -1,0 +1,289 @@
+{
+  "date": "2026-09-12",
+  "version": "0.6.0",
+  "runtimeSha256": "1a5dbf020ae942d0becab50a2774bea7de9aebccc1ee1aad8d7b4bb25c8c5b97",
+  "documents": [
+    "README.md",
+    "README_ja.md",
+    "docs/tutorial.md",
+    "docs/tutorial_ja.md"
+  ],
+  "pages": [
+    {
+      "page": "examples/readme-hero.html",
+      "svg": 1,
+      "errors": [],
+      "scripts": [
+        "../dist/finch.global.js",
+        "../icon-packs/aws.js",
+        "../icon-packs/simple.js"
+      ]
+    },
+    {
+      "page": "examples/readme-demo.html",
+      "svg": 1,
+      "errors": [],
+      "scripts": [
+        "../dist/finch.global.js"
+      ]
+    },
+    {
+      "page": "examples/style-study.html",
+      "svg": 4,
+      "errors": [],
+      "scripts": [
+        "../dist/finch.global.js"
+      ]
+    },
+    {
+      "page": "examples/icon-packs.html",
+      "svg": 1,
+      "errors": [],
+      "scripts": [
+        "../dist/finch.global.js",
+        "../icon-packs/aws.js",
+        "../icon-packs/azure.js",
+        "../icon-packs/gcp.js",
+        "../icon-packs/k8s.js",
+        "../icon-packs/simple.js"
+      ]
+    },
+    {
+      "page": "examples/deployment.html",
+      "svg": 1,
+      "errors": [],
+      "scripts": [
+        "../dist/finch.global.js?v=0.5.1-examples-2"
+      ]
+    },
+    {
+      "page": "examples/graph.html",
+      "svg": 1,
+      "errors": [],
+      "scripts": [
+        "../dist/finch.global.js?v=0.5.1-examples-2"
+      ]
+    },
+    {
+      "page": "examples/sequence.html",
+      "svg": 1,
+      "errors": [],
+      "scripts": [
+        "../dist/finch.global.js?v=0.5.1-examples-2"
+      ]
+    },
+    {
+      "page": "examples/flowchart.html",
+      "svg": 1,
+      "errors": [],
+      "scripts": [
+        "../dist/finch.global.js?v=0.5.1-examples-2"
+      ]
+    },
+    {
+      "page": "examples/state.html",
+      "svg": 1,
+      "errors": [],
+      "scripts": [
+        "../dist/finch.global.js?v=0.5.1-examples-2"
+      ]
+    },
+    {
+      "page": "examples/er.html",
+      "svg": 1,
+      "errors": [],
+      "scripts": [
+        "../dist/finch.global.js?v=0.5.1-er-component-1"
+      ]
+    },
+    {
+      "page": "examples/component.html",
+      "svg": 1,
+      "errors": [],
+      "scripts": [
+        "../dist/finch.global.js?v=0.5.1-er-component-1"
+      ]
+    },
+    {
+      "page": "examples/slide.html",
+      "svg": 1,
+      "errors": [],
+      "scripts": [
+        "../dist/finch.global.js?v=0.5.1-slide-1"
+      ]
+    },
+    {
+      "page": "examples/class.html",
+      "svg": 1,
+      "errors": [],
+      "scripts": [
+        "../dist/finch.global.js?v=0.5.1-uml-1"
+      ]
+    },
+    {
+      "page": "examples/usecase.html",
+      "svg": 1,
+      "errors": [],
+      "scripts": [
+        "../dist/finch.global.js?v=0.5.1-uml-1"
+      ]
+    },
+    {
+      "page": "examples/activity.html",
+      "svg": 1,
+      "errors": [],
+      "scripts": [
+        "../dist/finch.global.js?v=0.5.1-uml-1"
+      ]
+    },
+    {
+      "page": "examples/uml-concise.html",
+      "svg": 4,
+      "errors": [],
+      "scripts": [
+        "../dist/finch.global.js"
+      ]
+    },
+    {
+      "page": "examples/uml-practical.html",
+      "svg": 4,
+      "errors": [],
+      "scripts": [
+        "../dist/finch.global.js"
+      ]
+    },
+    {
+      "page": "examples/uml-complete.html",
+      "svg": 7,
+      "errors": [],
+      "scripts": [
+        "../dist/finch.global.js"
+      ]
+    },
+    {
+      "page": "examples/timing.html",
+      "svg": 2,
+      "errors": [],
+      "scripts": [
+        "../dist/finch.global.js"
+      ]
+    },
+    {
+      "page": "examples/uml-guide.html",
+      "svg": 0,
+      "errors": [],
+      "scripts": []
+    },
+    {
+      "page": "examples/tutorial-order-en.html",
+      "svg": 1,
+      "errors": [],
+      "scripts": [
+        "../dist/finch.global.js"
+      ]
+    },
+    {
+      "page": "examples/slide-patterns.html",
+      "svg": 1,
+      "errors": [],
+      "scripts": [
+        "../dist/finch.global.js?v=0.5.1-slide-patterns-1"
+      ]
+    },
+    {
+      "page": "examples/tutorial-order-ja.html",
+      "svg": 1,
+      "errors": [],
+      "scripts": [
+        "../dist/finch.global.js"
+      ]
+    }
+  ],
+  "assets": [
+    {
+      "path": "docs/assets/green-warbler-finch-silhouette-profile-pink.png",
+      "sha256": "fd5125de4a215c6334d06b9997e765ff30795f4f2b411d962deedc31cf567870",
+      "diagram": false
+    },
+    {
+      "path": "docs/assets/finch-architecture-hero-en.png",
+      "sha256": "8c99e5ba48d7bd6c598aab497d5ee402892c57353e6c9143fd729d5f5976afd1",
+      "diagram": true
+    },
+    {
+      "path": "docs/assets/finch-editing-demo.gif",
+      "sha256": "6efb3c2d1335b23c58a18a9da1ebdfbff672886ffdee4b096f9a1985f75b5791",
+      "diagram": true
+    },
+    {
+      "path": "docs/assets/finch-style-default-en.png",
+      "sha256": "8b20cba99b33de18993cb56a86b14ba8c980d7d7a4e74ada81e95f5ec7db6d78",
+      "diagram": true
+    },
+    {
+      "path": "docs/assets/finch-style-precision-en.png",
+      "sha256": "631c4b52dbcb8aeceffdbcdb48766d6133e4e89afa3c706eb7e439aa27e306e3",
+      "diagram": true
+    },
+    {
+      "path": "docs/assets/finch-style-business-en.png",
+      "sha256": "690dad027b4037b21822d83add6b2a078366fd11cd83b81b5493f99698dcd687",
+      "diagram": true
+    },
+    {
+      "path": "docs/assets/finch-style-business-shadow-en.png",
+      "sha256": "4ed71029c60de8a3c76822e70c3cb0653f608f459307acbaead4bc79dcf1fab4",
+      "diagram": true
+    },
+    {
+      "path": "docs/assets/finch-style-editorial-en.png",
+      "sha256": "f403daab0a6c8a3c056144b91a75bb9c11a1ecadf4b2f6336187057e92ec741e",
+      "diagram": true
+    },
+    {
+      "path": "docs/assets/green-warbler-finch-silhouette-foraging-pink.png",
+      "sha256": "0c8a3c0829a06dd52ef56647df2b34be28cfddd36db1831d65649b9c35c6cb83",
+      "diagram": false
+    },
+    {
+      "path": "docs/assets/finch-architecture-hero-ja.png",
+      "sha256": "19866331b56c61e18747f151d3ae707daeb00df47e6bf1cd7b5b84e0a7030de8",
+      "diagram": true
+    },
+    {
+      "path": "docs/assets/finch-style-default-ja.png",
+      "sha256": "8c6a3363a8c4a5a0981443a4e061b37d3d453c450d73bba4aeace6859d25e19a",
+      "diagram": true
+    },
+    {
+      "path": "docs/assets/finch-style-precision-ja.png",
+      "sha256": "01007ebea2af9078b7b7d1112910a01c20fb6f1d90e19db78ca569d6ef56a983",
+      "diagram": true
+    },
+    {
+      "path": "docs/assets/finch-style-business-ja.png",
+      "sha256": "107cc947cc7eb5ee5f9cababa77cc2acd8aecb68c35751c42ac523042915ba92",
+      "diagram": true
+    },
+    {
+      "path": "docs/assets/finch-style-business-shadow-ja.png",
+      "sha256": "ff293c37c7bf916fe76faa0c5f2b2eb0064480399225619e487f454a4f35d98b",
+      "diagram": true
+    },
+    {
+      "path": "docs/assets/finch-style-editorial-ja.png",
+      "sha256": "eb5c5141945cf529485c221e3aae25f835d24a16066f75192940148cb2babcff",
+      "diagram": true
+    },
+    {
+      "path": "docs/assets/tutorial-order-en.png",
+      "sha256": "82f0061049d7127a48324c92c3eb9e7151f4ca28af170f8b7fd8f56061c0441f",
+      "diagram": true
+    },
+    {
+      "path": "docs/assets/tutorial-order-ja.png",
+      "sha256": "d3099f56deb1a2b17b82e357a2dc8e543029c015d24d72199cd603972f0cf8d1",
+      "diagram": true
+    }
+  ]
+}

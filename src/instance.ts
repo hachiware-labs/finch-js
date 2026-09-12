@@ -1,5 +1,13 @@
+import { groupStateTransitions } from "./state-transition-display.js";
+import { expandRoutingChannels } from "./routing-channels.js";
+import {sequencePageSvgs} from './sequence-pages.js';
+import {measureDiagramText} from './diagram-text.js';
+import { preprocess, snapshotPreprocess, restorePreprocess, type PreprocessSnapshot } from "./preprocess.js";
+import { annotationAnchor } from "./member-annotations.js";
 import { resizeAncestorContainers, rerouteGeometry } from "./layouts.js";
 import { Registry } from "./registry.js";
+import { withNodeIcon } from "./node-style.js";
+import { embedImages } from "./images.js";
 import { SvgRenderer } from "./renderer.js";
 import type {
   AutoLayoutOptions,
@@ -14,9 +22,12 @@ import type {
   Theme,
   ZoomChangeDetail,
 } from "./types.js";
-import { cloneOverlay, createOverlay, parseOverlay } from "./utils.js";
+import { cloneOverlay, createOverlay, parseOverlay, routeMidpoint } from "./utils.js";
 import { getDiagramKind } from "./parser.js";
-import { svgToPngBlob } from "./png.js";
+import { svgToPngBlob, svgMarkupToPngBlob } from "./png.js";
+import { writeMarkdown } from "./markdown.js";
+import { registerDocument, restoreDocument, unregisterDocument } from "./document-save.js";
+import type { DiagramState } from "./types.js";
 
 interface DragState {
   pointerId: number;
@@ -37,6 +48,7 @@ interface PanState {
 export class DiagramInstance {
   readonly host: Element | undefined;
   private sourceValue: string;
+  private preprocessSnapshot: PreprocessSnapshot | undefined;
   private readonly registry: Registry;
   private options: RenderOptions;
   private modelValue!: SemanticModel;
@@ -62,17 +74,25 @@ export class DiagramInstance {
     this.sourceValue = source;
     this.options = options;
     this.host = resolveTarget(options.target);
+    const saved = this.host ? restoreDocument(this.host) : undefined;
+    if (saved) {
+      this.sourceValue = saved.source;
+      options = { ...options, ...(saved.theme ? {theme:saved.theme} : {}), overlay: saved.overlay, ...(saved.preprocess ? {preprocess:restorePreprocess(saved.preprocess)} : {}) };
+      this.options = options;
+    }
     this.overlayValue = parseOverlay(options.overlay);
     this.editableValue = options.overlay === undefined
       ? options.editable ?? true
       : this.overlayValue.editable ?? options.editable ?? true;
     this.overlayValue.editable = this.editableValue;
+    if (this.frozen) this.overlayValue.editable = this.editableValue = false;
     if (typeof options.zoom === "number") {
       this.zoomValue = options.zoom;
       this.zoomMode = "manual";
     } else if (options.zoom === "fit") this.zoomMode = "diagram";
     else if (options.zoom === "width") this.zoomMode = "width";
     this.rebuild({ force: false, preservePinned: true });
+    registerDocument(this);
   }
 
   get svg(): SVGSVGElement {
@@ -105,6 +125,20 @@ export class DiagramInstance {
 
   get editable(): boolean {
     return this.editableValue;
+  }
+
+  get frozen(): boolean {
+    return this.overlayValue.frozen === true;
+  }
+
+  freeze(): this {
+    this.assertActive();
+    if (this.frozen) return this;
+    const wasEditable = this.editableValue;
+    this.overlayValue.frozen = true;
+    this.setEditable(false);
+    if (!wasEditable) this.emitLayoutChange([]);
+    return this;
   }
 
   get canUndo(): boolean {
@@ -150,14 +184,18 @@ export class DiagramInstance {
   update(source: string): this {
     this.assertActive();
     const previousKind = this.modelValue.kind;
+    const prepared = this.options.preprocess ? snapshotPreprocess(source,this.options.preprocess) : {source};
+    const expanded = prepared.source;
+    const nextKind = getDiagramKind(expanded);
+    // Reject invalid input before changing the last valid document state.
+    this.registry.diagram(nextKind).parse(expanded);
     this.sourceValue = source;
-    const nextKind = getDiagramKind(source);
     if (previousKind !== nextKind) {
-      this.overlayValue = createOverlay(this.editableValue);
+      this.overlayValue.diagram = nextKind;
       this.layoutHistory = [];
       this.selectedIds.clear();
     }
-    this.rebuild({ force: false, preservePinned: true });
+    this.rebuild({ force: false, preservePinned: true }, prepared);
     return this;
   }
 
@@ -231,15 +269,45 @@ export class DiagramInstance {
   exportLayout(space = 2): string {
     const activeIds = new Set(this.geometryValue.nodes.map((node) => node.id));
     const nodes = Object.fromEntries(Object.entries(this.overlayValue.nodes).filter(([id]) => activeIds.has(id)));
-    return JSON.stringify({ version: 1, diagram: this.modelValue.kind, editable: this.editableValue, nodes }, null, space);
+    return JSON.stringify({ version: 1, diagram: this.modelValue.kind, editable: this.editableValue,
+      ...(this.overlayValue.frozen !== undefined ? { frozen: this.frozen } : {}), nodes }, null, space);
+  }
+
+  exportMarkdown(): string {
+    const nodes = Object.fromEntries(this.geometryValue.nodes.map((node) => [node.id, {
+      x: node.x, y: node.y, width: node.width, height: node.height,
+      manual: this.overlayValue.nodes[node.id]?.manual ?? false,
+      pinned: this.overlayValue.nodes[node.id]?.pinned ?? false,
+    }]));
+    return writeMarkdown(this.preprocessSnapshot ? preprocess(this.sourceValue,restorePreprocess(this.preprocessSnapshot)) : this.sourceValue, {
+      version: 1, diagram: this.modelValue.kind, editable: this.editableValue, nodes,
+      ...(this.overlayValue.frozen !== undefined ? { frozen: this.frozen } : {}),
+    });
+  }
+
+  exportState(): DiagramState {
+    const overlay = JSON.parse(this.exportLayout()) as LayoutOverlay;
+    overlay.nodes = Object.fromEntries(this.geometryValue.nodes.map(node => [node.id, {
+      x: node.x, y: node.y, width: node.width, height: node.height,
+      manual: this.overlayValue.nodes[node.id]?.manual ?? false,
+      pinned: this.overlayValue.nodes[node.id]?.pinned ?? false,
+    }]));
+    return { source: this.sourceValue, theme:JSON.parse(JSON.stringify(this.themeValue)) as Theme, overlay, markdown: writeMarkdown(this.preprocessSnapshot ? preprocess(this.sourceValue,restorePreprocess(this.preprocessSnapshot)) : this.sourceValue, overlay), ...(this.preprocessSnapshot ? {preprocess:JSON.parse(JSON.stringify(this.preprocessSnapshot)) as PreprocessSnapshot} : {}) };
+  }
+
+  /** Notify a committed edit. Host updates and layout imports do not call this. */
+  notifyChange(): void {
+    this.options.onChange?.(this.exportState());
   }
 
   importLayout(layout: LayoutOverlay | string): this {
     const overlay = parseOverlay(layout);
-    if (overlay.diagram && overlay.diagram !== this.modelValue.kind) {
-      throw new Error(`Layout overlay is for @${overlay.diagram}, not @${this.modelValue.kind}.`);
-    }
-    this.editableValue = overlay.editable ?? true;
+    overlay.diagram = this.modelValue.kind;
+    this.editableValue = overlay.frozen === true ? false : overlay.editable ?? true;
+    this.drag = undefined;
+    this.pan = undefined;
+    this.spacePressed = false;
+    this.selectedIds.clear();
     overlay.editable = this.editableValue;
     this.overlayValue = overlay;
     this.layoutHistory = [];
@@ -263,6 +331,7 @@ export class DiagramInstance {
 
   setEditable(editable: boolean): this {
     this.assertActive();
+    if (this.frozen && editable) return this;
     if (this.editableValue === editable) return this;
     this.editableValue = editable;
     this.overlayValue.editable = editable;
@@ -291,16 +360,39 @@ export class DiagramInstance {
     return json;
   }
 
+  toSvgPages(): string[] {
+    this.assertActive();
+    return sequencePageSvgs(this.svg,this.geometryValue,this.themeValue);
+  }
+
   toSvgString(): string {
     const clone = this.svg.cloneNode(true) as SVGSVGElement;
     for (const control of clone.querySelectorAll("[data-finch-editor-trigger]")) control.remove();
     return new XMLSerializer().serializeToString(clone);
   }
 
-  downloadSvg(filename = `${this.modelValue.kind}.svg`): void {
+  async toEmbeddedSvgString(): Promise<string> {
+    const clone = this.svg.cloneNode(true) as SVGSVGElement;
+    for (const control of clone.querySelectorAll("[data-finch-editor-trigger]")) control.remove();
+    await embedImages(clone);
+    return new XMLSerializer().serializeToString(clone);
+  }
+
+  async downloadSvg(filename = `${this.modelValue.kind}.svg`): Promise<void> {
     this.assertActive();
-    const blob = new Blob([this.toSvgString()], { type: "image/svg+xml;charset=utf-8" });
+    const blob = new Blob([await this.toEmbeddedSvgString()], { type: "image/svg+xml;charset=utf-8" });
     this.downloadBlob(blob, filename);
+  }
+
+  async toPngPages(options: PngExportOptions = {}): Promise<Blob[]> {
+    this.assertActive();
+    const pages=this.toSvgPages();
+    const document=this.svg.ownerDocument;
+    const results:Blob[]=[];
+    for(const text of pages){
+      results.push(await svgMarkupToPngBlob(text,document,options));
+    }
+    return results;
   }
 
   toPngBlob(options: PngExportOptions = {}): Promise<Blob> {
@@ -331,6 +423,7 @@ export class DiagramInstance {
 
   destroy(): void {
     if (this.destroyed) return;
+    unregisterDocument(this);
     this.rendererValue.svg.dispatchEvent(new CustomEvent("finch:destroy", { bubbles: true }));
     this.rendererValue.svg.remove();
     this.resizeObserver?.disconnect();
@@ -338,35 +431,65 @@ export class DiagramInstance {
     this.destroyed = true;
   }
 
-  private rebuild(layoutOptions: { force: boolean; preservePinned: boolean }): void {
+  private rebuild(layoutOptions: { force: boolean; preservePinned: boolean }, supplied?: {source:string;snapshot?:PreprocessSnapshot}): void {
     this.assertNotDestroyed();
-    const kind = getDiagramKind(this.sourceValue);
+    const prepared = supplied ?? (this.options.preprocess ? snapshotPreprocess(this.sourceValue,this.preprocessSnapshot ? restorePreprocess(this.preprocessSnapshot) : this.options.preprocess) : undefined);
+    this.preprocessSnapshot=prepared?.snapshot;
+    const expanded = prepared?.source ?? this.sourceValue;
+    const kind = getDiagramKind(expanded);
     const diagram = this.registry.diagram(kind);
     this.themeValue = typeof this.options.theme === "object"
       ? this.options.theme
       : this.registry.theme(this.options.theme ?? "default");
-    this.modelValue = diagram.parse(this.sourceValue);
+    this.modelValue = diagram.parse(expanded);
+    this.modelValue.source = this.sourceValue;
     const layoutModel = diagram.toLayoutModel(this.modelValue, {
       theme: this.themeValue,
-      measure: (shape, label, attributes) => this.registry.shape(shape).measure({ label, attributes, theme: this.themeValue }),
+      measure: (shape, label, attributes) => withNodeIcon(this.registry.shape(shape), name => this.registry.icon(name)).measure({ label, attributes, theme: this.themeValue }),
     });
+    if(this.options.stateTransitions === "group") groupStateTransitions(layoutModel);
     this.layoutName = this.options.layout ?? diagram.defaultLayout;
     const previous = this.geometryValue?.kind === kind ? this.geometryValue : undefined;
     const layout = this.registry.layout(this.layoutName);
     this.containerMinimumSizes = new Map(layoutModel.items
       .filter((item) => item.shape === "container")
       .map((item) => [item.id, { width: item.size.width, height: item.size.height }]));
-    this.geometryValue = layout.layout(layoutModel, {
+    const annotations = layoutModel.items.filter(item => item.attributes.annotationTarget);
+    this.geometryValue = layout.layout({ ...layoutModel, items: layoutModel.items.filter(item => !item.attributes.annotationTarget || item.attributes.associationClass) }, {
       overlay: this.overlayValue,
       ...(previous ? { previous } : {}),
       force: layoutOptions.force,
       preservePinned: layoutOptions.preservePinned,
     });
+    if(this.options.expandRoutingChannels !== false) expandRoutingChannels(this.geometryValue,this.overlayValue,rerouteGeometry);
+    if(kind!=="sequence" && this.modelValue.diagramText)this.geometryValue.diagramText=measureDiagramText(this.modelValue.diagramText,this.themeValue.fontSize-1,this.themeValue.fontFamily);
+    const contentNodes=this.geometryValue.nodes.filter(node=>!node.attributes.annotationTarget);
+    const noteY = {left:28,right:28,top:Math.min(28,...contentNodes.map(node=>node.y),...this.geometryValue.groups.map(group=>group.y))-24,bottom:this.geometryValue.height+24};
+    const noteX = this.geometryValue.width + 24;
+    for (const item of annotations) {
+      const targetNode = this.geometryValue.nodes.find(node => node.id === item.attributes.annotationTarget);
+      const targetEdge = this.geometryValue.edges.find(edge => edge.id === item.attributes.annotationTarget);
+      const anchor = targetNode ? annotationAnchor(targetNode, item.attributes.annotationMember)
+        : (targetEdge ? routeMidpoint(targetEdge.points) : { x: 28, y: 28 });
+      const left=item.attributes.annotationSide==='left';
+      const side=(item.attributes.annotationSide ?? 'right') as keyof typeof noteY;
+      const vertical=side==='top'||side==='bottom';
+      if(left && targetNode)anchor.x=targetNode.x;
+      if(vertical && targetNode){anchor.x=targetNode.x+targetNode.width/2;anchor.y=targetNode.y+(side==='bottom'?targetNode.height:0);}
+      const preferredX=vertical ? anchor.x-item.size.width/2 : left ? Math.min(...this.geometryValue.nodes.filter(node=>!node.attributes.annotationTarget).map(node=>node.x),...this.geometryValue.groups.map(group=>group.x))-item.size.width-24 : noteX;
+      const saved = this.overlayValue.nodes[item.id];
+      const node = this.geometryValue.nodes.find(n => n.id === item.id) ?? { ...item, ...item.size, x: saved && (!layoutOptions.force || saved.pinned) ? saved.x : preferredX, y: saved && (!layoutOptions.force || saved.pinned) ? saved.y : side==='top' ? noteY.top-item.size.height : side==='bottom' ? noteY.bottom : Math.max(noteY[side], anchor.y - item.size.height / 2) };
+      if (!this.geometryValue.nodes.some(n => n.id === node.id)) this.geometryValue.nodes.push(node);
+      this.geometryValue.edges.push({ id: `${item.id}-link`, from: targetNode?.id ?? targetEdge?.from ?? item.id, to: item.id, dashed: true, order: this.geometryValue.edges.length, attributes: { annotation: "true" }, points: [anchor, { x: node.x+(vertical?node.width/2:left?node.width:0), y: node.y+(side==='top'?node.height:side==='bottom'?0:node.height/2) }] });
+      noteY[side] = side==='top'?Math.min(noteY.top,node.y-24):Math.max(noteY[side],node.y + node.height + 24);
+      this.geometryValue.width = Math.max(this.geometryValue.width, node.x + node.width + 28);
+      this.geometryValue.height = Math.max(this.geometryValue.height, noteY[side]);
+    }
     this.overlayValue.diagram = kind;
     this.overlayValue.editable = this.editableValue;
     const document = this.host?.ownerDocument ?? globalThis.document;
     if (!document) throw new Error("Finch.render() requires a browser Document or a target Element.");
-    const nextRenderer = new SvgRenderer(document, this.themeValue, (name) => this.registry.shape(name), this.options.ariaLabel ?? `${kind} diagram`);
+    const nextRenderer = new SvgRenderer(document, this.themeValue, (name) => withNodeIcon(this.registry.shape(name), icon => this.registry.icon(icon)), this.options.ariaLabel ?? `${kind} diagram`);
     nextRenderer.draw(this.geometryValue);
     const oldSvg = this.rendererValue?.svg;
     this.rendererValue = nextRenderer;
@@ -589,6 +712,7 @@ export class DiagramInstance {
   private emitLayoutChange(changedNodeIds: string[]): void {
     const detail: LayoutChangeDetail = { overlay: this.overlay, changedNodeIds };
     this.rendererValue.svg.dispatchEvent(new CustomEvent<LayoutChangeDetail>("finch:layoutchange", { detail, bubbles: true }));
+    if (changedNodeIds.length) this.notifyChange();
   }
 
   private applyEditState(): void {

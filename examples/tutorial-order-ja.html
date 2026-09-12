@@ -1,0 +1,15 @@
+<!doctype html><html lang="ja"><meta charset="utf-8"><meta name="viewport" content="width=device-width"><title>注文の正常経路と在庫切れ</title><style>body{font:16px system-ui;margin:32px;color:#21334a}#diagram{width:max-content;min-width:500px;padding:24px;border:1px solid #dbe4ec}svg{display:block;max-width:none!important}</style><h1>注文の正常経路と在庫切れ</h1><p>正常経路を軸に、在庫切れの分岐を分離。図の左下から編集できます。</p><div id="diagram"></div><script src="../dist/finch.global.js"></script><script>const orderFlowSource=`
+@flowchart
+start received "注文を受け付ける"
+process validate "在庫を確認する"
+decision available "在庫あり?"
+process reserve "商品を確保する"
+end confirmed "注文確定"
+end backorder "入荷待ち"
+
+received -> validate
+validate -> available
+available -> reserve: Yes
+available -> backorder: No
+reserve -> confirmed
+      `;const diagram=Finch.render(orderFlowSource,{target:'#diagram'});diagram.svg.style.width=diagram.geometry.width+'px';diagram.svg.style.height=diagram.geometry.height+'px';</script></html>

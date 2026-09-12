@@ -1,0 +1,19 @@
+<!doctype html><html lang="ja"><meta charset="utf-8"><title>Signal actions — Finch.js</title>
+<style>body{font:15px sans-serif;background:#f3f6fb;padding:32px}main{background:white;padding:24px;max-width:1100px;margin:auto}</style>
+<main><h1>送信と受信を描き分ける</h1><p>標準は送信が右向き、受信が左側の切り欠きです。結果の返送は facing=left で左右反転しています。flowの自動接続とレーンの担当を維持します。</p><div id="signals"></div></main>
+<script src="../dist/finch.global.js"></script><script>
+const signalSource = `@activity flow
+lane client "Client" {
+ start begin
+ send request "注文を送信"
+}
+lane service "Service" {
+ receive accepted "注文を受信"
+ action handle "注文を処理"
+ send reply "結果を送信" [facing=left]
+}
+in client
+receive result "結果を受信" [facing=left]
+end done`;
+Finch.render(signalSource,{target:'#signals'});
+</script></html>

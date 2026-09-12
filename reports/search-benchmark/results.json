@@ -1,0 +1,962 @@
+[
+  {
+    "case": "05",
+    "repeat": 0,
+    "mode": "off",
+    "totalMs": 18.983500000000276,
+    "score": 7869.8,
+    "evaluations": 0,
+    "pairs": 0
+  },
+  {
+    "case": "05",
+    "repeat": 0,
+    "mode": "full",
+    "totalMs": 1055.4948999999997,
+    "score": 5735.8,
+    "evaluations": 108,
+    "pairs": 36,
+    "patterns": [
+      2,
+      3
+    ],
+    "searchMs": 1033.6713
+  },
+  {
+    "case": "05",
+    "repeat": 0,
+    "mode": "same",
+    "totalMs": 180.9056999999998,
+    "score": 6310.866666666667,
+    "evaluations": 12,
+    "pairs": 4,
+    "patterns": [
+      2,
+      3
+    ],
+    "searchMs": 153.0704999999998
+  },
+  {
+    "case": "05",
+    "repeat": 0,
+    "mode": "views",
+    "totalMs": 202.26610000000028,
+    "score": 6310.866666666667,
+    "evaluations": 18,
+    "pairs": 6,
+    "patterns": [
+      2,
+      3
+    ],
+    "searchMs": 180.1633999999999
+  },
+  {
+    "case": "05",
+    "repeat": 1,
+    "mode": "views",
+    "totalMs": 212.7136000000005,
+    "score": 6310.866666666667,
+    "evaluations": 18,
+    "pairs": 6,
+    "patterns": [
+      2,
+      3
+    ],
+    "searchMs": 188.09439999999995
+  },
+  {
+    "case": "05",
+    "repeat": 1,
+    "mode": "same",
+    "totalMs": 147.3702999999996,
+    "score": 6310.866666666667,
+    "evaluations": 12,
+    "pairs": 4,
+    "patterns": [
+      2,
+      3
+    ],
+    "searchMs": 124.77760000000035
+  },
+  {
+    "case": "05",
+    "repeat": 1,
+    "mode": "full",
+    "totalMs": 1090.9237999999996,
+    "score": 5735.8,
+    "evaluations": 108,
+    "pairs": 36,
+    "patterns": [
+      2,
+      3
+    ],
+    "searchMs": 1069.6270999999997
+  },
+  {
+    "case": "05",
+    "repeat": 1,
+    "mode": "off",
+    "totalMs": 21.197699999999713,
+    "score": 7869.8,
+    "evaluations": 0,
+    "pairs": 0
+  },
+  {
+    "case": "05",
+    "repeat": 2,
+    "mode": "off",
+    "totalMs": 18.38050000000021,
+    "score": 7869.8,
+    "evaluations": 0,
+    "pairs": 0
+  },
+  {
+    "case": "05",
+    "repeat": 2,
+    "mode": "full",
+    "totalMs": 1093.5382,
+    "score": 5735.8,
+    "evaluations": 108,
+    "pairs": 36,
+    "patterns": [
+      2,
+      3
+    ],
+    "searchMs": 1071.6705000000002
+  },
+  {
+    "case": "05",
+    "repeat": 2,
+    "mode": "same",
+    "totalMs": 173.92889999999989,
+    "score": 6310.866666666667,
+    "evaluations": 12,
+    "pairs": 4,
+    "patterns": [
+      2,
+      3
+    ],
+    "searchMs": 146.4299000000001
+  },
+  {
+    "case": "05",
+    "repeat": 2,
+    "mode": "views",
+    "totalMs": 232.89030000000002,
+    "score": 6310.866666666667,
+    "evaluations": 18,
+    "pairs": 6,
+    "patterns": [
+      2,
+      3
+    ],
+    "searchMs": 209.70109999999931
+  },
+  {
+    "case": "05",
+    "repeat": 3,
+    "mode": "views",
+    "totalMs": 221.89580000000024,
+    "score": 6310.866666666667,
+    "evaluations": 18,
+    "pairs": 6,
+    "patterns": [
+      2,
+      3
+    ],
+    "searchMs": 196.59950000000026
+  },
+  {
+    "case": "05",
+    "repeat": 3,
+    "mode": "same",
+    "totalMs": 157.6207999999997,
+    "score": 6310.866666666667,
+    "evaluations": 12,
+    "pairs": 4,
+    "patterns": [
+      2,
+      3
+    ],
+    "searchMs": 138.10279999999966
+  },
+  {
+    "case": "05",
+    "repeat": 3,
+    "mode": "full",
+    "totalMs": 1047.1789999999992,
+    "score": 5735.8,
+    "evaluations": 108,
+    "pairs": 36,
+    "patterns": [
+      2,
+      3
+    ],
+    "searchMs": 1024.5566
+  },
+  {
+    "case": "05",
+    "repeat": 3,
+    "mode": "off",
+    "totalMs": 21.210000000000946,
+    "score": 7869.8,
+    "evaluations": 0,
+    "pairs": 0
+  },
+  {
+    "case": "05",
+    "repeat": 4,
+    "mode": "off",
+    "totalMs": 18.87459999999919,
+    "score": 7869.8,
+    "evaluations": 0,
+    "pairs": 0
+  },
+  {
+    "case": "05",
+    "repeat": 4,
+    "mode": "full",
+    "totalMs": 1045.2322000000004,
+    "score": 5735.8,
+    "evaluations": 108,
+    "pairs": 36,
+    "patterns": [
+      2,
+      3
+    ],
+    "searchMs": 1023.8821000000007
+  },
+  {
+    "case": "05",
+    "repeat": 4,
+    "mode": "same",
+    "totalMs": 162.40129999999954,
+    "score": 6310.866666666667,
+    "evaluations": 12,
+    "pairs": 4,
+    "patterns": [
+      2,
+      3
+    ],
+    "searchMs": 137.03150000000096
+  },
+  {
+    "case": "05",
+    "repeat": 4,
+    "mode": "views",
+    "totalMs": 216.5599999999995,
+    "score": 6310.866666666667,
+    "evaluations": 18,
+    "pairs": 6,
+    "patterns": [
+      2,
+      3
+    ],
+    "searchMs": 195.8065000000006
+  },
+  {
+    "case": "08-edges",
+    "repeat": 0,
+    "mode": "off",
+    "totalMs": 12.968399999999747,
+    "score": 5626,
+    "evaluations": 0,
+    "pairs": 0
+  },
+  {
+    "case": "08-edges",
+    "repeat": 0,
+    "mode": "full",
+    "totalMs": 786.2373000000007,
+    "score": 3982,
+    "evaluations": 108,
+    "pairs": 36,
+    "patterns": [
+      2,
+      3
+    ],
+    "searchMs": 771.1472999999987
+  },
+  {
+    "case": "08-edges",
+    "repeat": 0,
+    "mode": "same",
+    "totalMs": 114.48240000000078,
+    "score": 3982,
+    "evaluations": 12,
+    "pairs": 4,
+    "patterns": [
+      2,
+      3
+    ],
+    "searchMs": 98.17300000000068
+  },
+  {
+    "case": "08-edges",
+    "repeat": 0,
+    "mode": "views",
+    "totalMs": 153.98799999999937,
+    "score": 3982,
+    "evaluations": 18,
+    "pairs": 6,
+    "patterns": [
+      2,
+      3
+    ],
+    "searchMs": 136.9447
+  },
+  {
+    "case": "08-edges",
+    "repeat": 1,
+    "mode": "views",
+    "totalMs": 160.59979999999996,
+    "score": 3982,
+    "evaluations": 18,
+    "pairs": 6,
+    "patterns": [
+      2,
+      3
+    ],
+    "searchMs": 143.2482999999993
+  },
+  {
+    "case": "08-edges",
+    "repeat": 1,
+    "mode": "same",
+    "totalMs": 114.69869999999901,
+    "score": 3982,
+    "evaluations": 12,
+    "pairs": 4,
+    "patterns": [
+      2,
+      3
+    ],
+    "searchMs": 99.89960000000065
+  },
+  {
+    "case": "08-edges",
+    "repeat": 1,
+    "mode": "full",
+    "totalMs": 750.9314999999988,
+    "score": 3982,
+    "evaluations": 108,
+    "pairs": 36,
+    "patterns": [
+      2,
+      3
+    ],
+    "searchMs": 736.7021000000004
+  },
+  {
+    "case": "08-edges",
+    "repeat": 1,
+    "mode": "off",
+    "totalMs": 13.126500000000306,
+    "score": 5626,
+    "evaluations": 0,
+    "pairs": 0
+  },
+  {
+    "case": "08-edges",
+    "repeat": 2,
+    "mode": "off",
+    "totalMs": 15.450699999999415,
+    "score": 5626,
+    "evaluations": 0,
+    "pairs": 0
+  },
+  {
+    "case": "08-edges",
+    "repeat": 2,
+    "mode": "full",
+    "totalMs": 777.6396999999997,
+    "score": 3982,
+    "evaluations": 108,
+    "pairs": 36,
+    "patterns": [
+      2,
+      3
+    ],
+    "searchMs": 764.5419000000002
+  },
+  {
+    "case": "08-edges",
+    "repeat": 2,
+    "mode": "same",
+    "totalMs": 121.70750000000044,
+    "score": 3982,
+    "evaluations": 12,
+    "pairs": 4,
+    "patterns": [
+      2,
+      3
+    ],
+    "searchMs": 107.44580000000133
+  },
+  {
+    "case": "08-edges",
+    "repeat": 2,
+    "mode": "views",
+    "totalMs": 154.46659999999974,
+    "score": 3982,
+    "evaluations": 18,
+    "pairs": 6,
+    "patterns": [
+      2,
+      3
+    ],
+    "searchMs": 140.30040000000008
+  },
+  {
+    "case": "08-edges",
+    "repeat": 3,
+    "mode": "views",
+    "totalMs": 151.89849999999933,
+    "score": 3982,
+    "evaluations": 18,
+    "pairs": 6,
+    "patterns": [
+      2,
+      3
+    ],
+    "searchMs": 138.41320000000087
+  },
+  {
+    "case": "08-edges",
+    "repeat": 3,
+    "mode": "same",
+    "totalMs": 111.6335999999992,
+    "score": 3982,
+    "evaluations": 12,
+    "pairs": 4,
+    "patterns": [
+      2,
+      3
+    ],
+    "searchMs": 98.39909999999873
+  },
+  {
+    "case": "08-edges",
+    "repeat": 3,
+    "mode": "full",
+    "totalMs": 764.5900000000001,
+    "score": 3982,
+    "evaluations": 108,
+    "pairs": 36,
+    "patterns": [
+      2,
+      3
+    ],
+    "searchMs": 749.096599999999
+  },
+  {
+    "case": "08-edges",
+    "repeat": 3,
+    "mode": "off",
+    "totalMs": 12.550699999999779,
+    "score": 5626,
+    "evaluations": 0,
+    "pairs": 0
+  },
+  {
+    "case": "08-edges",
+    "repeat": 4,
+    "mode": "off",
+    "totalMs": 13.85490000000027,
+    "score": 5626,
+    "evaluations": 0,
+    "pairs": 0
+  },
+  {
+    "case": "08-edges",
+    "repeat": 4,
+    "mode": "full",
+    "totalMs": 734.9451000000008,
+    "score": 3982,
+    "evaluations": 108,
+    "pairs": 36,
+    "patterns": [
+      2,
+      3
+    ],
+    "searchMs": 721.8577999999998
+  },
+  {
+    "case": "08-edges",
+    "repeat": 4,
+    "mode": "same",
+    "totalMs": 129.27560000000085,
+    "score": 3982,
+    "evaluations": 12,
+    "pairs": 4,
+    "patterns": [
+      2,
+      3
+    ],
+    "searchMs": 113.72119999999995
+  },
+  {
+    "case": "08-edges",
+    "repeat": 4,
+    "mode": "views",
+    "totalMs": 154.66409999999996,
+    "score": 3982,
+    "evaluations": 18,
+    "pairs": 6,
+    "patterns": [
+      2,
+      3
+    ],
+    "searchMs": 140.7396000000008
+  },
+  {
+    "case": "rotated",
+    "repeat": 0,
+    "mode": "off",
+    "totalMs": 16.152899999997317,
+    "score": 7869.8,
+    "evaluations": 0,
+    "pairs": 0
+  },
+  {
+    "case": "rotated",
+    "repeat": 0,
+    "mode": "full",
+    "totalMs": 1157.1614999999983,
+    "score": 5735.8,
+    "evaluations": 108,
+    "pairs": 36,
+    "patterns": [
+      2,
+      3
+    ],
+    "searchMs": 1132.862000000001
+  },
+  {
+    "case": "rotated",
+    "repeat": 0,
+    "mode": "same",
+    "totalMs": 156.09330000000045,
+    "score": 6310.866666666667,
+    "evaluations": 12,
+    "pairs": 4,
+    "patterns": [
+      2,
+      3
+    ],
+    "searchMs": 136.97379999999976
+  },
+  {
+    "case": "rotated",
+    "repeat": 0,
+    "mode": "views",
+    "totalMs": 228.26420000000144,
+    "score": 5796,
+    "evaluations": 18,
+    "pairs": 6,
+    "patterns": [
+      2,
+      3
+    ],
+    "searchMs": 211.69350000000122
+  },
+  {
+    "case": "rotated",
+    "repeat": 1,
+    "mode": "views",
+    "totalMs": 207.6241000000009,
+    "score": 5796,
+    "evaluations": 18,
+    "pairs": 6,
+    "patterns": [
+      2,
+      3
+    ],
+    "searchMs": 191.32420000000275
+  },
+  {
+    "case": "rotated",
+    "repeat": 1,
+    "mode": "same",
+    "totalMs": 156.57730000000083,
+    "score": 6310.866666666667,
+    "evaluations": 12,
+    "pairs": 4,
+    "patterns": [
+      2,
+      3
+    ],
+    "searchMs": 138.5809999999983
+  },
+  {
+    "case": "rotated",
+    "repeat": 1,
+    "mode": "full",
+    "totalMs": 1074.496500000001,
+    "score": 5735.8,
+    "evaluations": 108,
+    "pairs": 36,
+    "patterns": [
+      2,
+      3
+    ],
+    "searchMs": 1056.8552999999993
+  },
+  {
+    "case": "rotated",
+    "repeat": 1,
+    "mode": "off",
+    "totalMs": 19.774099999998725,
+    "score": 7869.8,
+    "evaluations": 0,
+    "pairs": 0
+  },
+  {
+    "case": "rotated",
+    "repeat": 2,
+    "mode": "off",
+    "totalMs": 15.951199999999517,
+    "score": 7869.8,
+    "evaluations": 0,
+    "pairs": 0
+  },
+  {
+    "case": "rotated",
+    "repeat": 2,
+    "mode": "full",
+    "totalMs": 1081.902399999999,
+    "score": 5735.8,
+    "evaluations": 108,
+    "pairs": 36,
+    "patterns": [
+      2,
+      3
+    ],
+    "searchMs": 1060.6597000000002
+  },
+  {
+    "case": "rotated",
+    "repeat": 2,
+    "mode": "same",
+    "totalMs": 153.4799000000021,
+    "score": 6310.866666666667,
+    "evaluations": 12,
+    "pairs": 4,
+    "patterns": [
+      2,
+      3
+    ],
+    "searchMs": 135.1947
+  },
+  {
+    "case": "rotated",
+    "repeat": 2,
+    "mode": "views",
+    "totalMs": 207.67339999999967,
+    "score": 5796,
+    "evaluations": 18,
+    "pairs": 6,
+    "patterns": [
+      2,
+      3
+    ],
+    "searchMs": 191.1232999999993
+  },
+  {
+    "case": "rotated",
+    "repeat": 3,
+    "mode": "views",
+    "totalMs": 194.66059999999925,
+    "score": 5796,
+    "evaluations": 18,
+    "pairs": 6,
+    "patterns": [
+      2,
+      3
+    ],
+    "searchMs": 180.3132000000005
+  },
+  {
+    "case": "rotated",
+    "repeat": 3,
+    "mode": "same",
+    "totalMs": 152.53249999999753,
+    "score": 6310.866666666667,
+    "evaluations": 12,
+    "pairs": 4,
+    "patterns": [
+      2,
+      3
+    ],
+    "searchMs": 130.2029999999977
+  },
+  {
+    "case": "rotated",
+    "repeat": 3,
+    "mode": "full",
+    "totalMs": 1064.8688000000002,
+    "score": 5735.8,
+    "evaluations": 108,
+    "pairs": 36,
+    "patterns": [
+      2,
+      3
+    ],
+    "searchMs": 1045.7440000000024
+  },
+  {
+    "case": "rotated",
+    "repeat": 3,
+    "mode": "off",
+    "totalMs": 16.983499999998457,
+    "score": 7869.8,
+    "evaluations": 0,
+    "pairs": 0
+  },
+  {
+    "case": "rotated",
+    "repeat": 4,
+    "mode": "off",
+    "totalMs": 20.86290000000008,
+    "score": 7869.8,
+    "evaluations": 0,
+    "pairs": 0
+  },
+  {
+    "case": "rotated",
+    "repeat": 4,
+    "mode": "full",
+    "totalMs": 1068.4627,
+    "score": 5735.8,
+    "evaluations": 108,
+    "pairs": 36,
+    "patterns": [
+      2,
+      3
+    ],
+    "searchMs": 1050.1031000000003
+  },
+  {
+    "case": "rotated",
+    "repeat": 4,
+    "mode": "same",
+    "totalMs": 158.3132000000005,
+    "score": 6310.866666666667,
+    "evaluations": 12,
+    "pairs": 4,
+    "patterns": [
+      2,
+      3
+    ],
+    "searchMs": 136.2508999999991
+  },
+  {
+    "case": "rotated",
+    "repeat": 4,
+    "mode": "views",
+    "totalMs": 204.62209999999686,
+    "score": 5796,
+    "evaluations": 18,
+    "pairs": 6,
+    "patterns": [
+      2,
+      3
+    ],
+    "searchMs": 188.83179999999993
+  },
+  {
+    "case": "easy",
+    "repeat": 0,
+    "mode": "off",
+    "totalMs": 1.8195999999988999,
+    "score": 368,
+    "evaluations": 0,
+    "pairs": 0
+  },
+  {
+    "case": "easy",
+    "repeat": 0,
+    "mode": "full",
+    "totalMs": 2.197100000001228,
+    "score": 368,
+    "evaluations": 0,
+    "pairs": 0,
+    "searchMs": 0.0067000000017287675
+  },
+  {
+    "case": "easy",
+    "repeat": 0,
+    "mode": "same",
+    "totalMs": 3.31329999999798,
+    "score": 368,
+    "evaluations": 0,
+    "pairs": 0,
+    "searchMs": 0.007300000001123408
+  },
+  {
+    "case": "easy",
+    "repeat": 0,
+    "mode": "views",
+    "totalMs": 2.97979999999734,
+    "score": 368,
+    "evaluations": 0,
+    "pairs": 0,
+    "searchMs": 0.006300000000919681
+  },
+  {
+    "case": "easy",
+    "repeat": 1,
+    "mode": "views",
+    "totalMs": 4.815699999999197,
+    "score": 368,
+    "evaluations": 0,
+    "pairs": 0,
+    "searchMs": 0.007099999998899875
+  },
+  {
+    "case": "easy",
+    "repeat": 1,
+    "mode": "same",
+    "totalMs": 3.2487999999975727,
+    "score": 368,
+    "evaluations": 0,
+    "pairs": 0,
+    "searchMs": 0.0072000000000116415
+  },
+  {
+    "case": "easy",
+    "repeat": 1,
+    "mode": "full",
+    "totalMs": 2.1234999999978754,
+    "score": 368,
+    "evaluations": 0,
+    "pairs": 0,
+    "searchMs": 0.005499999999301508
+  },
+  {
+    "case": "easy",
+    "repeat": 1,
+    "mode": "off",
+    "totalMs": 2.736800000002404,
+    "score": 368,
+    "evaluations": 0,
+    "pairs": 0
+  },
+  {
+    "case": "easy",
+    "repeat": 2,
+    "mode": "off",
+    "totalMs": 2.1634999999987485,
+    "score": 368,
+    "evaluations": 0,
+    "pairs": 0
+  },
+  {
+    "case": "easy",
+    "repeat": 2,
+    "mode": "full",
+    "totalMs": 2.4887999999991735,
+    "score": 368,
+    "evaluations": 0,
+    "pairs": 0,
+    "searchMs": 0.005600000000413274
+  },
+  {
+    "case": "easy",
+    "repeat": 2,
+    "mode": "same",
+    "totalMs": 3.67069999999876,
+    "score": 368,
+    "evaluations": 0,
+    "pairs": 0,
+    "searchMs": 0.007099999998899875
+  },
+  {
+    "case": "easy",
+    "repeat": 2,
+    "mode": "views",
+    "totalMs": 6.383300000001327,
+    "score": 368,
+    "evaluations": 0,
+    "pairs": 0,
+    "searchMs": 0.006300000000919681
+  },
+  {
+    "case": "easy",
+    "repeat": 3,
+    "mode": "views",
+    "totalMs": 2.3770999999978812,
+    "score": 368,
+    "evaluations": 0,
+    "pairs": 0,
+    "searchMs": 0.006600000000617001
+  },
+  {
+    "case": "easy",
+    "repeat": 3,
+    "mode": "same",
+    "totalMs": 1.8646000000007916,
+    "score": 368,
+    "evaluations": 0,
+    "pairs": 0,
+    "searchMs": 0.003400000001420267
+  },
+  {
+    "case": "easy",
+    "repeat": 3,
+    "mode": "full",
+    "totalMs": 2.371500000001106,
+    "score": 368,
+    "evaluations": 0,
+    "pairs": 0,
+    "searchMs": 0.0031999999991967343
+  },
+  {
+    "case": "easy",
+    "repeat": 3,
+    "mode": "off",
+    "totalMs": 3.8690000000024156,
+    "score": 368,
+    "evaluations": 0,
+    "pairs": 0
+  },
+  {
+    "case": "easy",
+    "repeat": 4,
+    "mode": "off",
+    "totalMs": 2.3220000000001164,
+    "score": 368,
+    "evaluations": 0,
+    "pairs": 0
+  },
+  {
+    "case": "easy",
+    "repeat": 4,
+    "mode": "full",
+    "totalMs": 1.9896000000007916,
+    "score": 368,
+    "evaluations": 0,
+    "pairs": 0,
+    "searchMs": 0.006300000000919681
+  },
+  {
+    "case": "easy",
+    "repeat": 4,
+    "mode": "same",
+    "totalMs": 2.5414999999993597,
+    "score": 368,
+    "evaluations": 0,
+    "pairs": 0,
+    "searchMs": 0.0037999999985913746
+  },
+  {
+    "case": "easy",
+    "repeat": 4,
+    "mode": "views",
+    "totalMs": 6.396499999998923,
+    "score": 368,
+    "evaluations": 0,
+    "pairs": 0,
+    "searchMs": 0.0039000000033411197
+  }
+]

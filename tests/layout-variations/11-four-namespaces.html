@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="ja"><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>4領域と共有モデル</title>
+<style>body{font:15px sans-serif;margin:24px;background:#f5f7fb}#diagram{background:white;overflow:auto}pre{white-space:pre-wrap}</style>
+<a href="index.html">配置バリエーション一覧</a><h1>4領域と共有モデル</h1><div id="diagram"></div><details><summary>ソース</summary><pre id="source"></pre></details>
+<script src="../../dist/finch.global.js"></script><script>
+const source = `@class
+namespace web {
+ class Controller
+ class View
+ Controller --> View
+}
+namespace application {
+ class Service
+ class Validator
+ Service --> Validator
+}
+namespace persistence {
+ class Repository
+ class Mapper
+ Repository --> Mapper
+}
+namespace model {
+ class Entity
+ class Value
+ Entity *-- Value
+}
+web.Controller ..> application.Service
+application.Service ..> persistence.Repository
+application.Service ..> model.Entity
+application.Validator ..> model.Value
+persistence.Mapper ..> model.Entity
+web.View ..> model.Value`;
+document.querySelector("#source").textContent=source;
+window.diagram=Finch.render(source,{target:"#diagram"});
+</script></html>

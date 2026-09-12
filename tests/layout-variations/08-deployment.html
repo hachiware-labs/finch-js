@@ -1,0 +1,25 @@
+<!doctype html><html lang="ja"><meta charset="utf-8"><title>3領域と複数の横断線</title><style>body{font:15px sans-serif;margin:24px;background:#f5f7fb}#diagram{background:white;overflow:auto}pre{white-space:pre-wrap}</style><h1>3領域と複数の横断線</h1><div id="diagram"></div><details><summary>ソース</summary><pre id="source"></pre></details><script src="../../dist/finch.global.js"></script><script>
+const source = `@deployment
+container app "Application" {
+ server api "API"
+ server worker "Worker"
+}
+container data "Data" {
+ database db "Database"
+ server queue "Queue"
+}
+container ops "Operations" {
+ server logs "Logs"
+ server monitor "Monitor"
+}
+api -> db
+api -> queue
+queue -> worker
+worker -> db
+api --> logs
+worker --> logs
+monitor -> api
+monitor -> db`;
+document.querySelector("#source").textContent=source;
+window.diagram=Finch.render(source,{target:"#diagram"});
+</script></html>

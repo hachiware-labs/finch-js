@@ -1,0 +1,20 @@
+<!doctype html><html lang="ja"><meta charset="utf-8"><title>Sequence dividers — Finch.js</title>
+<style>body{font:15px sans-serif;background:#f3f6fb;padding:32px}main{background:white;padding:24px;max-width:1100px;margin:auto}</style>
+<main><h1>処理の段階を見出しで分ける</h1><p>見出しを挟んでも、メッセージ番号とライフラインは継続します。</p><div id="dividers"></div></main>
+<script src="../dist/finch.global.js"></script><script>
+const dividerSource = `@sequence
+participant client "Client"
+participant api "API"
+participant store "Store"
+autonumber
+show footbox
+divider "Authentication"
+client -> api: Login
+api --> client: Access token
+== Persistence ==
+client -> api: Save order
+api -> store: Insert order
+store --> api: Created
+api --> client: Accepted`;
+Finch.render(dividerSource,{target:'#dividers'});
+</script></html>

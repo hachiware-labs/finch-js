@@ -1,0 +1,62 @@
+[
+  {
+    "id": "01-linear",
+    "title": "直列処理",
+    "focus": "主経路の整列と等間隔",
+    "source": "@flowchart\nstart s \"開始\"\nprocess a \"注文受付\"\nprocess b \"在庫引当\"\nprocess c \"決済確定\"\nend e \"完了\"\ns -> a\na -> b\nb -> c\nc -> e"
+  },
+  {
+    "id": "02-branch",
+    "title": "分岐・合流",
+    "focus": "正常経路と例外経路の区別",
+    "source": "@flowchart\nstart s \"開始\"\ndecision c \"在庫あり?\"\nprocess a \"出荷準備\"\nprocess b \"入荷待ち\"\nprocess d \"発送通知\"\nend e \"完了\"\ns -> c\nc -> a: Yes\nc -> b: No\nb -> a: 入荷\na -> d\nd -> e"
+  },
+  {
+    "id": "03-retry",
+    "title": "再試行ループ",
+    "focus": "戻り線と順方向の分離",
+    "source": "@flowchart\nstart s \"受付\"\nprocess a \"申請内容を検証\"\ndecision c \"承認可能?\"\nprocess r \"申請者が修正\"\nprocess p \"承認を登録\"\nend e \"完了\"\ns -> a\na -> c\nc -> p: Yes\nc -> r: No\nr -> a: 再申請\np -> e"
+  },
+  {
+    "id": "04-parallel",
+    "title": "並列状態",
+    "focus": "fork・joinの上下配置",
+    "source": "@state\ninitial s\nfork f\nstate a \"在庫確保\"\nstate b \"決済認証\"\nstate c \"配送先確認\"\njoin j\nstate d \"注文確定\"\nfinal e\ns -> f\nf -> a\nf -> b\nf -> c\na -> j\nb -> j\nc -> j\nj -> d\nd -> e"
+  },
+  {
+    "id": "05-dense",
+    "title": "密な依存関係",
+    "focus": "多対多接続の追跡性",
+    "source": "@graph direction=LR\na \"注文API\"\nb \"管理API\"\nc \"集計API\"\nx \"注文DB\"\ny \"顧客DB\"\nz \"監査DB\"\na -> x: 更新\na -> y: 参照\na -> z: 記録\nb -> x: 参照\nb -> y: 更新\nb -> z: 記録\nc -> x: 集計\nc -> y: 集計\nc -> z: 記録"
+  },
+  {
+    "id": "06-deployment",
+    "title": "入れ子の配置図",
+    "focus": "境界越えと共有データ接続",
+    "source": "@deployment\ncontainer cloud \"本番環境\" [layout=column] {\n container front \"入口\" [layout=row] {\n  node cdn \"CDN\"\n  node gw \"Gateway\"\n }\n container apps \"アプリケーション\" [layout=row] {\n  server api \"注文API\"\n  server worker \"非同期Worker\"\n }\n container data \"データ層\" [layout=row] {\n  database db \"注文DB\"\n  node queue \"Queue\"\n }\n}\ncdn -> gw: HTTPS\ngw -> api: 転送\napi -> db: 保存\napi -> queue: 配信\nqueue -> worker: 購読\nworker -> db: 更新"
+  },
+  {
+    "id": "07-component",
+    "title": "共通部品への依存",
+    "focus": "枠と集中する接続の整理",
+    "source": "@component\nsystem shop \"注文システム\" {\n component ui \"注文画面\"\n component api \"注文API\"\n component auth \"認証\"\n component audit \"監査\"\n database db \"注文DB\"\n}\nexternal pay \"決済サービス\"\nui -> api: 注文\nui -> auth: ログイン\napi -> auth: 検証\napi -> audit: 記録\napi -> db: 保存\napi -> pay: 決済\npay -> audit: 結果通知"
+  },
+  {
+    "id": "08-er",
+    "title": "注文データモデル",
+    "focus": "多重度・関係名と表の離隔",
+    "source": "@er\nentity customers \"顧客\" {\n id UUID pk\n name string\n}\nentity orders \"注文\" {\n id UUID pk\n customer_id UUID fk\n}\nentity items \"注文明細\" {\n id UUID pk\n order_id UUID fk\n product_id UUID fk\n}\nentity products \"商品\" {\n id UUID pk\n name string\n}\nentity payments \"支払い\" {\n id UUID pk\n order_id UUID fk\n}\ncustomers 1 -> many orders: 発注\norders 1 -> many items: 明細\nproducts 1 -> many items: 対象\norders 1 -> many payments: 決済"
+  },
+  {
+    "id": "09-class",
+    "title": "継承と関連",
+    "focus": "異なる線種と継承階層",
+    "source": "@class\ninterface Repository {\n +save(): void\n}\nclass OrderRepository {\n +save(): void\n}\nclass CustomerRepository {\n +save(): void\n}\nclass Order {\n -id: UUID\n +submit(): void\n}\nclass LineItem {\n -quantity: int\n}\nOrderRepository ..|> Repository\nCustomerRepository ..|> Repository\nOrderRepository --> Order: 保存\nOrder \"1\" *-- \"1..N\" LineItem: 明細"
+  },
+  {
+    "id": "10-long-label",
+    "title": "長文の判断・経路名",
+    "focus": "ラベルの折り返しと経路識別",
+    "source": "@flowchart\nstart s \"審査開始\"\nprocess a \"法人顧客の申請内容と添付書類を照合する\"\ndecision c \"本人確認と利用条件の審査をすべて通過したか?\"\nprocess b \"不足している証明書類の追加提出を依頼する\"\nprocess d \"利用開始の案内と初回設定の手順を通知する\"\nend e \"審査完了\"\ns -> a\na -> c\nc -> d: すべての審査項目を通過\nc -> b: 証明書類に不足がある\nb -> a: 追加書類を受領して再審査\nd -> e"
+  }
+]

@@ -1,0 +1,69 @@
+<!doctype html><html lang="ja"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>階層と再利用 — Finch.js状態図</title>
+<style>body{margin:0;background:#f3f6fb;color:#24334b;font:15px Segoe UI,Meiryo,sans-serif}main{max-width:1200px;margin:auto;padding:32px}section{background:white;padding:24px;border-radius:12px;margin:24px 0}.diagram{overflow:auto}pre{white-space:pre-wrap;line-height:1.6}a{color:#246a95}h2{font-size:21px}</style>
+<main><a href="state-semantics.html">← 状態遷移の基本</a><p><a href="uml-complete.html">UML追加記法 →</a></p><h1>並行・履歴・接続点・サブマシン</h1><p>各例を厳格モードで検証しています。式やイベントの実行シミュレーションは行いません。</p>
+<section><h2>01 並行領域の同期</h2><p>forkは別々の領域へ入り、joinは両方の状態から合流します。</p><div id="parallel" class="diagram" aria-label="並行領域のforkとjoin"></div></section>
+<section><h2>02 履歴と境界の接続点</h2><p>再開時はHへ入り、履歴がなければ待機状態へ進みます。白丸はentryPoint、丸の中の×はexitPointです。</p><div id="history" class="diagram" aria-label="履歴と接続点"></div></section>
+<section><h2>03 サブマシンの利用</h2><p>状態に機械名を指定し、定義済みの入口・出口を参照します。</p><div id="usage" class="diagram" aria-label="Paymentサブマシンの参照"></div><details><summary>短い記述を見る</summary><pre id="source"></pre></details></section>
+<section><h2>04 Paymentの定義</h2><p>利用側と同じ定義データから描画しています。</p><div id="definition" class="diagram" aria-label="Paymentの内部定義"></div></section></main>
+<script src="../dist/finch.global.js"></script><script>
+const parallelSource = `@state validation=strict
+state ready "受付済み"
+fork start
+state work "並行処理" {
+ region payment "決済" {
+  state charged "決済完了"
+ }
+ region shipping "配送" {
+  state reserved "配送予約済み"
+ }
+}
+join sync
+final done
+ready -> start: confirm
+start -> charged
+start -> reserved
+charged -> sync
+reserved -> sync
+sync -> done`;
+Finch.render(parallelSource,{target:'#parallel'});
+const historySource = `@state validation=strict
+state paused "中断中"
+state session "セッション" {
+ entryPoint resume
+ history previous
+ state idle "待機"
+ state active "処理中"
+ exitPoint leave
+ resume -> previous
+ previous -> idle
+ idle -> active: start
+ active -> leave: pause
+}
+paused -> resume: resume
+leave -> paused`;
+Finch.render(historySource,{target:'#history'});
+const usageSource = `@state validation=strict
+machine Payment {
+ entryPoint start
+ state active "決済処理"
+ exitPoint finish
+ start -> active
+ active -> finish: accepted
+}
+state ready "注文受付"
+state pay "決済" [submachine=Payment]
+entryPoint input [state=pay ref=start]
+exitPoint output [state=pay ref=finish]
+final done
+ready -> input: submit
+output -> done`;
+Finch.render(usageSource,{target:'#usage'});
+const definitionSource = Finch.parseState(usageSource).stateMachines.Payment.source.replace('@state','@state validation=strict');
+Finch.render(definitionSource,{target:'#definition'});
+document.querySelector('#source').textContent=usageSource;
+for (const [id, source] of Object.entries({parallel:parallelSource,history:historySource,definition:definitionSource})) {
+ const details=document.createElement('details'), summary=document.createElement('summary'), pre=document.createElement('pre');
+ summary.textContent='ソースを見る'; pre.textContent=source; details.append(summary,pre); document.getElementById(id).after(details);
+}
+</script></html>

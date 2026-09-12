@@ -21,6 +21,7 @@
     <script>
       const componentSource = String.raw`
 @component
+top to bottom direction
 
 external customer "Customer"
 external identity "Identity Provider"
@@ -82,6 +83,7 @@ notifications -> mail: send
           target: diagram,
           ariaLabel: `${title} advanced example`,
         });
+        instance.setZoom(1);
       } catch (error) {
         errorView.hidden = false;
         errorView.textContent = error instanceof Error ? error.message : String(error);

@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Finch.js — ラベルの折り返し</title>
+    <link rel="stylesheet" href="./example.css" />
+    <style>
+      .samples { max-width: 1200px; margin: 32px auto; padding: 0 24px 64px; }
+      .sample { margin-bottom: 36px; }
+      .sample h2 { font-size: 20px; margin-bottom: 8px; }
+      .sample p { color: #64748b; line-height: 1.7; }
+      .sample .canvas { max-height: none; border-radius: 12px; }
+    </style>
+  </head>
+  <body>
+    <header>
+      <a class="back" href="./index.html">← 作例一覧</a>
+      <h1>文章も、図の中で読みやすく。</h1>
+      <p>指定した改行を保ち、長い行は自動で折り返します。文章の量に合わせて枠と余白が広がります。</p>
+    </header>
+    <main class="samples">
+      <section class="sample"><h2>指定した位置で改行</h2><p><code>\n</code> で区切りを指定。長い行には自動折り返しも適用します。</p><div id="explicit" class="canvas" aria-label="明示した改行を含むフローチャート"></div></section>
+      <section class="sample"><h2>形に合わせて収める</h2><p>四角、菱形、円、楕円でも、全文を表示できる大きさを確保します。</p><div id="shapes" class="canvas" aria-label="さまざまな形の自動折り返し"></div></section>
+      <section class="sample"><h2>接続ラベルも複数行に</h2><p>メッセージが長くなっても、次のメッセージとの間隔を確保します。</p><div id="messages" class="canvas" aria-label="長いメッセージのシーケンス図"></div></section>
+      <section class="sample"><h2>見出しと本文を省略しない</h2><p>長いカードの見出しや本文は、行数に合わせて枠を広げます。</p><div id="cards" class="canvas" aria-label="長い見出しと本文を含むカード"></div></section>
+    </main>
+    <script src="../dist/finch.global.js?v=label-wrap-1"></script>
+    <script>
+      const explicitSource = String.raw`
+@flowchart
+process receive "申請内容を受け取る\n添付書類も確認する"
+decision check "必要な情報がすべて揃っていて、\nこのまま審査を進められますか？" [wrapWidth=156]
+process continue "担当者が申請内容を確認して、審査結果を利用者にお知らせする"
+receive -> check: 申請された情報と添付書類を照合し、\n不足している項目がないか確認する
+check -> continue: はい
+      `.trim();
+      Finch.render(explicitSource, { target: "#explicit", ariaLabel: "明示した改行と自動折り返し" });
+
+      const shapesSource = String.raw`
+@deployment
+container samples "形が変わっても文章をはみ出させない\n自動折り返しの確認" [layout=grid columns=2] {
+  node rectangle "This long sentence wraps at word boundaries while keeping every word visible inside the element." [wrapWidth=168]
+  node diamond "複数行になった文章の四隅まで、菱形の輪郭の内側に収まっていますか？" [shape=diamond wrapWidth=144]
+  node circle "途中で改行の位置を指定しなくても、長い日本語の文章を自動的に折り返します。" [shape=circle wrapWidth=144]
+  node oval "VeryLongIdentifierWithoutAnySpacesThatMustRemainCompletelyVisibleInsideTheShape" [shape=usecase wrapWidth=168]
+}
+      `.trim();
+      Finch.render(shapesSource, { target: "#shapes", ariaLabel: "図形の内側に収める自動折り返し" });
+
+      const messagesSource = String.raw`
+@sequence
+participant user "利用者"
+participant service "申請受付サービス"
+user -> service: 申請内容と必要な添付書類をまとめて送信し、受付処理が完了するまで待機する
+service --> user: 受付番号を返す\n追加確認が必要な場合の案内も表示する
+      `.trim();
+      Finch.render(messagesSource, { target: "#messages", ariaLabel: "複数行の接続ラベル" });
+
+      const cardsSource = String.raw`
+@slide
+row cards {
+  card explicit "読み手に伝えたいことを\n指定した位置で区切る" [body="見出しの行数が増えたときも本文の位置を下げて、文章同士が重ならないようにします。本文が長い場合も省略しません。" width=300]
+  card automatic "指示がない文章も読みやすい幅で自然に折り返す" [body="Long sentences keep every word. Even a very long explanation grows the card to fit instead of hiding the ending behind an ellipsis." width=300]
+}
+      `.trim();
+      Finch.render(cardsSource, { target: "#cards", ariaLabel: "見出しと本文の自動折り返し" });
+    </script>
+  </body>
+</html>

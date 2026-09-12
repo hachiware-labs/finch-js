@@ -1,0 +1,80 @@
+<!doctype html><html lang="ja"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>実用UML — Finch.js</title>
+<style>body{margin:0;background:#f3f6fb;color:#24334b;font:15px Segoe UI,Meiryo,sans-serif}main{max-width:1300px;margin:auto;padding:28px}section{padding:24px;background:white;border:1px solid #d4deea;border-radius:12px;margin:24px 0}.diagram{overflow:auto}.diagram>svg{display:block;min-width:600px}pre{white-space:pre-wrap;background:#f4f6fa;padding:16px}a{color:#246a95}</style>
+<main><a href="./uml-concise.html">← 簡潔なUML</a><p><a href="state-semantics.html">状態図の意味と構造チェック →</a></p><h1>実用UMLを短く書く</h1><p>必要な意味を明示し、配置は自動に任せるサンプル。</p>
+<section><h2>呼び出し・通知・応答と実行区間</h2><div id="sequence" class="diagram"></div></section>
+<section><h2>状態内の処理</h2><div id="state" class="diagram"></div></section>
+<section><h2>繰り返しと再試行</h2><div id="activity" class="diagram"></div></section>
+<section><h2>役割・メンバー・関連クラス</h2><p>Team は User をメンバーとしてまとめます（共有集約）。User は複数の Team に所属でき、所属ごとの役割と加入日を Membership が持ちます。</p><div id="class" class="diagram"></div></section></main>
+<script src="../dist/finch.global.js"></script><script>
+const sequenceSource = `@sequence
+actor user "利用者"
+participant api "API"
+participant queue "キュー"
+user -> api: 処理を依頼
+activate api
+api ->> queue: ジョブを通知
+api --> user: 受付完了
+deactivate api
+create worker "Worker"
+queue -> worker: ジョブを開始
+activate worker
+worker -> worker: 集計
+activate worker
+worker --> worker: 結果
+deactivate worker
+worker --> queue: 完了
+deactivate worker
+destroy worker
+stereotype api "service"
+note api->queue "非同期通知は応答を待たない"`;
+Finch.render(sequenceSource,{target:'#sequence'});
+const stateSource = `@state
+initial begin
+state running "実行中"
+state stopped "停止中"
+final done
+begin -> running
+running -> stopped: stop
+stopped -> done
+entry running "タイマー開始"
+do running "ジョブを処理"
+internal running "refresh / 設定を再読込"
+exit running "タイマー解除"
+stereotype running "worker"`;
+Finch.render(stateSource,{target:'#state'});
+const activitySource = `@activity
+start begin
+while items "未処理データあり？" {
+ action load "次のデータを読む"
+ repeat retry "再試行する？" {
+  action send "送信する"
+ }
+ action save "結果を記録"
+}
+end done
+begin -> items
+items.done -> done`;
+Finch.render(activitySource,{target:'#activity'});
+const classSource = `@class
+class User {
+ -id: UUID
+ static +count: int
+}
+class Team {
+ -name: String
+ abstract +add(user: User): void
+}
+class Membership {
+ -role: String
+ -joinedAt: Date
+}
+Team "*" o-- "*" User [fromRole=teams toRole=members]
+association Membership Team->User
+stereotype User "entity"
+stereotype Team "aggregate"
+constraint Membership "role is owner or member"`;
+Finch.render(classSource,{target:'#class'});
+for(const [id,source] of Object.entries({sequence:sequenceSource,state:stateSource,activity:activitySource,class:classSource})) {
+ const details=document.createElement('details'),summary=document.createElement('summary'),pre=document.createElement('pre');summary.textContent='ソースを見る';pre.textContent=source;details.append(summary,pre);document.getElementById(id).parentElement.append(details);
+}
+</script></html>

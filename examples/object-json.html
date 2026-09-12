@@ -1,0 +1,31 @@
+<!doctype html><html lang="ja"><meta charset="utf-8"><title>JSON objects — Finch.js</title>
+<style>body{font:15px sans-serif;background:#f3f6fb;padding:32px}main{background:white;padding:24px;max-width:1100px;margin:auto}</style>
+<main><h1>JSONの入れ子と参照を読む</h1><p>JSONをそのまま記述し、オブジェクトと配列の構造を表で確認します。</p><div id="json" aria-label="注文JSONの顧客情報と商品配列"></div><h2>名前空間をまたぐ定義と実例</h2><p>型の属性と具体的な値を直接対応付けます。別の名前空間では同じ短い名前を使えます。</p><div id="namespaced" aria-label="販売モデルと監査データの対応"></div></main>
+<script src="../dist/finch.global.js"></script><script>
+const jsonSource = `@object
+json order "Order payload" {
+ "id": 42,
+ "customer": {"name": "Alice", "active": true},
+ "items": [{"sku": "SKU-001", "qty": 2}, null]
+}`;
+const jsonInstance = Finch.render(jsonSource,{target:'#json'});
+const namespacedSource = `@class
+namespace sales "Sales" {
+class Order {
+ +id: Integer
+ +status: String
+}
+object example "order : Order" {
+ id = 42
+ status = paid
+}
+json payload "Order payload" {"id":42,"status":"paid"}
+Order::id --> example::id
+example::id --> payload::id
+}
+namespace audit "Audit" {
+json payload "Audit record" {"orderId":42,"event":"paid"}
+}
+sales.payload::id --> audit.payload::orderId: recorded as`;
+const namespacedInstance = Finch.render(namespacedSource,{target:'#namespaced'});
+</script></html>

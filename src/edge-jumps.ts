@@ -9,6 +9,11 @@ interface SegmentJump {
   point: Point;
 }
 
+/** Fragment rows reserve layout space but do not draw a connection path. */
+export function isRenderedEdge(edge:GeometryEdge):boolean {
+  return edge.attributes?.hidden !== "true" && !["ref","delay","divider","note"].includes(edge.attributes?.messageKind ?? "");
+}
+
 export function pathWithEdgeJumps(
   edge: GeometryEdge,
   lowerEdges: readonly GeometryEdge[],
@@ -17,7 +22,7 @@ export function pathWithEdgeJumps(
   if (radius <= 0 || edge.points.length < 2 || lowerEdges.length === 0) return pathFromPoints(edge.points);
 
   const points = simplifyPoints(edge.points);
-  const lowerPaths = lowerEdges.map((lowerEdge) => simplifyPoints(lowerEdge.points));
+  const lowerPaths = lowerEdges.filter(isRenderedEdge).map((lowerEdge) => simplifyPoints(lowerEdge.points));
   const jumpsBySegment = points.slice(0, -1).map(() => [] as SegmentJump[]);
   let jumpCount = 0;
 

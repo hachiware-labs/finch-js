@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="ja">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>構成と設定を短く書く — Finch.js</title>
+<style>
+body{margin:0;background:#f3f6fb;color:#24334b;font:15px Segoe UI,Meiryo,sans-serif}
+main{max-width:1200px;margin:auto;padding:28px}section{padding:24px;background:white;border:1px solid #d4deea;border-radius:12px;margin:24px 0}
+.diagram{min-height:220px;overflow:auto}.diagram>svg{display:block;min-width:680px}
+pre{white-space:pre-wrap;overflow-wrap:anywhere;background:#f4f6fa;padding:16px;font-size:13px}button,select{font:inherit;padding:6px 12px}a{color:#246a95}
+</style>
+<main>
+<a href="uml-practical.html">← 実用UML</a>
+<h1>構成と設定を短く書く</h1>
+<p>注文処理を題材にした記法サンプル。図の左下から編集メニューを開くと、配置・ソース・書き出しを試せます。</p>
+<label>テーマ <select id="theme"><option value="default">Default</option><option value="midnight">Midnight</option><option value="prism">Prism</option></select></label>
+<section><h2>01 役割と成果物</h2><p>境界・制御・データを記号で区別し、成果物の中に設定ファイルをまとめます。</p>
+<div id="roles" class="diagram" aria-label="注文処理の役割と成果物の配置図"></div><details><summary>ソースを見る</summary><pre id="roles-source"></pre></details></section>
+<section><h2>02 設定のキーに接続</h2><p>キー名で接続すると、JSONの項目を並べ替えても接続先を保てます。</p>
+<div id="settings" class="diagram" aria-label="コンポーネントからJSON設定への接続図"></div>
+<button id="toggle-json" type="button" aria-pressed="false">設定を隠す</button>
+<details><summary>ソースを見る</summary><pre id="settings-source"></pre></details></section>
+</main>
+<script src="../dist/finch.global.js"></script>
+<script>
+const rolesSource = `@deployment
+boundary "注文API" as api
+control "注文処理" as processor
+entity "注文データ" as orders
+artifact "配布パッケージ" as bundle {
+ file "設定ファイル" as config [icon=server]
+}
+api -> processor: 受付
+processor -> orders: 保存
+processor -> processor: 再試行
+processor -> config: 読み込み`;
+const rolesInstance = Finch.render(rolesSource,{target:'#roles',ariaLabel:'注文処理の役割と成果物の配置図'});
+document.querySelector('#roles-source').textContent=rolesSource;
+const settingsSource = `@component
+component "注文サービス" as service
+json "接続設定" as config {
+ "接続先 URL": "https://api.example.test",
+ "timeout": 30,
+ "retry": {"attempts": 3, "enabled": true}
+}
+note top: 環境ごとに変更
+service -> config::"接続先 URL": 接続先
+service -> config::timeout: 待ち時間`;
+const settingsInstance = Finch.render(settingsSource,{target:'#settings',ariaLabel:'コンポーネントからJSON設定への接続図'});
+document.querySelector('#settings-source').textContent=settingsSource;
+document.querySelector('#theme').addEventListener('change',event=>{
+ rolesInstance.setTheme(event.target.value);settingsInstance.setTheme(event.target.value);
+});
+document.querySelector('#toggle-json').addEventListener('click',event=>{
+ const hidden=event.currentTarget.getAttribute('aria-pressed')!=='true';
+ settingsInstance.update(settingsSource+(hidden?'\nhide config':''));
+ event.currentTarget.setAttribute('aria-pressed',String(hidden));
+ event.currentTarget.textContent=hidden?'設定を表示':'設定を隠す';
+});
+</script>
+</html>
+

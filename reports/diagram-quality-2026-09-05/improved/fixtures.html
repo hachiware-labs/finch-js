@@ -1,0 +1,87 @@
+<!doctype html><html lang="ja"><meta charset="utf-8"><title>Rendering fixtures</title><style>body{margin:0;background:white}.target{display:inline-block}svg{max-width:none!important}</style><script src="./assets/finch.global.js"></script><script type="module">
+import mermaid from '/vendor/mermaid/dist/mermaid.esm.min.mjs';
+window.samples=[{"id":"approval","title":"01 差し戻しのある経費精算","purpose":"2つの条件分岐・差し戻し・合流。主経路と例外経路を追えるか。","kind":"flowchart","nodes":[["submit","申請を提出","start"],["check","申請内容を確認","process"],["valid","必要な情報は揃っている？","decision"],["fix","申請内容を修正","process"],["amount","10万円以上？","decision"],["manager","部門長が承認","process"],["finance","経理が確認","process"],["pay","振込を手配","process"],["done","申請者へ完了を通知","end"]],"edges":[["submit","check"],["check","valid"],["valid","fix","不備あり"],["fix","check","再申請"],["valid","amount","不備なし"],["amount","manager","はい"],["amount","finance","いいえ"],["manager","finance","承認"],["finance","pay"],["pay","done"]],"sources":{"finch":"@flowchart\nstart submit \"申請を提出\"\nprocess check \"申請内容を確認\"\ndecision valid \"必要な情報は揃っている？\"\nprocess fix \"申請内容を修正\"\ndecision amount \"10万円以上？\"\nprocess manager \"部門長が承認\"\nprocess finance \"経理が確認\"\nprocess pay \"振込を手配\"\nend done \"申請者へ完了を通知\"\nsubmit -> check\ncheck -> valid\nvalid -> fix: 不備あり\nfix -> check: 再申請\nvalid -> amount: 不備なし\namount -> manager: はい\namount -> finance: いいえ\nmanager -> finance: 承認\nfinance -> pay\npay -> done","mermaid":"flowchart TB\nsubmit([\"申請を提出\"])\ncheck[\"申請内容を確認\"]\nvalid{\"必要な情報は揃っている？\"}\nfix[\"申請内容を修正\"]\namount{\"10万円以上？\"}\nmanager[\"部門長が承認\"]\nfinance[\"経理が確認\"]\npay[\"振込を手配\"]\ndone([\"申請者へ完了を通知\"])\nsubmit --> check\ncheck --> valid\nvalid -->|\"不備あり\"| fix\nfix -->|\"再申請\"| check\nvalid -->|\"不備なし\"| amount\namount -->|\"はい\"| manager\namount -->|\"いいえ\"| finance\nmanager -->|\"承認\"| finance\nfinance --> pay\npay --> done","d2":"direction: down\nsubmit: \"申請を提出\" {shape: oval}\ncheck: \"申請内容を確認\"\nvalid: \"必要な情報は揃っている？\" {shape: diamond}\nfix: \"申請内容を修正\"\namount: \"10万円以上？\" {shape: diamond}\nmanager: \"部門長が承認\"\nfinance: \"経理が確認\"\npay: \"振込を手配\"\ndone: \"申請者へ完了を通知\" {shape: oval}\nsubmit -> check\ncheck -> valid\nvalid -> fix: \"不備あり\"\nfix -> check: \"再申請\"\nvalid -> amount: \"不備なし\"\namount -> manager: \"はい\"\namount -> finance: \"いいえ\"\nmanager -> finance: \"承認\"\nfinance -> pay\npay -> done"}},{"id":"departments","title":"02 部門をまたぐ受注・請求","purpose":"3つの部門境界と顧客をまたぐ関係。枠、接続線、ラベルを区別できるか。","kind":"graph","groups":[["sales","営業部"],["ops","業務部"],["accounting","経理部"]],"nodes":[["customer","顧客","process"],["inquiry","依頼内容を確認","process","sales"],["quote","見積を作成","process","sales"],["order","受注を登録","process","ops"],["arrange","出荷を手配","process","ops"],["stock","在庫管理","database","ops"],["invoice","請求書を発行","process","accounting"],["paid","入金を確認","process","accounting"]],"edges":[["customer","inquiry","依頼"],["inquiry","quote"],["quote","order","受注確定"],["order","arrange"],["arrange","stock","在庫引当"],["order","invoice","請求依頼"],["invoice","customer","請求書"],["customer","paid","支払い"],["paid","order","入金状況"]],"sources":{"finch":"@graph\ncustomer \"顧客\"\ngroup sales \"営業部\" {\n  inquiry \"依頼内容を確認\"\n  quote \"見積を作成\"\n}\ngroup ops \"業務部\" {\n  order \"受注を登録\"\n  arrange \"出荷を手配\"\n  stock \"在庫管理\" [shape=database]\n}\ngroup accounting \"経理部\" {\n  invoice \"請求書を発行\"\n  paid \"入金を確認\"\n}\ncustomer -> inquiry: 依頼\ninquiry -> quote\nquote -> order: 受注確定\norder -> arrange\narrange -> stock: 在庫引当\norder -> invoice: 請求依頼\ninvoice -> customer: 請求書\ncustomer -> paid: 支払い\npaid -> order: 入金状況","mermaid":"flowchart TB\ncustomer[\"顧客\"]\nsubgraph sales[\"営業部\"]\ninquiry[\"依頼内容を確認\"]\nquote[\"見積を作成\"]\nend\nsubgraph ops[\"業務部\"]\norder[\"受注を登録\"]\narrange[\"出荷を手配\"]\nstock[(\"在庫管理\")]\nend\nsubgraph accounting[\"経理部\"]\ninvoice[\"請求書を発行\"]\npaid[\"入金を確認\"]\nend\ncustomer -->|\"依頼\"| inquiry\ninquiry --> quote\nquote -->|\"受注確定\"| order\norder --> arrange\narrange -->|\"在庫引当\"| stock\norder -->|\"請求依頼\"| invoice\ninvoice -->|\"請求書\"| customer\ncustomer -->|\"支払い\"| paid\npaid -->|\"入金状況\"| order","d2":"direction: down\ncustomer: \"顧客\"\nsales: \"営業部\" {\n  inquiry: \"依頼内容を確認\"\n  quote: \"見積を作成\"\n}\nops: \"業務部\" {\n  order: \"受注を登録\"\n  arrange: \"出荷を手配\"\n  stock: \"在庫管理\" {shape: cylinder}\n}\naccounting: \"経理部\" {\n  invoice: \"請求書を発行\"\n  paid: \"入金を確認\"\n}\ncustomer -> sales.inquiry: \"依頼\"\nsales.inquiry -> sales.quote\nsales.quote -> ops.order: \"受注確定\"\nops.order -> ops.arrange\nops.arrange -> ops.stock: \"在庫引当\"\nops.order -> accounting.invoice: \"請求依頼\"\naccounting.invoice -> customer: \"請求書\"\ncustomer -> accounting.paid: \"支払い\"\naccounting.paid -> ops.order: \"入金状況\""}},{"id":"long-labels","title":"03 説明が増えた経費精算","purpose":"01と同じノード・接続で、日本語の説明だけを延長。改行は手で指定しない。","kind":"flowchart","nodes":[["submit","領収書と費用の内訳を添付して経費精算を申請","start"],["check","申請内容と添付された証憑の整合性を確認","process"],["valid","申請に必要な情報と領収書がすべて揃っている？","decision"],["fix","差し戻し理由を確認し不足している情報を追記","process"],["amount","今回の申請金額は税込みで10万円以上？","decision"],["manager","部門長が利用目的と予算の妥当性を確認して承認","process"],["finance","経理担当が勘定科目と支払先の口座情報を確認","process"],["pay","次回の支払日に合わせて振込処理を手配","process"],["done","振込予定日と処理結果を申請者へ通知","end"]],"edges":[["submit","check",null],["check","valid",null],["valid","fix","不足情報や確認が必要な項目がある"],["fix","check","不足情報を追記して再申請"],["valid","amount","必要事項と証憑を確認できた"],["amount","manager","税込み10万円以上"],["amount","finance","税込み10万円未満"],["manager","finance","部門長による承認が完了"],["finance","pay",null],["pay","done",null]],"sources":{"finch":"@flowchart\nstart submit \"領収書と費用の内訳を添付して経費精算を申請\"\nprocess check \"申請内容と添付された証憑の整合性を確認\"\ndecision valid \"申請に必要な情報と領収書がすべて揃っている？\"\nprocess fix \"差し戻し理由を確認し不足している情報を追記\"\ndecision amount \"今回の申請金額は税込みで10万円以上？\"\nprocess manager \"部門長が利用目的と予算の妥当性を確認して承認\"\nprocess finance \"経理担当が勘定科目と支払先の口座情報を確認\"\nprocess pay \"次回の支払日に合わせて振込処理を手配\"\nend done \"振込予定日と処理結果を申請者へ通知\"\nsubmit -> check\ncheck -> valid\nvalid -> fix: 不足情報や確認が必要な項目がある\nfix -> check: 不足情報を追記して再申請\nvalid -> amount: 必要事項と証憑を確認できた\namount -> manager: 税込み10万円以上\namount -> finance: 税込み10万円未満\nmanager -> finance: 部門長による承認が完了\nfinance -> pay\npay -> done","mermaid":"flowchart TB\nsubmit([\"領収書と費用の内訳を添付して経費精算を申請\"])\ncheck[\"申請内容と添付された証憑の整合性を確認\"]\nvalid{\"申請に必要な情報と領収書がすべて揃っている？\"}\nfix[\"差し戻し理由を確認し不足している情報を追記\"]\namount{\"今回の申請金額は税込みで10万円以上？\"}\nmanager[\"部門長が利用目的と予算の妥当性を確認して承認\"]\nfinance[\"経理担当が勘定科目と支払先の口座情報を確認\"]\npay[\"次回の支払日に合わせて振込処理を手配\"]\ndone([\"振込予定日と処理結果を申請者へ通知\"])\nsubmit --> check\ncheck --> valid\nvalid -->|\"不足情報や確認が必要な項目がある\"| fix\nfix -->|\"不足情報を追記して再申請\"| check\nvalid -->|\"必要事項と証憑を確認できた\"| amount\namount -->|\"税込み10万円以上\"| manager\namount -->|\"税込み10万円未満\"| finance\nmanager -->|\"部門長による承認が完了\"| finance\nfinance --> pay\npay --> done","d2":"direction: down\nsubmit: \"領収書と費用の内訳を添付して経費精算を申請\" {shape: oval}\ncheck: \"申請内容と添付された証憑の整合性を確認\"\nvalid: \"申請に必要な情報と領収書がすべて揃っている？\" {shape: diamond}\nfix: \"差し戻し理由を確認し不足している情報を追記\"\namount: \"今回の申請金額は税込みで10万円以上？\" {shape: diamond}\nmanager: \"部門長が利用目的と予算の妥当性を確認して承認\"\nfinance: \"経理担当が勘定科目と支払先の口座情報を確認\"\npay: \"次回の支払日に合わせて振込処理を手配\"\ndone: \"振込予定日と処理結果を申請者へ通知\" {shape: oval}\nsubmit -> check\ncheck -> valid\nvalid -> fix: \"不足情報や確認が必要な項目がある\"\nfix -> check: \"不足情報を追記して再申請\"\nvalid -> amount: \"必要事項と証憑を確認できた\"\namount -> manager: \"税込み10万円以上\"\namount -> finance: \"税込み10万円未満\"\nmanager -> finance: \"部門長による承認が完了\"\nfinance -> pay\npay -> done"}}];window.result={};
+const businessTheme={ ...window.Finch.defaultTheme, name: 'study-business', fontFamily: 'Arial, "Yu Gothic", "Meiryo", "Hiragino Sans", sans-serif', fontSize: 15,
+        labelColor: '#1e304b', mutedColor: '#586b85', nodeFill: '#f4f7fc', nodeStroke: '#b8c7dc',
+        nodeStrokeWidth: 1.15, nodeRadius: 6, nodePaddingX: 24, nodePaddingY: 15,
+        containerFill: '#f8faff', containerStroke: '#b8c7dc', edgeColor: '#657b98', edgeWidth: 1.5,
+        accentColor: '#244fc2', canvasColor: '#ffffff', shadow: 'none', gapX: 96, gapY: 44 };
+const approvalSource = `@flowchart
+start submit "申請を提出"
+process check "申請内容を確認"
+decision valid "必要な情報は揃っている？"
+process fix "申請内容を修正"
+decision amount "10万円以上？"
+process manager "部門長が承認"
+process finance "経理が確認"
+process pay "振込を手配"
+end done "申請者へ完了を通知"
+submit -> check
+check -> valid
+valid -> fix: 不備あり
+fix -> check: 再申請
+valid -> amount: 不備なし
+amount -> manager: はい
+amount -> finance: いいえ
+manager -> finance: 承認
+finance -> pay
+pay -> done`;
+const departmentsSource = `@graph
+customer "顧客"
+group sales "営業部" {
+  inquiry "依頼内容を確認"
+  quote "見積を作成"
+}
+group ops "業務部" {
+  order "受注を登録"
+  arrange "出荷を手配"
+  stock "在庫管理" [shape=database]
+}
+group accounting "経理部" {
+  invoice "請求書を発行"
+  paid "入金を確認"
+}
+customer -> inquiry: 依頼
+inquiry -> quote
+quote -> order: 受注確定
+order -> arrange
+arrange -> stock: 在庫引当
+order -> invoice: 請求依頼
+invoice -> customer: 請求書
+customer -> paid: 支払い
+paid -> order: 入金状況`;
+const long_labelsSource = `@flowchart
+start submit "領収書と費用の内訳を添付して経費精算を申請"
+process check "申請内容と添付された証憑の整合性を確認"
+decision valid "申請に必要な情報と領収書がすべて揃っている？"
+process fix "差し戻し理由を確認し不足している情報を追記"
+decision amount "今回の申請金額は税込みで10万円以上？"
+process manager "部門長が利用目的と予算の妥当性を確認して承認"
+process finance "経理担当が勘定科目と支払先の口座情報を確認"
+process pay "次回の支払日に合わせて振込処理を手配"
+end done "振込予定日と処理結果を申請者へ通知"
+submit -> check
+check -> valid
+valid -> fix: 不足情報や確認が必要な項目がある
+fix -> check: 不足情報を追記して再申請
+valid -> amount: 必要事項と証憑を確認できた
+amount -> manager: 税込み10万円以上
+amount -> finance: 税込み10万円未満
+manager -> finance: 部門長による承認が完了
+finance -> pay
+pay -> done`;
+await document.fonts.ready;
+for(const c of window.samples){
+ for(const variant of ['finch-default','finch-business','mermaid']){
+  const host=document.createElement('div');host.id=c.id+'-'+variant;host.className='target';document.body.append(host);
+  try{
+   if(variant.startsWith('finch')){
+    const diagram=Finch.render(c.sources.finch,{target:host,editor:false,interactive:false,...(variant==='finch-business'?{theme:businessTheme}:{})});
+    if(variant==='finch-business'){const style=document.createElementNS('http://www.w3.org/2000/svg','style');style.textContent='.finch-node [filter]{filter:none}.finch-node text{font-weight:600}.finch-edge-label{font-weight:400}';diagram.svg.append(style);}
+    window.result[host.id]={svg:diagram.toSvgString(),geometry:diagram.geometry};
+   }else{mermaid.initialize({startOnLoad:false,securityLevel:'strict',theme:'default'});const {svg}=await mermaid.render('m-'+c.id,c.sources.mermaid);host.innerHTML=svg;window.result[host.id]={svg};}
+  }catch(e){window.result[host.id]={error:String(e)};}
+ }
+}
+window.done=true;
+</script></html>

@@ -1,0 +1,2689 @@
+[
+  {
+    "id": "01-linear",
+    "errors": [],
+    "width": 476,
+    "height": 462,
+    "nodes": 5,
+    "edges": 4,
+    "geometry": {
+      "kind": "flowchart",
+      "direction": "down",
+      "nodes": [
+        {
+          "id": "s",
+          "label": "開始",
+          "shape": "rounded",
+          "attributes": {},
+          "x": 186,
+          "y": 28,
+          "width": 104,
+          "height": 46
+        },
+        {
+          "id": "a",
+          "label": "注文受付",
+          "shape": "rectangle",
+          "attributes": {},
+          "x": 186,
+          "y": 118,
+          "width": 104,
+          "height": 46
+        },
+        {
+          "id": "b",
+          "label": "在庫引当",
+          "shape": "rectangle",
+          "attributes": {},
+          "x": 186,
+          "y": 208,
+          "width": 104,
+          "height": 46
+        },
+        {
+          "id": "c",
+          "label": "決済確定",
+          "shape": "rectangle",
+          "attributes": {},
+          "x": 186,
+          "y": 298,
+          "width": 104,
+          "height": 46
+        },
+        {
+          "id": "e",
+          "label": "完了",
+          "shape": "rounded",
+          "attributes": {},
+          "x": 186,
+          "y": 388,
+          "width": 104,
+          "height": 46
+        }
+      ],
+      "edges": [
+        {
+          "id": "s-a-1",
+          "from": "s",
+          "to": "a",
+          "dashed": false,
+          "order": 0,
+          "points": [
+            {
+              "x": 238,
+              "y": 74
+            },
+            {
+              "x": 238,
+              "y": 96
+            },
+            {
+              "x": 238,
+              "y": 96
+            },
+            {
+              "x": 238,
+              "y": 118
+            }
+          ]
+        },
+        {
+          "id": "a-b-2",
+          "from": "a",
+          "to": "b",
+          "dashed": false,
+          "order": 1,
+          "points": [
+            {
+              "x": 238,
+              "y": 164
+            },
+            {
+              "x": 238,
+              "y": 186
+            },
+            {
+              "x": 238,
+              "y": 186
+            },
+            {
+              "x": 238,
+              "y": 208
+            }
+          ]
+        },
+        {
+          "id": "b-c-3",
+          "from": "b",
+          "to": "c",
+          "dashed": false,
+          "order": 2,
+          "points": [
+            {
+              "x": 238,
+              "y": 254
+            },
+            {
+              "x": 238,
+              "y": 276
+            },
+            {
+              "x": 238,
+              "y": 276
+            },
+            {
+              "x": 238,
+              "y": 298
+            }
+          ]
+        },
+        {
+          "id": "c-e-4",
+          "from": "c",
+          "to": "e",
+          "dashed": false,
+          "order": 3,
+          "points": [
+            {
+              "x": 238,
+              "y": 344
+            },
+            {
+              "x": 238,
+              "y": 366
+            },
+            {
+              "x": 238,
+              "y": 366
+            },
+            {
+              "x": 238,
+              "y": 388
+            }
+          ]
+        }
+      ],
+      "groups": [],
+      "width": 476,
+      "height": 462,
+      "origin": {
+        "x": 0,
+        "y": 0
+      }
+    }
+  },
+  {
+    "id": "02-branch",
+    "errors": [],
+    "width": 476,
+    "height": 680,
+    "nodes": 6,
+    "edges": 6,
+    "geometry": {
+      "kind": "flowchart",
+      "direction": "down",
+      "nodes": [
+        {
+          "id": "s",
+          "label": "開始",
+          "shape": "rounded",
+          "attributes": {},
+          "x": 186,
+          "y": 28,
+          "width": 104,
+          "height": 46
+        },
+        {
+          "id": "c",
+          "label": "在庫あり?",
+          "shape": "diamond",
+          "attributes": {},
+          "x": 164,
+          "y": 118,
+          "width": 148,
+          "height": 86
+        },
+        {
+          "id": "b",
+          "label": "入荷待ち",
+          "shape": "rectangle",
+          "attributes": {},
+          "x": 102,
+          "y": 292,
+          "width": 104,
+          "height": 46
+        },
+        {
+          "id": "a",
+          "label": "出荷準備",
+          "shape": "rectangle",
+          "attributes": {},
+          "x": 186,
+          "y": 426,
+          "width": 104,
+          "height": 46
+        },
+        {
+          "id": "d",
+          "label": "発送通知",
+          "shape": "rectangle",
+          "attributes": {},
+          "x": 186,
+          "y": 516,
+          "width": 104,
+          "height": 46
+        },
+        {
+          "id": "e",
+          "label": "完了",
+          "shape": "rounded",
+          "attributes": {},
+          "x": 186,
+          "y": 606,
+          "width": 104,
+          "height": 46
+        }
+      ],
+      "edges": [
+        {
+          "id": "s-c-1",
+          "from": "s",
+          "to": "c",
+          "dashed": false,
+          "order": 0,
+          "points": [
+            {
+              "x": 238,
+              "y": 74
+            },
+            {
+              "x": 238,
+              "y": 96
+            },
+            {
+              "x": 238,
+              "y": 96
+            },
+            {
+              "x": 238,
+              "y": 118
+            }
+          ]
+        },
+        {
+          "id": "c-a-2",
+          "from": "c",
+          "to": "a",
+          "label": "Yes",
+          "dashed": false,
+          "order": 1,
+          "points": [
+            {
+              "x": 238,
+              "y": 204
+            },
+            {
+              "x": 238,
+              "y": 315
+            },
+            {
+              "x": 238,
+              "y": 315
+            },
+            {
+              "x": 238,
+              "y": 426
+            }
+          ]
+        },
+        {
+          "id": "c-b-3",
+          "from": "c",
+          "to": "b",
+          "label": "No",
+          "dashed": false,
+          "order": 2,
+          "points": [
+            {
+              "x": 164,
+              "y": 161
+            },
+            {
+              "x": 148,
+              "y": 161
+            },
+            {
+              "x": 148,
+              "y": 276
+            },
+            {
+              "x": 154,
+              "y": 276
+            },
+            {
+              "x": 154,
+              "y": 292
+            }
+          ]
+        },
+        {
+          "id": "b-a-4",
+          "from": "b",
+          "to": "a",
+          "label": "入荷",
+          "dashed": false,
+          "order": 3,
+          "points": [
+            {
+              "x": 206,
+              "y": 315
+            },
+            {
+              "x": 196,
+              "y": 315
+            },
+            {
+              "x": 196,
+              "y": 449
+            },
+            {
+              "x": 186,
+              "y": 449
+            }
+          ]
+        },
+        {
+          "id": "a-d-5",
+          "from": "a",
+          "to": "d",
+          "dashed": false,
+          "order": 4,
+          "points": [
+            {
+              "x": 238,
+              "y": 472
+            },
+            {
+              "x": 238,
+              "y": 494
+            },
+            {
+              "x": 238,
+              "y": 494
+            },
+            {
+              "x": 238,
+              "y": 516
+            }
+          ]
+        },
+        {
+          "id": "d-e-6",
+          "from": "d",
+          "to": "e",
+          "dashed": false,
+          "order": 5,
+          "points": [
+            {
+              "x": 238,
+              "y": 562
+            },
+            {
+              "x": 238,
+              "y": 584
+            },
+            {
+              "x": 238,
+              "y": 584
+            },
+            {
+              "x": 238,
+              "y": 606
+            }
+          ]
+        }
+      ],
+      "groups": [],
+      "width": 476,
+      "height": 680,
+      "origin": {
+        "x": 0,
+        "y": 0
+      }
+    }
+  },
+  {
+    "id": "03-retry",
+    "errors": [],
+    "width": 476,
+    "height": 590,
+    "nodes": 6,
+    "edges": 6,
+    "geometry": {
+      "kind": "flowchart",
+      "direction": "down",
+      "nodes": [
+        {
+          "id": "s",
+          "label": "受付",
+          "shape": "rounded",
+          "attributes": {},
+          "x": 273,
+          "y": 28,
+          "width": 104,
+          "height": 46
+        },
+        {
+          "id": "a",
+          "label": "申請内容を検証",
+          "shape": "rectangle",
+          "attributes": {},
+          "x": 263.5,
+          "y": 118,
+          "width": 123,
+          "height": 46
+        },
+        {
+          "id": "c",
+          "label": "承認可能?",
+          "shape": "diamond",
+          "attributes": {},
+          "x": 251,
+          "y": 208,
+          "width": 148,
+          "height": 86
+        },
+        {
+          "id": "r",
+          "label": "申請者が修正",
+          "shape": "rectangle",
+          "attributes": {},
+          "x": 99,
+          "y": 382,
+          "width": 110,
+          "height": 46
+        },
+        {
+          "id": "p",
+          "label": "承認を登録",
+          "shape": "rectangle",
+          "attributes": {},
+          "x": 273,
+          "y": 382,
+          "width": 104,
+          "height": 46
+        },
+        {
+          "id": "e",
+          "label": "完了",
+          "shape": "rounded",
+          "attributes": {},
+          "x": 273,
+          "y": 516,
+          "width": 104,
+          "height": 46
+        }
+      ],
+      "edges": [
+        {
+          "id": "s-a-1",
+          "from": "s",
+          "to": "a",
+          "dashed": false,
+          "order": 0,
+          "points": [
+            {
+              "x": 325,
+              "y": 74
+            },
+            {
+              "x": 325,
+              "y": 96
+            },
+            {
+              "x": 325,
+              "y": 96
+            },
+            {
+              "x": 325,
+              "y": 118
+            }
+          ]
+        },
+        {
+          "id": "a-c-2",
+          "from": "a",
+          "to": "c",
+          "dashed": false,
+          "order": 1,
+          "points": [
+            {
+              "x": 325,
+              "y": 164
+            },
+            {
+              "x": 325,
+              "y": 186
+            },
+            {
+              "x": 325,
+              "y": 186
+            },
+            {
+              "x": 325,
+              "y": 208
+            }
+          ]
+        },
+        {
+          "id": "c-p-3",
+          "from": "c",
+          "to": "p",
+          "label": "Yes",
+          "dashed": false,
+          "order": 2,
+          "points": [
+            {
+              "x": 325,
+              "y": 294
+            },
+            {
+              "x": 325,
+              "y": 338
+            },
+            {
+              "x": 325,
+              "y": 338
+            },
+            {
+              "x": 325,
+              "y": 382
+            }
+          ]
+        },
+        {
+          "id": "c-r-4",
+          "from": "c",
+          "to": "r",
+          "label": "No",
+          "dashed": false,
+          "order": 3,
+          "points": [
+            {
+              "x": 251,
+              "y": 251
+            },
+            {
+              "x": 230,
+              "y": 251
+            },
+            {
+              "x": 230,
+              "y": 405
+            },
+            {
+              "x": 209,
+              "y": 405
+            }
+          ]
+        },
+        {
+          "id": "r-a-5",
+          "from": "r",
+          "to": "a",
+          "label": "再申請",
+          "dashed": false,
+          "order": 4,
+          "points": [
+            {
+              "x": 209,
+              "y": 405
+            },
+            {
+              "x": 225,
+              "y": 405
+            },
+            {
+              "x": 225,
+              "y": 417
+            },
+            {
+              "x": 242,
+              "y": 417
+            },
+            {
+              "x": 242,
+              "y": 318
+            },
+            {
+              "x": 218,
+              "y": 318
+            },
+            {
+              "x": 218,
+              "y": 141
+            },
+            {
+              "x": 263.5,
+              "y": 141
+            }
+          ]
+        },
+        {
+          "id": "p-e-6",
+          "from": "p",
+          "to": "e",
+          "dashed": false,
+          "order": 5,
+          "points": [
+            {
+              "x": 325,
+              "y": 428
+            },
+            {
+              "x": 325,
+              "y": 472
+            },
+            {
+              "x": 325,
+              "y": 472
+            },
+            {
+              "x": 325,
+              "y": 516
+            }
+          ]
+        }
+      ],
+      "groups": [],
+      "width": 476,
+      "height": 590,
+      "origin": {
+        "x": 0,
+        "y": 0
+      }
+    }
+  },
+  {
+    "id": "04-parallel",
+    "errors": [],
+    "width": 496,
+    "height": 492,
+    "nodes": 8,
+    "edges": 9,
+    "geometry": {
+      "kind": "state",
+      "direction": "down",
+      "nodes": [
+        {
+          "id": "s",
+          "label": "",
+          "shape": "initial-state",
+          "attributes": {
+            "stateKind": "initial"
+          },
+          "x": 236,
+          "y": 28,
+          "width": 24,
+          "height": 24
+        },
+        {
+          "id": "f",
+          "label": "",
+          "shape": "uml-bar",
+          "attributes": {
+            "stateKind": "fork"
+          },
+          "x": 200,
+          "y": 96,
+          "width": 96,
+          "height": 14
+        },
+        {
+          "id": "a",
+          "label": "在庫確保",
+          "shape": "rounded",
+          "attributes": {
+            "stateKind": "state"
+          },
+          "x": 28,
+          "y": 198,
+          "width": 104,
+          "height": 46
+        },
+        {
+          "id": "b",
+          "label": "決済認証",
+          "shape": "rounded",
+          "attributes": {
+            "stateKind": "state"
+          },
+          "x": 196,
+          "y": 198,
+          "width": 104,
+          "height": 46
+        },
+        {
+          "id": "c",
+          "label": "配送先確認",
+          "shape": "rounded",
+          "attributes": {
+            "stateKind": "state"
+          },
+          "x": 364,
+          "y": 198,
+          "width": 104,
+          "height": 46
+        },
+        {
+          "id": "j",
+          "label": "",
+          "shape": "uml-bar",
+          "attributes": {
+            "stateKind": "join"
+          },
+          "x": 200,
+          "y": 288,
+          "width": 96,
+          "height": 14
+        },
+        {
+          "id": "d",
+          "label": "注文確定",
+          "shape": "rounded",
+          "attributes": {
+            "stateKind": "state"
+          },
+          "x": 196,
+          "y": 346,
+          "width": 104,
+          "height": 46
+        },
+        {
+          "id": "e",
+          "label": "",
+          "shape": "final-state",
+          "attributes": {
+            "stateKind": "final"
+          },
+          "x": 234,
+          "y": 436,
+          "width": 28,
+          "height": 28
+        }
+      ],
+      "edges": [
+        {
+          "id": "s-f-1",
+          "from": "s",
+          "to": "f",
+          "dashed": false,
+          "order": 0,
+          "attributes": {
+            "trigger": "",
+            "triggerKind": "completion",
+            "transitionKind": "external"
+          },
+          "points": [
+            {
+              "x": 248,
+              "y": 52
+            },
+            {
+              "x": 248,
+              "y": 74
+            },
+            {
+              "x": 248,
+              "y": 74
+            },
+            {
+              "x": 248,
+              "y": 96
+            }
+          ]
+        },
+        {
+          "id": "f-a-2",
+          "from": "f",
+          "to": "a",
+          "dashed": false,
+          "order": 1,
+          "attributes": {
+            "trigger": "",
+            "triggerKind": "completion",
+            "transitionKind": "external"
+          },
+          "points": [
+            {
+              "x": 248,
+              "y": 110
+            },
+            {
+              "x": 248,
+              "y": 134
+            },
+            {
+              "x": 80,
+              "y": 134
+            },
+            {
+              "x": 80,
+              "y": 198
+            }
+          ]
+        },
+        {
+          "id": "f-b-3",
+          "from": "f",
+          "to": "b",
+          "dashed": false,
+          "order": 2,
+          "attributes": {
+            "trigger": "",
+            "triggerKind": "completion",
+            "transitionKind": "external"
+          },
+          "points": [
+            {
+              "x": 248,
+              "y": 110
+            },
+            {
+              "x": 248,
+              "y": 134
+            },
+            {
+              "x": 248,
+              "y": 134
+            },
+            {
+              "x": 248,
+              "y": 198
+            }
+          ]
+        },
+        {
+          "id": "f-c-4",
+          "from": "f",
+          "to": "c",
+          "dashed": false,
+          "order": 3,
+          "attributes": {
+            "trigger": "",
+            "triggerKind": "completion",
+            "transitionKind": "external"
+          },
+          "points": [
+            {
+              "x": 248,
+              "y": 110
+            },
+            {
+              "x": 248,
+              "y": 134
+            },
+            {
+              "x": 416,
+              "y": 134
+            },
+            {
+              "x": 416,
+              "y": 198
+            }
+          ]
+        },
+        {
+          "id": "a-j-5",
+          "from": "a",
+          "to": "j",
+          "dashed": false,
+          "order": 4,
+          "attributes": {
+            "trigger": "",
+            "triggerKind": "completion",
+            "transitionKind": "external"
+          },
+          "points": [
+            {
+              "x": 80,
+              "y": 244
+            },
+            {
+              "x": 80,
+              "y": 272
+            },
+            {
+              "x": 229,
+              "y": 272
+            },
+            {
+              "x": 229,
+              "y": 288
+            }
+          ]
+        },
+        {
+          "id": "b-j-6",
+          "from": "b",
+          "to": "j",
+          "dashed": false,
+          "order": 5,
+          "attributes": {
+            "trigger": "",
+            "triggerKind": "completion",
+            "transitionKind": "external"
+          },
+          "points": [
+            {
+              "x": 248,
+              "y": 244
+            },
+            {
+              "x": 248,
+              "y": 266
+            },
+            {
+              "x": 248,
+              "y": 266
+            },
+            {
+              "x": 248,
+              "y": 288
+            }
+          ]
+        },
+        {
+          "id": "c-j-7",
+          "from": "c",
+          "to": "j",
+          "dashed": false,
+          "order": 6,
+          "attributes": {
+            "trigger": "",
+            "triggerKind": "completion",
+            "transitionKind": "external"
+          },
+          "points": [
+            {
+              "x": 416,
+              "y": 244
+            },
+            {
+              "x": 416,
+              "y": 272
+            },
+            {
+              "x": 267,
+              "y": 272
+            },
+            {
+              "x": 267,
+              "y": 288
+            }
+          ]
+        },
+        {
+          "id": "j-d-8",
+          "from": "j",
+          "to": "d",
+          "dashed": false,
+          "order": 7,
+          "attributes": {
+            "trigger": "",
+            "triggerKind": "completion",
+            "transitionKind": "external"
+          },
+          "points": [
+            {
+              "x": 248,
+              "y": 302
+            },
+            {
+              "x": 248,
+              "y": 324
+            },
+            {
+              "x": 248,
+              "y": 324
+            },
+            {
+              "x": 248,
+              "y": 346
+            }
+          ]
+        },
+        {
+          "id": "d-e-9",
+          "from": "d",
+          "to": "e",
+          "dashed": false,
+          "order": 8,
+          "attributes": {
+            "trigger": "",
+            "triggerKind": "completion",
+            "transitionKind": "external"
+          },
+          "points": [
+            {
+              "x": 248,
+              "y": 392
+            },
+            {
+              "x": 248,
+              "y": 414
+            },
+            {
+              "x": 248,
+              "y": 414
+            },
+            {
+              "x": 248,
+              "y": 436
+            }
+          ]
+        }
+      ],
+      "groups": [],
+      "width": 496,
+      "height": 492,
+      "origin": {
+        "x": 0,
+        "y": 0
+      }
+    }
+  },
+  {
+    "id": "05-dense",
+    "errors": [],
+    "width": 360,
+    "height": 337.6,
+    "nodes": 6,
+    "edges": 9,
+    "geometry": {
+      "kind": "graph",
+      "direction": "right",
+      "nodes": [
+        {
+          "id": "a",
+          "label": "注文API",
+          "shape": "rectangle",
+          "attributes": {},
+          "x": 28,
+          "y": 56,
+          "width": 104,
+          "height": 46
+        },
+        {
+          "id": "b",
+          "label": "管理API",
+          "shape": "rectangle",
+          "attributes": {},
+          "x": 28,
+          "y": 134,
+          "width": 104,
+          "height": 46
+        },
+        {
+          "id": "c",
+          "label": "集計API",
+          "shape": "rectangle",
+          "attributes": {},
+          "x": 28,
+          "y": 212,
+          "width": 104,
+          "height": 46
+        },
+        {
+          "id": "x",
+          "label": "注文DB",
+          "shape": "rectangle",
+          "attributes": {},
+          "x": 204,
+          "y": 56,
+          "width": 104,
+          "height": 46
+        },
+        {
+          "id": "y",
+          "label": "顧客DB",
+          "shape": "rectangle",
+          "attributes": {},
+          "x": 204,
+          "y": 134,
+          "width": 104,
+          "height": 46
+        },
+        {
+          "id": "z",
+          "label": "監査DB",
+          "shape": "rectangle",
+          "attributes": {},
+          "x": 204,
+          "y": 212,
+          "width": 104,
+          "height": 46
+        }
+      ],
+      "edges": [
+        {
+          "id": "a-x-1",
+          "from": "a",
+          "to": "x",
+          "label": "更新",
+          "dashed": false,
+          "order": 0,
+          "points": [
+            {
+              "x": 132,
+              "y": 79
+            },
+            {
+              "x": 156,
+              "y": 79
+            },
+            {
+              "x": 156,
+              "y": 79
+            },
+            {
+              "x": 204,
+              "y": 79
+            }
+          ]
+        },
+        {
+          "id": "a-y-2",
+          "from": "a",
+          "to": "y",
+          "label": "参照",
+          "dashed": false,
+          "order": 1,
+          "points": [
+            {
+              "x": 132,
+              "y": 79
+            },
+            {
+              "x": 156,
+              "y": 79
+            },
+            {
+              "x": 156,
+              "y": 147.34
+            },
+            {
+              "x": 204,
+              "y": 147.34
+            }
+          ]
+        },
+        {
+          "id": "a-z-3",
+          "from": "a",
+          "to": "z",
+          "label": "記録",
+          "dashed": false,
+          "order": 2,
+          "points": [
+            {
+              "x": 132,
+              "y": 79
+            },
+            {
+              "x": 156,
+              "y": 79
+            },
+            {
+              "x": 156,
+              "y": 225.34
+            },
+            {
+              "x": 204,
+              "y": 225.34
+            }
+          ]
+        },
+        {
+          "id": "b-x-4",
+          "from": "b",
+          "to": "x",
+          "label": "参照",
+          "dashed": false,
+          "order": 3,
+          "points": [
+            {
+              "x": 132,
+              "y": 157
+            },
+            {
+              "x": 148,
+              "y": 157
+            },
+            {
+              "x": 148,
+              "y": 159.34
+            },
+            {
+              "x": 180,
+              "y": 159.34
+            },
+            {
+              "x": 180,
+              "y": 75.78
+            },
+            {
+              "x": 204,
+              "y": 75.78
+            }
+          ]
+        },
+        {
+          "id": "b-y-5",
+          "from": "b",
+          "to": "y",
+          "label": "更新",
+          "dashed": false,
+          "order": 4,
+          "points": [
+            {
+              "x": 132,
+              "y": 157
+            },
+            {
+              "x": 156,
+              "y": 157
+            },
+            {
+              "x": 156,
+              "y": 157
+            },
+            {
+              "x": 204,
+              "y": 157
+            }
+          ]
+        },
+        {
+          "id": "b-z-6",
+          "from": "b",
+          "to": "z",
+          "label": "記録",
+          "dashed": false,
+          "order": 5,
+          "points": [
+            {
+              "x": 132,
+              "y": 157
+            },
+            {
+              "x": 156,
+              "y": 157
+            },
+            {
+              "x": 156,
+              "y": 231.78
+            },
+            {
+              "x": 204,
+              "y": 231.78
+            }
+          ]
+        },
+        {
+          "id": "c-x-7",
+          "from": "c",
+          "to": "x",
+          "label": "集計",
+          "dashed": false,
+          "order": 6,
+          "points": [
+            {
+              "x": 132,
+              "y": 235
+            },
+            {
+              "x": 156,
+              "y": 235
+            },
+            {
+              "x": 156,
+              "y": 282
+            },
+            {
+              "x": 332,
+              "y": 282
+            },
+            {
+              "x": 332,
+              "y": 110
+            },
+            {
+              "x": 188,
+              "y": 110
+            },
+            {
+              "x": 188,
+              "y": 82.22
+            },
+            {
+              "x": 204,
+              "y": 82.22
+            }
+          ]
+        },
+        {
+          "id": "c-y-8",
+          "from": "c",
+          "to": "y",
+          "label": "集計",
+          "dashed": false,
+          "order": 7,
+          "points": [
+            {
+              "x": 132,
+              "y": 235
+            },
+            {
+              "x": 156,
+              "y": 235
+            },
+            {
+              "x": 156,
+              "y": 243.78
+            },
+            {
+              "x": 180,
+              "y": 243.78
+            },
+            {
+              "x": 180,
+              "y": 160.22
+            },
+            {
+              "x": 204,
+              "y": 160.22
+            }
+          ]
+        },
+        {
+          "id": "c-z-9",
+          "from": "c",
+          "to": "z",
+          "label": "記録",
+          "dashed": false,
+          "order": 8,
+          "points": [
+            {
+              "x": 132,
+              "y": 235
+            },
+            {
+              "x": 156,
+              "y": 235
+            },
+            {
+              "x": 156,
+              "y": 235
+            },
+            {
+              "x": 204,
+              "y": 235
+            }
+          ]
+        }
+      ],
+      "groups": [],
+      "width": 360,
+      "height": 337.6,
+      "origin": {
+        "x": 0,
+        "y": 0
+      }
+    }
+  },
+  {
+    "id": "06-deployment",
+    "errors": [],
+    "width": 472,
+    "height": 622,
+    "nodes": 10,
+    "edges": 6,
+    "geometry": {
+      "kind": "deployment",
+      "direction": "right",
+      "nodes": [
+        {
+          "id": "cdn",
+          "label": "CDN",
+          "shape": "uml-node",
+          "parentId": "front",
+          "attributes": {},
+          "x": 28,
+          "y": 56,
+          "width": 140,
+          "height": 76
+        },
+        {
+          "id": "gw",
+          "label": "Gateway",
+          "shape": "uml-node",
+          "parentId": "front",
+          "attributes": {},
+          "x": 200,
+          "y": 56,
+          "width": 140,
+          "height": 76
+        },
+        {
+          "id": "api",
+          "label": "注文API",
+          "shape": "server",
+          "parentId": "apps",
+          "attributes": {},
+          "x": 58.5,
+          "y": 248,
+          "width": 104,
+          "height": 46
+        },
+        {
+          "id": "queue",
+          "label": "Queue",
+          "shape": "uml-node",
+          "parentId": "data",
+          "attributes": {},
+          "x": 43,
+          "y": 410,
+          "width": 140,
+          "height": 76
+        },
+        {
+          "id": "worker",
+          "label": "非同期Worker",
+          "shape": "server",
+          "parentId": "apps",
+          "attributes": {},
+          "x": 194.5,
+          "y": 248,
+          "width": 115,
+          "height": 46
+        },
+        {
+          "id": "db",
+          "label": "注文DB",
+          "shape": "database",
+          "parentId": "data",
+          "attributes": {},
+          "x": 215,
+          "y": 410,
+          "width": 110,
+          "height": 69
+        },
+        {
+          "id": "cloud",
+          "label": "本番環境",
+          "shape": "container",
+          "attributes": {
+            "layout": "column"
+          },
+          "x": -24,
+          "y": -28,
+          "width": 416,
+          "height": 566,
+          "headerHeight": 42
+        },
+        {
+          "id": "front",
+          "label": "入口",
+          "shape": "container",
+          "parentId": "cloud",
+          "attributes": {
+            "layout": "row"
+          },
+          "x": 2,
+          "y": 14,
+          "width": 364,
+          "height": 144,
+          "headerHeight": 42
+        },
+        {
+          "id": "apps",
+          "label": "アプリケーション",
+          "shape": "container",
+          "parentId": "cloud",
+          "attributes": {
+            "layout": "row"
+          },
+          "x": 32.5,
+          "y": 206,
+          "width": 303,
+          "height": 114,
+          "headerHeight": 42
+        },
+        {
+          "id": "data",
+          "label": "データ層",
+          "shape": "container",
+          "parentId": "cloud",
+          "attributes": {
+            "layout": "row"
+          },
+          "x": 17,
+          "y": 368,
+          "width": 334,
+          "height": 144,
+          "headerHeight": 42
+        }
+      ],
+      "edges": [
+        {
+          "id": "cdn-gw-1",
+          "from": "cdn",
+          "to": "gw",
+          "label": "HTTPS",
+          "dashed": false,
+          "order": 0,
+          "points": [
+            {
+              "x": 168,
+              "y": 94
+            },
+            {
+              "x": 184,
+              "y": 94
+            },
+            {
+              "x": 184,
+              "y": 94
+            },
+            {
+              "x": 200,
+              "y": 94
+            }
+          ]
+        },
+        {
+          "id": "gw-api-2",
+          "from": "gw",
+          "to": "api",
+          "label": "転送",
+          "dashed": false,
+          "order": 1,
+          "points": [
+            {
+              "x": 200,
+              "y": 94
+            },
+            {
+              "x": 184,
+              "y": 94
+            },
+            {
+              "x": 184,
+              "y": 236
+            },
+            {
+              "x": 178.5,
+              "y": 236
+            },
+            {
+              "x": 178.5,
+              "y": 271
+            },
+            {
+              "x": 162.5,
+              "y": 271
+            }
+          ]
+        },
+        {
+          "id": "api-db-3",
+          "from": "api",
+          "to": "db",
+          "label": "保存",
+          "dashed": false,
+          "order": 2,
+          "points": [
+            {
+              "x": 162.5,
+              "y": 271
+            },
+            {
+              "x": 182.5,
+              "y": 271
+            },
+            {
+              "x": 182.5,
+              "y": 398
+            },
+            {
+              "x": 199,
+              "y": 398
+            },
+            {
+              "x": 199,
+              "y": 444.5
+            },
+            {
+              "x": 215,
+              "y": 444.5
+            }
+          ]
+        },
+        {
+          "id": "api-queue-4",
+          "from": "api",
+          "to": "queue",
+          "label": "配信",
+          "dashed": false,
+          "order": 3,
+          "points": [
+            {
+              "x": 110.5,
+              "y": 294
+            },
+            {
+              "x": 110.5,
+              "y": 352
+            },
+            {
+              "x": 113,
+              "y": 352
+            },
+            {
+              "x": 113,
+              "y": 410
+            }
+          ]
+        },
+        {
+          "id": "queue-worker-5",
+          "from": "queue",
+          "to": "worker",
+          "label": "購読",
+          "dashed": false,
+          "order": 4,
+          "points": [
+            {
+              "x": 183,
+              "y": 448
+            },
+            {
+              "x": 191,
+              "y": 448
+            },
+            {
+              "x": 191,
+              "y": 524
+            },
+            {
+              "x": 363,
+              "y": 524
+            },
+            {
+              "x": 363,
+              "y": 236
+            },
+            {
+              "x": 190.5,
+              "y": 236
+            },
+            {
+              "x": 190.5,
+              "y": 259
+            },
+            {
+              "x": 188.75,
+              "y": 259
+            },
+            {
+              "x": 188.75,
+              "y": 271
+            },
+            {
+              "x": 194.5,
+              "y": 271
+            }
+          ]
+        },
+        {
+          "id": "worker-db-6",
+          "from": "worker",
+          "to": "db",
+          "label": "更新",
+          "dashed": false,
+          "order": 5,
+          "points": [
+            {
+              "x": 252,
+              "y": 294
+            },
+            {
+              "x": 252,
+              "y": 352
+            },
+            {
+              "x": 270,
+              "y": 352
+            },
+            {
+              "x": 270,
+              "y": 410
+            }
+          ]
+        }
+      ],
+      "groups": [],
+      "width": 472,
+      "height": 622,
+      "origin": {
+        "x": -52,
+        "y": -56
+      }
+    }
+  },
+  {
+    "id": "07-component",
+    "errors": [],
+    "width": 820,
+    "height": 407,
+    "nodes": 7,
+    "edges": 7,
+    "geometry": {
+      "kind": "component",
+      "direction": "right",
+      "nodes": [
+        {
+          "id": "ui",
+          "label": "注文画面",
+          "shape": "component",
+          "parentId": "shop",
+          "attributes": {},
+          "x": 54,
+          "y": 115.31684027777777,
+          "width": 126,
+          "height": 72
+        },
+        {
+          "id": "api",
+          "label": "注文API",
+          "shape": "component",
+          "parentId": "shop",
+          "attributes": {},
+          "x": 260,
+          "y": 160.63368055555557,
+          "width": 126,
+          "height": 72
+        },
+        {
+          "id": "auth",
+          "label": "認証",
+          "shape": "component",
+          "parentId": "shop",
+          "attributes": {},
+          "x": 442,
+          "y": 70,
+          "width": 126,
+          "height": 72
+        },
+        {
+          "id": "db",
+          "label": "注文DB",
+          "shape": "database",
+          "parentId": "shop",
+          "attributes": {},
+          "x": 442,
+          "y": 278,
+          "width": 110,
+          "height": 69
+        },
+        {
+          "id": "pay",
+          "label": "決済サービス",
+          "shape": "external",
+          "attributes": {},
+          "x": 666,
+          "y": 28,
+          "width": 126,
+          "height": 66
+        },
+        {
+          "id": "audit",
+          "label": "監査",
+          "shape": "component",
+          "parentId": "shop",
+          "attributes": {},
+          "x": 442,
+          "y": 174,
+          "width": 126,
+          "height": 72
+        },
+        {
+          "id": "shop",
+          "label": "注文システム",
+          "shape": "container",
+          "attributes": {},
+          "x": 28,
+          "y": 28,
+          "width": 566,
+          "height": 345,
+          "headerHeight": 42
+        }
+      ],
+      "edges": [
+        {
+          "id": "ui-api-1",
+          "from": "ui",
+          "to": "api",
+          "label": "注文",
+          "dashed": false,
+          "order": 0,
+          "points": [
+            {
+              "x": 180,
+              "y": 151.31684027777777
+            },
+            {
+              "x": 204,
+              "y": 151.31684027777777
+            },
+            {
+              "x": 204,
+              "y": 196.63368055555557
+            },
+            {
+              "x": 260,
+              "y": 196.63368055555557
+            }
+          ]
+        },
+        {
+          "id": "ui-auth-2",
+          "from": "ui",
+          "to": "auth",
+          "label": "ログイン",
+          "dashed": false,
+          "order": 1,
+          "points": [
+            {
+              "x": 180,
+              "y": 151.31684027777777
+            },
+            {
+              "x": 204,
+              "y": 151.31684027777777
+            },
+            {
+              "x": 204,
+              "y": 96.66666666666666
+            },
+            {
+              "x": 442,
+              "y": 96.66666666666666
+            }
+          ]
+        },
+        {
+          "id": "api-auth-3",
+          "from": "api",
+          "to": "auth",
+          "label": "検証",
+          "dashed": false,
+          "order": 2,
+          "points": [
+            {
+              "x": 386,
+              "y": 196.63368055555557
+            },
+            {
+              "x": 410,
+              "y": 196.63368055555557
+            },
+            {
+              "x": 410,
+              "y": 115.33333333333333
+            },
+            {
+              "x": 442,
+              "y": 115.33333333333333
+            }
+          ]
+        },
+        {
+          "id": "api-audit-4",
+          "from": "api",
+          "to": "audit",
+          "label": "記録",
+          "dashed": false,
+          "order": 3,
+          "points": [
+            {
+              "x": 386,
+              "y": 196.63368055555557
+            },
+            {
+              "x": 410,
+              "y": 196.63368055555557
+            },
+            {
+              "x": 410,
+              "y": 210
+            },
+            {
+              "x": 442,
+              "y": 210
+            }
+          ]
+        },
+        {
+          "id": "api-db-5",
+          "from": "api",
+          "to": "db",
+          "label": "保存",
+          "dashed": false,
+          "order": 4,
+          "points": [
+            {
+              "x": 386,
+              "y": 196.63368055555557
+            },
+            {
+              "x": 410,
+              "y": 196.63368055555557
+            },
+            {
+              "x": 410,
+              "y": 312.5
+            },
+            {
+              "x": 442,
+              "y": 312.5
+            }
+          ]
+        },
+        {
+          "id": "api-pay-6",
+          "from": "api",
+          "to": "pay",
+          "label": "決済",
+          "dashed": false,
+          "order": 5,
+          "points": [
+            {
+              "x": 386,
+              "y": 196.63368055555557
+            },
+            {
+              "x": 410,
+              "y": 196.63368055555557
+            },
+            {
+              "x": 410,
+              "y": 46
+            },
+            {
+              "x": 650,
+              "y": 46
+            },
+            {
+              "x": 650,
+              "y": 61
+            },
+            {
+              "x": 666,
+              "y": 61
+            }
+          ]
+        },
+        {
+          "id": "pay-audit-7",
+          "from": "pay",
+          "to": "audit",
+          "label": "結果通知",
+          "dashed": false,
+          "order": 6,
+          "points": [
+            {
+              "x": 666,
+              "y": 61
+            },
+            {
+              "x": 617,
+              "y": 61
+            },
+            {
+              "x": 617,
+              "y": 210
+            },
+            {
+              "x": 568,
+              "y": 210
+            }
+          ]
+        }
+      ],
+      "groups": [],
+      "width": 820,
+      "height": 407,
+      "origin": {
+        "x": 0,
+        "y": -6
+      }
+    }
+  },
+  {
+    "id": "08-er",
+    "errors": [],
+    "width": 770,
+    "height": 309.625,
+    "nodes": 5,
+    "edges": 4,
+    "geometry": {
+      "kind": "er",
+      "direction": "right",
+      "nodes": [
+        {
+          "id": "customers",
+          "label": "顧客",
+          "shape": "entity",
+          "attributes": {
+            "fields": "[{\"name\":\"id\",\"type\":\"UUID\",\"flags\":[\"pk\"]},{\"name\":\"name\",\"type\":\"string\",\"flags\":[]}]"
+          },
+          "x": 28,
+          "y": 53.625,
+          "width": 190,
+          "height": 98
+        },
+        {
+          "id": "products",
+          "label": "商品",
+          "shape": "entity",
+          "attributes": {
+            "fields": "[{\"name\":\"id\",\"type\":\"UUID\",\"flags\":[\"pk\"]},{\"name\":\"name\",\"type\":\"string\",\"flags\":[]}]"
+          },
+          "x": 28,
+          "y": 183.625,
+          "width": 190,
+          "height": 98
+        },
+        {
+          "id": "orders",
+          "label": "注文",
+          "shape": "entity",
+          "attributes": {
+            "fields": "[{\"name\":\"id\",\"type\":\"UUID\",\"flags\":[\"pk\"]},{\"name\":\"customer_id\",\"type\":\"UUID\",\"flags\":[\"fk\"]}]"
+          },
+          "x": 290,
+          "y": 66.75,
+          "width": 190,
+          "height": 98
+        },
+        {
+          "id": "payments",
+          "label": "支払い",
+          "shape": "entity",
+          "attributes": {
+            "fields": "[{\"name\":\"id\",\"type\":\"UUID\",\"flags\":[\"pk\"]},{\"name\":\"order_id\",\"type\":\"UUID\",\"flags\":[\"fk\"]}]"
+          },
+          "x": 552,
+          "y": 28,
+          "width": 190,
+          "height": 98
+        },
+        {
+          "id": "items",
+          "label": "注文明細",
+          "shape": "entity",
+          "attributes": {
+            "fields": "[{\"name\":\"id\",\"type\":\"UUID\",\"flags\":[\"pk\"]},{\"name\":\"order_id\",\"type\":\"UUID\",\"flags\":[\"fk\"]},{\"name\":\"product_id\",\"type\":\"UUID\",\"flags\":[\"fk\"]}]"
+          },
+          "x": 552,
+          "y": 158,
+          "width": 190,
+          "height": 123
+        }
+      ],
+      "edges": [
+        {
+          "id": "customers-orders-1",
+          "from": "customers",
+          "to": "orders",
+          "label": "発注",
+          "dashed": false,
+          "order": 0,
+          "attributes": {
+            "fromCardinality": "1",
+            "toCardinality": "N"
+          },
+          "points": [
+            {
+              "x": 218,
+              "y": 102.625
+            },
+            {
+              "x": 254,
+              "y": 102.625
+            },
+            {
+              "x": 254,
+              "y": 115.75
+            },
+            {
+              "x": 290,
+              "y": 115.75
+            }
+          ]
+        },
+        {
+          "id": "orders-items-2",
+          "from": "orders",
+          "to": "items",
+          "label": "明細",
+          "dashed": false,
+          "order": 1,
+          "attributes": {
+            "fromCardinality": "1",
+            "toCardinality": "N"
+          },
+          "points": [
+            {
+              "x": 480,
+              "y": 129.41666666666666
+            },
+            {
+              "x": 516,
+              "y": 129.41666666666666
+            },
+            {
+              "x": 516,
+              "y": 201.66666666666666
+            },
+            {
+              "x": 552,
+              "y": 201.66666666666666
+            }
+          ]
+        },
+        {
+          "id": "products-items-3",
+          "from": "products",
+          "to": "items",
+          "label": "対象",
+          "dashed": false,
+          "order": 2,
+          "attributes": {
+            "fromCardinality": "1",
+            "toCardinality": "N"
+          },
+          "points": [
+            {
+              "x": 218,
+              "y": 232.625
+            },
+            {
+              "x": 385,
+              "y": 232.625
+            },
+            {
+              "x": 385,
+              "y": 237.33333333333331
+            },
+            {
+              "x": 552,
+              "y": 237.33333333333331
+            }
+          ]
+        },
+        {
+          "id": "orders-payments-4",
+          "from": "orders",
+          "to": "payments",
+          "label": "決済",
+          "dashed": false,
+          "order": 3,
+          "attributes": {
+            "fromCardinality": "1",
+            "toCardinality": "N"
+          },
+          "points": [
+            {
+              "x": 480,
+              "y": 102.08333333333333
+            },
+            {
+              "x": 516,
+              "y": 102.08333333333333
+            },
+            {
+              "x": 516,
+              "y": 77
+            },
+            {
+              "x": 552,
+              "y": 77
+            }
+          ]
+        }
+      ],
+      "groups": [],
+      "width": 770,
+      "height": 309.625,
+      "origin": {
+        "x": 0,
+        "y": 0
+      }
+    }
+  },
+  {
+    "id": "09-class",
+    "errors": [],
+    "width": 596,
+    "height": 703,
+    "nodes": 5,
+    "edges": 4,
+    "geometry": {
+      "kind": "class",
+      "nodes": [
+        {
+          "id": "Repository",
+          "label": "Repository",
+          "shape": "uml-class",
+          "attributes": {
+            "kind": "interface",
+            "members": "[{\"text\":\"+save(): void\",\"kind\":\"operation\"}]",
+            "visibilityIconSize": "0"
+          },
+          "x": 193,
+          "y": 28,
+          "width": 210,
+          "height": 122
+        },
+        {
+          "id": "OrderRepository",
+          "label": "OrderRepository",
+          "shape": "uml-class",
+          "attributes": {
+            "kind": "class",
+            "members": "[{\"text\":\"+save(): void\",\"kind\":\"operation\"}]",
+            "visibilityIconSize": "0"
+          },
+          "x": 59,
+          "y": 218,
+          "width": 210,
+          "height": 104
+        },
+        {
+          "id": "CustomerRepository",
+          "label": "CustomerRepository",
+          "shape": "uml-class",
+          "attributes": {
+            "kind": "class",
+            "members": "[{\"text\":\"+save(): void\",\"kind\":\"operation\"}]",
+            "visibilityIconSize": "0"
+          },
+          "x": 327,
+          "y": 218,
+          "width": 210,
+          "height": 104
+        },
+        {
+          "id": "Order",
+          "label": "Order",
+          "shape": "uml-class",
+          "attributes": {
+            "kind": "class",
+            "members": "[{\"text\":\"-id: UUID\",\"kind\":\"attribute\"},{\"text\":\"+submit(): void\",\"kind\":\"operation\"}]",
+            "visibilityIconSize": "0"
+          },
+          "x": 193,
+          "y": 390,
+          "width": 210,
+          "height": 104
+        },
+        {
+          "id": "LineItem",
+          "label": "LineItem",
+          "shape": "uml-class",
+          "attributes": {
+            "kind": "class",
+            "members": "[{\"text\":\"-quantity: int\",\"kind\":\"attribute\"}]",
+            "visibilityIconSize": "0"
+          },
+          "x": 193,
+          "y": 562,
+          "width": 210,
+          "height": 81
+        }
+      ],
+      "edges": [
+        {
+          "id": "OrderRepository-Repository-1",
+          "from": "OrderRepository",
+          "to": "Repository",
+          "dashed": true,
+          "order": 0,
+          "attributes": {
+            "relation": "realization"
+          },
+          "points": [
+            {
+              "x": 164,
+              "y": 218
+            },
+            {
+              "x": 164,
+              "y": 184
+            },
+            {
+              "x": 266.3333333333333,
+              "y": 184
+            },
+            {
+              "x": 266.3333333333333,
+              "y": 150
+            }
+          ]
+        },
+        {
+          "id": "CustomerRepository-Repository-2",
+          "from": "CustomerRepository",
+          "to": "Repository",
+          "dashed": true,
+          "order": 1,
+          "attributes": {
+            "relation": "realization"
+          },
+          "points": [
+            {
+              "x": 432,
+              "y": 218
+            },
+            {
+              "x": 432,
+              "y": 184
+            },
+            {
+              "x": 329.66666666666663,
+              "y": 184
+            },
+            {
+              "x": 329.66666666666663,
+              "y": 150
+            }
+          ]
+        },
+        {
+          "id": "OrderRepository-Order-3",
+          "from": "OrderRepository",
+          "to": "Order",
+          "label": "保存",
+          "dashed": false,
+          "order": 2,
+          "attributes": {
+            "relation": "directed-association"
+          },
+          "points": [
+            {
+              "x": 164,
+              "y": 322
+            },
+            {
+              "x": 164,
+              "y": 356
+            },
+            {
+              "x": 298,
+              "y": 356
+            },
+            {
+              "x": 298,
+              "y": 390
+            }
+          ]
+        },
+        {
+          "id": "Order-LineItem-4",
+          "from": "Order",
+          "to": "LineItem",
+          "label": "明細",
+          "dashed": false,
+          "order": 3,
+          "attributes": {
+            "relation": "composition",
+            "fromCardinality": "1",
+            "toCardinality": "1..N"
+          },
+          "points": [
+            {
+              "x": 298,
+              "y": 494
+            },
+            {
+              "x": 298,
+              "y": 528
+            },
+            {
+              "x": 298,
+              "y": 528
+            },
+            {
+              "x": 298,
+              "y": 562
+            }
+          ]
+        }
+      ],
+      "groups": [],
+      "width": 596,
+      "height": 703,
+      "origin": {
+        "x": 0,
+        "y": 0
+      }
+    }
+  },
+  {
+    "id": "10-long-label",
+    "errors": [],
+    "width": 525,
+    "height": 666,
+    "nodes": 6,
+    "edges": 6,
+    "geometry": {
+      "kind": "flowchart",
+      "direction": "down",
+      "nodes": [
+        {
+          "id": "s",
+          "label": "審査開始",
+          "shape": "rounded",
+          "attributes": {},
+          "x": 299,
+          "y": 28,
+          "width": 104,
+          "height": 46
+        },
+        {
+          "id": "a",
+          "label": "法人顧客の申請内容と添付書類を照合する",
+          "shape": "rectangle",
+          "attributes": {},
+          "x": 270,
+          "y": 118,
+          "width": 162,
+          "height": 58
+        },
+        {
+          "id": "c",
+          "label": "本人確認と利用条件の審査をすべて通過したか?",
+          "shape": "diamond",
+          "attributes": {},
+          "x": 218,
+          "y": 220,
+          "width": 266,
+          "height": 138
+        },
+        {
+          "id": "b",
+          "label": "不足している証明書類の追加提出を依頼する",
+          "shape": "rectangle",
+          "attributes": {},
+          "x": 44,
+          "y": 446,
+          "width": 162,
+          "height": 58
+        },
+        {
+          "id": "d",
+          "label": "利用開始の案内と初回設定の手順を通知する",
+          "shape": "rectangle",
+          "attributes": {},
+          "x": 270,
+          "y": 446,
+          "width": 162,
+          "height": 58
+        },
+        {
+          "id": "e",
+          "label": "審査完了",
+          "shape": "rounded",
+          "attributes": {},
+          "x": 299,
+          "y": 592,
+          "width": 104,
+          "height": 46
+        }
+      ],
+      "edges": [
+        {
+          "id": "s-a-1",
+          "from": "s",
+          "to": "a",
+          "dashed": false,
+          "order": 0,
+          "points": [
+            {
+              "x": 351,
+              "y": 74
+            },
+            {
+              "x": 351,
+              "y": 96
+            },
+            {
+              "x": 351,
+              "y": 96
+            },
+            {
+              "x": 351,
+              "y": 118
+            }
+          ]
+        },
+        {
+          "id": "a-c-2",
+          "from": "a",
+          "to": "c",
+          "dashed": false,
+          "order": 1,
+          "points": [
+            {
+              "x": 351,
+              "y": 176
+            },
+            {
+              "x": 351,
+              "y": 198
+            },
+            {
+              "x": 351,
+              "y": 198
+            },
+            {
+              "x": 351,
+              "y": 220
+            }
+          ]
+        },
+        {
+          "id": "c-d-3",
+          "from": "c",
+          "to": "d",
+          "label": "すべての審査項目を通過",
+          "dashed": false,
+          "order": 2,
+          "points": [
+            {
+              "x": 351,
+              "y": 358
+            },
+            {
+              "x": 351,
+              "y": 402
+            },
+            {
+              "x": 351,
+              "y": 402
+            },
+            {
+              "x": 351,
+              "y": 446
+            }
+          ]
+        },
+        {
+          "id": "c-b-4",
+          "from": "c",
+          "to": "b",
+          "label": "証明書類に不足がある",
+          "dashed": false,
+          "order": 3,
+          "points": [
+            {
+              "x": 218,
+              "y": 289
+            },
+            {
+              "x": 212,
+              "y": 289
+            },
+            {
+              "x": 212,
+              "y": 475
+            },
+            {
+              "x": 206,
+              "y": 475
+            }
+          ]
+        },
+        {
+          "id": "b-a-5",
+          "from": "b",
+          "to": "a",
+          "label": "追加書類を受領して再審査",
+          "dashed": false,
+          "order": 4,
+          "points": [
+            {
+              "x": 206,
+              "y": 475
+            },
+            {
+              "x": 224,
+              "y": 475
+            },
+            {
+              "x": 224,
+              "y": 382
+            },
+            {
+              "x": 194,
+              "y": 382
+            },
+            {
+              "x": 194,
+              "y": 147
+            },
+            {
+              "x": 270,
+              "y": 147
+            }
+          ]
+        },
+        {
+          "id": "d-e-6",
+          "from": "d",
+          "to": "e",
+          "dashed": false,
+          "order": 5,
+          "points": [
+            {
+              "x": 351,
+              "y": 504
+            },
+            {
+              "x": 351,
+              "y": 548
+            },
+            {
+              "x": 351,
+              "y": 548
+            },
+            {
+              "x": 351,
+              "y": 592
+            }
+          ]
+        }
+      ],
+      "groups": [],
+      "width": 525,
+      "height": 666,
+      "origin": {
+        "x": 0,
+        "y": 0
+      }
+    }
+  }
+]

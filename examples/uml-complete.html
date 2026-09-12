@@ -1,0 +1,119 @@
+<!doctype html><html lang="ja"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>実用UMLの拡張 — Finch.js</title>
+<style>body{margin:0;background:#f3f6fb;color:#24334b;font:15px Segoe UI,Meiryo,sans-serif}main{max-width:1200px;margin:auto;padding:32px}section{background:white;padding:24px;border-radius:12px;margin:24px 0}.diagram{overflow:auto}pre{white-space:pre-wrap;line-height:1.6}a{color:#246a95}h2{font-size:21px}</style>
+<main><a href="state-advanced.html">← 階層状態図</a><p><a href="uml-guide.html">UMLサンプルガイド</a></p><h1>短い記述で実用範囲を広げる</h1>
+<section><h2>01 分岐ごとの生成・実行・破棄</h2><div id="sequence" class="diagram" aria-label="代替分岐ごとのライフサイクル"></div></section>
+<section><h2>02 ループ内の分岐と中断</h2><div id="activity" class="diagram" aria-label="条件付きcontinueとbreak"></div></section>
+<section><h2>03 時間・変化・遅延イベント</h2><div id="events" class="diagram" aria-label="イベントの種類"></div></section>
+<section><h2>04 操作の契約を表すプロトコル</h2><p>角括弧は事前・事後条件です。動作を実行する図ではありません。</p><div id="protocol" class="diagram" aria-label="プロトコル状態機械"></div></section>
+<section><h2>05 関連クラスからの関連</h2><div id="class" class="diagram" aria-label="関連クラスと通常の関連"></div></section>
+<section><h2>06 継承と遷移の再定義</h2><p>Baseの状態を継承し、同じIDの遷移をretryに再定義します。</p><div id="inheritance" class="diagram" aria-label="継承した状態機械"></div></section>
+<section><h2>07 複数接続点の参照</h2><p>入口inは、サブマシンのprepareとreserveをまとめて参照します。対応する定義名はソースとポイントのツールチップで確認できます。</p><div id="references" class="diagram" aria-label="複数接続点の参照"></div></section>
+</main><script src="../dist/finch.global.js"></script><script>
+const sequenceSource = `@sequence
+participant api "API"
+alt cache miss
+create worker "Worker"
+api -> worker: load
+activate worker
+worker --> api: result
+deactivate worker
+destroy worker
+else cache expired
+create worker "Worker"
+api -> worker: reload
+activate worker
+worker --> api: result
+deactivate worker
+destroy worker
+end`;
+Finch.render(sequenceSource,{target:'#sequence'});
+const activitySource = `@activity
+start begin
+while batch "未処理あり？" {
+ action read "読み込み"
+ if skip "スキップ？" {
+  continue
+ }
+ if stop "中止？" {
+  break
+ }
+ action save "保存"
+}
+end done
+begin -> batch
+batch.done -> done`;
+Finch.render(activitySource,{target:'#activity'});
+const eventsSource = `@state validation=strict
+initial begin
+state idle "待機"
+state waiting "応答待ち"
+state ready "準備完了"
+final done
+begin -> idle
+idle -> waiting: start
+waiting -> idle: after(5s)
+waiting -> ready: when(responseReady)
+ready -> done: accept
+defer waiting "refresh"`;
+Finch.render(eventsSource,{target:'#events'});
+const protocolSource = `@state protocol validation=strict
+initial begin
+state closed "Closed"
+state opened "Opened"
+begin -> closed
+closed -> opened: open() [pre="authorized" post="isOpen"]
+opened -> closed: close() [post="!isOpen"]
+invariant opened "connection != null"`;
+Finch.render(protocolSource,{target:'#protocol'});
+const classSource = `@class
+class User {
+}
+class Team {
+}
+class Membership {
+ role: String
+}
+class Policy {
+}
+User "*" -- "*" Team [id=membership]
+association Membership membership
+Membership --> Policy: governed by`;
+Finch.render(classSource,{target:'#class'});
+const inheritanceSource = `@state validation=strict
+machine Base {
+ state idle "Idle"
+ state active "Active"
+ idle -> active: start [id=run]
+}
+machine Derived extends Base {
+ idle -> active: retry [id=run]
+}
+state process [submachine=Derived]`;
+Finch.render(Finch.parseState(inheritanceSource).stateMachines.Derived.source,{target:'#inheritance'});
+const referencesSource = `@state validation=strict
+machine Work {
+ entryPoint prepare
+ entryPoint reserve
+ state work {
+  region payment {
+   state charge
+  }
+  region shipping {
+   state ship
+  }
+ }
+ prepare -> charge
+ reserve -> ship
+}
+state idle "待機"
+state job "処理" [submachine=Work]
+entryPoint input [state=job ref=prepare,reserve]
+idle -> input: start`;
+Finch.render(referencesSource,{target:'#references'});
+for (const [id, source] of Object.entries({sequence:sequenceSource,activity:activitySource,events:eventsSource,protocol:protocolSource,class:classSource,inheritance:inheritanceSource,references:referencesSource})) {
+ const details=document.createElement('details'), summary=document.createElement('summary'), pre=document.createElement('pre');
+ summary.textContent=id==='inheritance' ? '継承元を含むソースを見る' : 'ソースを見る';
+ pre.textContent=source; details.append(summary,pre); document.getElementById(id).after(details);
+}
+</script></html>

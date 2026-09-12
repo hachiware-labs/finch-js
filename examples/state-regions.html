@@ -1,0 +1,24 @@
+<!doctype html><html lang="ja"><meta charset="utf-8"><title>State regions — Finch.js</title>
+<style>body{font:15px sans-serif;background:#f3f6fb;padding:32px}main{background:white;padding:24px;max-width:1100px;margin:auto}</style>
+<main><h1>直交領域の配置を切り替える</h1><p>同時に存在する通信状態と記録状態です。領域を縦に積んでも、遷移や並行性の意味は変わりません。</p><h2>横配置</h2><div id="columns"></div><h2>縦配置</h2><div id="rows"></div></main>
+<script src="../dist/finch.global.js"></script><script>
+const regionSource = `@state validation=strict
+state running "稼働中" [regions=columns] {
+ region network "通信" {
+  initial n0
+  state connected "接続済み"
+  final n1
+  n0 -> connected
+  connected -> n1: disconnect
+ }
+ region recording "記録" {
+  initial r0
+  state writing "書き込み中"
+  final r1
+  r0 -> writing
+  writing -> r1: flush
+ }
+}`;
+Finch.render(regionSource,{target:'#columns'});
+Finch.render(regionSource.replace('regions=columns','regions=rows'),{target:'#rows'});
+</script></html>

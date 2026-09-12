@@ -1,0 +1,306 @@
+<!doctype html><html lang="ja"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Finch.js — UML レイアウト巡回</title>
+<style>*{box-sizing:border-box}body{margin:0;background:#f1f5fa;color:#21324b;font:15px Segoe UI,Meiryo,sans-serif}header,main{max-width:1440px;margin:auto;padding:24px}h1{margin:8px 0}header p{color:#596a81}nav{display:flex;flex-wrap:wrap;gap:10px}a{color:#256b96}nav a{padding:9px 15px;background:white;border:1px solid #d4deea;border-radius:8px}section{background:white;border:1px solid #d4deea;border-radius:14px;margin-bottom:28px;padding:22px;scroll-margin-top:16px}h2{margin:0 0 8px}section p{color:#596a81}.diagram{overflow:auto}.diagram>svg{display:block;max-width:none}details{margin-top:16px}pre{white-space:pre-wrap;padding:16px;background:#f5f7fb}.error{color:#b42318}</style>
+<header><a href="./index.html">← Examples</a><h1>UML レイアウト巡回</h1><p><a href="./uml-concise.html">新しい簡潔なUML記法のサンプル →</a></p><p>注文システムの複雑なサンプルを6種類。初期配置をそのまま表示し、各図を編集・拡大できます。大きい図は横スクロールで確認してください。</p><nav><a href="#class">クラス</a><a href="#sequence">シーケンス</a><a href="#state">状態</a><a href="#activity">アクティビティ</a><a href="#component">コンポーネント</a><a href="#usecase">ユースケース</a></nav></header><main><section id="class"><h2>クラス</h2><p>継承・実装・所有関係と多重度</p><div class="diagram" id="diagram-class"></div><details><summary>ソースを見る</summary><pre id="source-class"></pre></details></section><section id="sequence"><h2>シーケンス</h2><p>入れ子の処理枠・自己呼び出し・応答</p><div class="diagram" id="diagram-sequence"></div><details><summary>ソースを見る</summary><pre id="source-sequence"></pre></details></section><section id="state"><h2>状態</h2><p>並行状態・合流・リトライ</p><div class="diagram" id="diagram-state"></div><details><summary>ソースを見る</summary><pre id="source-state"></pre></details></section><section id="activity"><h2>アクティビティ</h2><p>条件分岐・並列処理・例外経路</p><div class="diagram" id="diagram-activity"></div><details><summary>ソースを見る</summary><pre id="source-activity"></pre></details></section><section id="component"><h2>コンポーネント</h2><p>システム境界・インターフェース・外部依存</p><div class="diagram" id="diagram-component"></div><details><summary>ソースを見る</summary><pre id="source-component"></pre></details></section><section id="usecase"><h2>ユースケース</h2><p>複数アクター・include・extend</p><div class="diagram" id="diagram-usecase"></div><details><summary>ソースを見る</summary><pre id="source-usecase"></pre></details></section></main><script src="../dist/finch.global.js"></script><script>
+const diagrams = {};
+const classSource = String.raw`@class
+
+interface Repository {
+  +find(id: UUID): Entity
+  +save(entity: Entity): void
+}
+
+interface PaymentGateway {
+  +authorize(amount: Money): Authorization
+  +capture(id: UUID): Receipt
+}
+
+abstract AggregateRoot {
+  #version: integer
+  +record(event: DomainEvent): void
+}
+
+enum OrderStatus {
+  DRAFT
+  CONFIRMED
+  PAID
+  CANCELLED
+}
+
+class Order {
+  -id: UUID
+  -status: OrderStatus
+  -items: LineItem[]
+  +addItem(product: Product, quantity: int): void
+  +confirm(): void
+  +total(): Money
+}
+
+class LineItem {
+  -quantity: int
+  -unitPrice: Money
+  +subtotal(): Money
+}
+
+class OrderRepository {
+  -database: Database
+  +find(id: UUID): Order
+  +save(order: Order): void
+}
+
+class CheckoutService {
+  -orders: Repository
+  -payments: PaymentGateway
+  +checkout(orderId: UUID): Receipt
+}
+
+Order --|> AggregateRoot
+Order "1" *-- "1..N" LineItem: items
+Order --> OrderStatus: status
+OrderRepository ..|> Repository
+OrderRepository ..> Order: persists
+CheckoutService ..> Repository: loads
+CheckoutService ..> PaymentGateway: authorizes
+CheckoutService ..> Order: confirms
+class AuditEntry {
+ -timestamp: Instant
+ -action: String
+ +record(): void
+}
+Order "1" --> "0..*" AuditEntry: history
+`.trim();
+document.querySelector('#source-class').textContent=classSource;
+diagrams['class']=Finch.render(classSource,{target:'#diagram-class',ariaLabel:'class UML review'});
+const sequenceSource = String.raw`@sequence
+
+actor Customer "Customer"
+participant Web "Web App"
+participant API "API Gateway"
+participant Auth "Auth Service"
+participant Session "Session DB"
+participant Order "Order Service"
+participant Inventory "Inventory"
+participant Payment "Payment Provider"
+participant Queue "Event Queue"
+
+Customer -> Web: Place order
+Web -> API: POST /orders
+
+group Checkout transaction
+  API -> Auth: Verify access token
+  Auth -> Session: Load session
+  Session --> Auth: Session data
+  Auth --> API: Authorized
+
+  alt Authorized request
+    critical Create order atomically
+      API -> Order: Create order
+      Order -> Order: Calculate total
+    end
+
+    loop Reserve each item
+      Order -> Inventory: Reserve SKU
+      Inventory --> Order: Reserved
+    end
+
+    opt Payment required
+      Order -> Payment: Authorize amount
+      Payment --> Order: Authorization
+    end
+
+    par Publish checkout results
+      Order -> Queue: OrderCreated
+      Queue --> Order: Accepted
+    end
+    Order --> API: Order response
+  end
+end
+
+break Client disconnected
+  API --> Web: Abort response
+end
+
+API --> Web: 201 Created
+Web --> Customer: Confirmation
+loop Refresh order status
+ Web -> API: GET /orders/status
+ API -> Order: Find latest status
+ Order --> API: Processing state
+ API --> Web: Status response
+end
+`.trim();
+document.querySelector('#source-sequence').textContent=sequenceSource;
+diagrams['sequence']=Finch.render(sequenceSource,{target:'#diagram-sequence',ariaLabel:'sequence UML review'});
+const stateSource = String.raw`@state validation=strict
+
+initial start
+state draft "Draft"
+state review "In review"
+choice decision
+state changes "Changes requested"
+state approved "Approved"
+state rejected "Rejected"
+state cancelled "Cancelled"
+junction resolved
+fork publish
+state persistence "Persist outcome" {
+ region logging "Logging" {
+  state audit "Write audit log"
+ }
+ region storage "Storage" {
+  state archiving "Archiving outcome"
+ }
+}
+join published
+final done
+
+start -> draft
+draft -> review: submit
+review -> changes: request changes
+changes -> draft: revise
+review -> decision
+decision -> approved [approved] / accept
+decision -> rejected [rejected] / decline
+draft -> cancelled: cancel
+changes -> cancelled: cancel
+approved -> resolved
+rejected -> resolved
+cancelled -> resolved
+resolved -> publish: / persist outcome
+publish -> archiving
+publish -> audit
+archiving -> published
+audit -> published
+published -> done
+`.trim();
+document.querySelector('#source-state').textContent=stateSource;
+diagrams['state']=Finch.render(stateSource,{target:'#diagram-state',ariaLabel:'state UML review'});
+const activitySource = String.raw`@activity
+
+start begin
+action receive "Receive order"
+action validate "Validate request"
+decision valid "Valid?"
+action reject "Record rejection"
+fork parallel
+action reserve "Reserve inventory"
+action score "Run fraud checks"
+object order "Order"
+join prepared
+decision approved "Approved?"
+action charge "Capture payment"
+action release "Release inventory"
+merge outcome "Outcome"
+action audit "Write audit trail"
+action notify "Notify customer"
+end done
+
+begin -> receive
+receive -> validate
+validate -> valid
+valid -> reject [invalid] / record reason
+valid -> parallel [valid]
+parallel -> reserve
+parallel -> score
+reserve -> order: updates
+order -> prepared
+score -> prepared
+prepared -> approved
+approved -> charge [yes]
+approved -> release [no]
+charge -> outcome
+release -> outcome
+reject -> outcome
+outcome -> audit
+audit -> notify
+notify -> done`.trim();
+document.querySelector('#source-activity').textContent=activitySource;
+diagrams['activity']=Finch.render(activitySource,{target:'#diagram-activity',ariaLabel:'activity UML review'});
+const componentSource = String.raw`@component
+
+external customer "Customer"
+external identity "Identity Provider"
+external payments "Payment Provider"
+external mail "Email Delivery"
+
+system commerce "Commerce Platform" {
+  system experience "Experience Layer" {
+    component web "Web Application"
+    component mobile "Mobile Application"
+    component bff "Backend for Frontend"
+  }
+
+  system core "Core Services" {
+    port public_port "HTTP"
+    component gateway "Public API"
+    component catalog "Catalog Component"
+    component orders "Order Component"
+    component notifications "Notification Component"
+    provided events "Order Events"
+    required payment_api "Payment API"
+    artifact contract "OpenAPI Contract"
+  }
+
+  system storage "Storage" {
+    database productdb "Product Database"
+    database orderdb "Order Database"
+    database cache "Redis Cache"
+  }
+}
+
+customer -> web: uses
+customer -> mobile: uses
+web -> bff: HTTPS
+mobile -> bff: HTTPS
+bff -> identity: OIDC
+bff -> public_port: JSON API
+public_port -> gateway
+gateway -> catalog: queries
+gateway -> orders: commands
+catalog -> productdb
+catalog -> cache
+orders -> orderdb
+orders -> payment_api: authorize
+payment_api -> payments: HTTPS
+orders -> events: publish
+gateway ..> contract: describes
+events -> notifications: subscribe
+notifications -> mail: send
+external audit "Audit Platform"
+orders ..> audit: append audit event
+`.trim();
+document.querySelector('#source-component').textContent=componentSource;
+diagrams['component']=Finch.render(componentSource,{target:'#diagram-component',ariaLabel:'component UML review'});
+const usecaseSource = String.raw`@usecase
+
+actor customer "Customer"
+actor member "Registered Customer"
+actor operator "Store Operator"
+actor payments "Payment Provider"
+
+system commerce "Commerce Platform" {
+  usecase browse "Browse catalog"
+  usecase checkout "Checkout"
+  usecase authenticate "Authenticate"
+  usecase coupon "Apply coupon"
+  usecase pay "Authorize payment"
+  usecase refund "Issue refund"
+  usecase manage "Manage catalog"
+}
+
+generalize member -> customer
+customer -> browse
+customer -> checkout
+member -> coupon
+operator -> refund
+operator -> manage
+payments -> pay
+include checkout -> authenticate
+include checkout -> pay
+extend coupon -> checkout
+include refund -> authenticate
+usecase export_history "Export order history"
+customer -> export_history
+`.trim();
+document.querySelector('#source-usecase').textContent=usecaseSource;
+diagrams['usecase']=Finch.render(usecaseSource,{target:'#diagram-usecase',ariaLabel:'usecase UML review'});
+</script></html>

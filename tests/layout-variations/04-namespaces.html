@@ -1,0 +1,24 @@
+<!doctype html><html lang="ja"><meta charset="utf-8"><title>3領域をまたぐ依存</title><style>body{font:15px sans-serif;margin:24px;background:#f5f7fb}#diagram{background:white;overflow:auto}pre{white-space:pre-wrap}</style><h1>3領域をまたぐ依存</h1><div id="diagram"></div><details><summary>ソース</summary><pre id="source"></pre></details><script src="../../dist/finch.global.js"></script><script>
+const source = `@class
+namespace ui {
+ class Controller
+ class View
+ Controller --> View
+}
+namespace domain {
+ class Service
+ class Entity
+ Service --> Entity
+}
+namespace storage {
+ class Repository
+ class Record
+ Repository --> Record
+}
+ui.Controller ..> domain.Service
+domain.Service ..> storage.Repository
+storage.Repository ..> domain.Entity
+ui.Controller ..> storage.Record`;
+document.querySelector("#source").textContent=source;
+window.diagram=Finch.render(source,{target:"#diagram"});
+</script></html>

@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="ja"><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>複合状態をまたぐ復帰</title>
+<style>body{font:15px sans-serif;margin:24px;background:#f5f7fb}#diagram{background:white;overflow:auto}pre{white-space:pre-wrap}</style>
+<a href="index.html">配置バリエーション一覧</a><h1>複合状態をまたぐ復帰</h1><div id="diagram"></div><details><summary>ソース</summary><pre id="source"></pre></details>
+<script src="../../dist/finch.global.js"></script><script>
+const source = `@state
+initial begin
+state ready "Ready"
+state session "Session" {
+ initial enter
+ state editing "Editing"
+ state validating "Validating"
+ state saving "Saving"
+ final completed
+ enter -> editing
+ editing -> validating: submit
+ validating -> editing: invalid
+ validating -> saving: valid
+ saving -> editing: save failed
+ saving -> completed: saved
+}
+state suspended "Suspended"
+final done
+begin -> ready
+ready -> session: open
+session -> suspended: suspend
+suspended -> session: resume
+suspended -> ready: discard
+session -> done: close`;
+document.querySelector("#source").textContent=source;
+window.diagram=Finch.render(source,{target:"#diagram"});
+</script></html>

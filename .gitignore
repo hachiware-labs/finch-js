@@ -2,3 +2,7 @@ node_modules/
 dist/
 coverage/
 *.log
+/tests/archify-lab/
+/docs/routing_ja.md
+
+/.local/

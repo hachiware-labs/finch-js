@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Finch.js general graph example</title>
+    <link rel="stylesheet" href="./example.css" />
+  </head>
+  <body class="diagram-page" data-title="Graph">
+    <header>
+      <a class="back" href="./index.html">← All examples</a>
+      <span class="eyebrow">@graph direction=LR</span>
+      <h1>Commerce system map</h1>
+      <p>Typeless nodes, implicit declarations, grouped boundaries, and a left-to-right reading flow.</p>
+    </header>
+    <main class="diagram-layout">
+      <section id="diagram" class="canvas" aria-label="Commerce system relationship graph"></section>
+      <p id="error" class="error" hidden></p>
+    </main>
+    <script src="../dist/finch.global.js?v=0.5.1-examples-2"></script>
+    <script>
+      const graphSource = String.raw`
+@graph direction=LR
+
+group channel "Channel" {
+  customer "Customer" [shape=rounded]
+}
+
+group storefront "Storefront" {
+  web "Web app"
+  gateway "API gateway" [shape=rounded]
+}
+
+group commerce "Commerce" {
+  orders "Order service"
+  orders -> inventory: Reserve
+  inventory "Inventory service"
+  orders -> payments: Authorize
+  payments "Payment service"
+  orders --> events: Publish
+  events "Order events" [shape=artifact]
+}
+
+group partner "Partner" {
+  provider "Payment provider"
+}
+
+customer -> web: Browse
+web -> gateway: HTTPS
+gateway -> orders: Submit order
+payments -> provider: Charge
+      `.trim();
+
+      const title = document.body.dataset.title ?? "Diagram";
+      const diagram = document.querySelector("#diagram");
+      const errorView = document.querySelector("#error");
+      let instance;
+
+      try {
+        instance = Finch.render(graphSource, {
+          target: diagram,
+          ariaLabel: `${title} advanced example`,
+        });
+      } catch (error) {
+        errorView.hidden = false;
+        errorView.textContent = error instanceof Error ? error.message : String(error);
+      }
+    </script>
+  </body>
+</html>

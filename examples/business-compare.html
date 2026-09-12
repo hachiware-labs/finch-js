@@ -1,0 +1,227 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Finch — Default / Business comparison</title>
+  <style>
+    * { box-sizing: border-box; }
+    body { margin: 0; background: #f5f7fa; color: #172b4d; font-family: Inter, "Segoe UI", "Hiragino Sans", "Noto Sans JP", sans-serif; }
+    main { width: min(1680px, calc(100% - 48px)); margin: 0 auto; padding: 42px 0 52px; }
+    header { display: flex; justify-content: space-between; gap: 32px; align-items: end; margin-bottom: 26px; }
+    .eyebrow { margin: 0 0 9px; color: #5f6e85; font-size: 11px; font-weight: 600; letter-spacing: .13em; }
+    h1 { margin: 0; font-size: clamp(28px, 3vw, 42px); line-height: 1.2; letter-spacing: -.025em; }
+    .intro { max-width: 530px; margin: 0; color: #5f6e85; font-size: 13px; line-height: 1.8; }
+    .comparison { display: grid; grid-template-columns: repeat(2, 1fr); overflow: hidden; border: 1px solid #d7dfea; border-radius: 10px; background: #fff; }
+    article { min-width: 0; padding: 26px 28px 24px; }
+    article + article { border-left: 1px solid #d7dfea; }
+    article:nth-child(odd) { border-left: 0; }
+    article:nth-child(n+3) { border-top: 1px solid #d7dfea; }
+    .panel-head { display: flex; justify-content: space-between; align-items: center; gap: 18px; border-bottom: 1px solid #e4e9f0; padding-bottom: 16px; }
+    h2 { margin: 0; font-size: 16px; }
+    .tag { border: 1px solid #d7dfea; border-radius: 999px; padding: 5px 9px; color: #5f6e85; font-size: 10px; font-weight: 600; letter-spacing: .08em; }
+    .tag.business { border-color: #b9caff; background: #eaf0ff; color: #1746b8; }
+    .tag.soft { border-color: #d9e1ec; background: #f8fafc; color: #536881; }
+    .tag.raised { border-color: #cbd5e2; background: #eef2f7; color: #42566f; }
+    .diagram { min-height: 390px; display: flex; align-items: center; justify-content: center; overflow: auto; padding: 26px 0 18px; }
+    .diagram svg { display: block; min-width: 570px; max-height: 470px; }
+    .caption { margin: 0; border-top: 1px solid #e4e9f0; padding-top: 15px; color: #5f6e85; font-size: 12px; line-height: 1.7; }
+    .palette { display: flex; align-items: center; gap: 16px; margin-top: 22px; color: #5f6e85; font-size: 11px; }
+    .swatches { display: flex; gap: 8px; }
+    .swatch { width: 24px; height: 24px; border: 1px solid #d7dfea; border-radius: 5px; }
+    @media (max-width: 1200px) {
+      header { display: block; }
+      .intro { margin-top: 14px; }
+      .comparison { grid-template-columns: 1fr; }
+      article + article { border-left: 0; border-top: 1px solid #d7dfea; }
+    }
+  </style>
+</head>
+<body>
+<main>
+  <header>
+    <div><p class="eyebrow">FINCH / THEME COMPARISON</p><h1>同じ構造を、資料に使える図へ。</h1></div>
+    <p class="intro">ソースとレイアウトは同じ。Businessの輪郭、接続線、影のバランスを調整した案まで並べて比較します。</p>
+  </header>
+  <section class="comparison" aria-label="DefaultとBusinessの比較">
+    <article>
+      <div class="panel-head"><h2>Default</h2><span class="tag">CURRENT</span></div>
+      <section id="default-diagram" class="diagram" aria-label="Defaultテーマの受注業務図"></section>
+      <p class="caption">すべてのノードが同じ強さで、装飾によって要素を分けるスタイル。</p>
+    </article>
+    <article>
+      <div class="panel-head"><h2>Business</h2><span class="tag business">CRISP</span></div>
+      <section id="business-diagram" class="diagram" aria-label="Businessテーマの受注業務図"></section>
+      <p class="caption">白い面、濃い文字、静かな接続線。主要処理だけを青い輪郭で示し、読み順を明確に。</p>
+    </article>
+    <article>
+      <div class="panel-head"><h2>Business / Soft lift</h2><span class="tag soft">VARIANT</span></div>
+      <section id="soft-diagram" class="diagram" aria-label="薄い枠と小さな影を使ったBusinessテーマの受注業務図"></section>
+      <p class="caption">枠を少し濃く戻し、接続線は細く。下方向へ2px広がる小さな影で、白い面を静かに分離。</p>
+    </article>
+    <article>
+      <div class="panel-head"><h2>Business / Raised</h2><span class="tag raised">LARGE + DARK</span></div>
+      <section id="raised-diagram" class="diagram" aria-label="大きな影を使ったBusinessテーマの受注業務図"></section>
+      <p class="caption">枠と接続線はSoft liftと共通。InkにPrimaryを少し混ぜた影を右下へ落とし、カード感と統一感を出す。</p>
+    </article>
+  </section>
+  <div class="palette"><strong>Business palette</strong><div class="swatches" aria-label="Businessカラーパレット">
+    <span class="swatch" title="Canvas #FFFFFF" style="background:#fff"></span>
+    <span class="swatch" title="Surface #F8FAFC" style="background:#f8fafc"></span>
+    <span class="swatch" title="Ink #172B4D" style="background:#172b4d"></span>
+    <span class="swatch" title="Muted #5F6E85" style="background:#5f6e85"></span>
+    <span class="swatch" title="Line #7A8AA3" style="background:#7a8aa3"></span>
+    <span class="swatch" title="Border #D7DFEA" style="background:#d7dfea"></span>
+    <span class="swatch" title="Soft border #D5DDE8" style="background:#d5dde8"></span>
+    <span class="swatch" title="Primary #2457D6" style="background:#2457d6"></span>
+    <span class="swatch" title="Accent pale #EAF0FF" style="background:#eaf0ff"></span>
+  </div></div>
+</main>
+<script src="../dist/finch.global.js"></script>
+<script>
+  const comparisonSource = `
+@graph direction=LR
+receive "注文を受け付ける"
+review "注文内容を確認"
+arrange "出荷を手配" [emphasis=primary]
+inventory "在庫管理" [shape=database]
+delivery "配送管理"
+receive -> review: 受注
+review -> arrange: 確認済み
+arrange -> inventory: 引当
+arrange -> delivery: 依頼
+  `.trim();
+
+  const businessTheme = {
+    ...Finch.defaultTheme,
+    name: "business-study",
+    fontFamily: 'Inter, "Segoe UI", "Hiragino Sans", "Noto Sans JP", sans-serif',
+    fontSize: 14,
+    labelColor: "#172b4d",
+    mutedColor: "#5f6e85",
+    nodeFill: "#ffffff",
+    nodeStroke: "#d7dfea",
+    nodeStrokeWidth: 1.1,
+    nodeRadius: 6,
+    nodePaddingX: 20,
+    nodePaddingY: 12,
+    containerFill: "#f8fafc",
+    containerStroke: "#c9d3e1",
+    edgeColor: "#7a8aa3",
+    edgeWidth: 1.5,
+    accentColor: "#2457d6",
+    canvasColor: "#ffffff",
+    shadow: "none",
+    gapX: 96,
+    gapY: 44,
+  };
+  const softTheme = {
+    ...businessTheme,
+    name: "business-soft-study",
+    nodeStroke: "#d5dde8",
+    containerStroke: "#cbd5e2",
+    nodeStrokeWidth: 1.1,
+    edgeWidth: 1.25,
+    shadow: "0 2px 5px rgba(23, 43, 77, 0.10)",
+  };
+  const raisedTheme = {
+    ...softTheme,
+    name: "business-raised-study",
+    shadow: "0 4px 12px rgba(23, 43, 77, 0.22)",
+  };
+
+  Finch.render(comparisonSource, {
+    target: "#default-diagram",
+    editor: false,
+    interactive: false,
+    ariaLabel: "Defaultテーマの受注業務図",
+  });
+  const business = Finch.render(comparisonSource, {
+    target: "#business-diagram",
+    theme: businessTheme,
+    editor: false,
+    interactive: false,
+    ariaLabel: "Businessテーマの受注業務図",
+  });
+  const soft = Finch.render(comparisonSource, {
+    target: "#soft-diagram",
+    theme: softTheme,
+    editor: false,
+    interactive: false,
+    ariaLabel: "薄い枠と小さな影を使ったBusinessテーマの受注業務図",
+  });
+  const raised = Finch.render(comparisonSource, {
+    target: "#raised-diagram",
+    theme: raisedTheme,
+    editor: false,
+    interactive: false,
+    ariaLabel: "大きな影を使ったBusinessテーマの受注業務図",
+  });
+
+  function namespaceSvgDefinitions(svg, suffix) {
+    const definitions = [
+      ["finch-shadow", "filter"],
+      ["finch-arrow", "marker-end"],
+      ["finch-triangle", "marker-end"],
+      ["finch-diamond-open", "marker-start"],
+      ["finch-diamond-filled", "marker-start"],
+    ];
+    definitions.forEach(([id, attribute]) => {
+      const definition = svg.querySelector(`#${id}`);
+      if (!definition) return;
+      const uniqueId = `${id}-${suffix}`;
+      definition.id = uniqueId;
+      svg.querySelectorAll(`[${attribute}]`).forEach(element => {
+        if (element.getAttribute(attribute) === `url(#${id})`) {
+          element.setAttribute(attribute, `url(#${uniqueId})`);
+        }
+      });
+    });
+  }
+
+  function applyBusinessTreatment(instance, suffix, softShadow = false) {
+    const svg = instance.svg;
+    namespaceSvgDefinitions(svg, suffix);
+    const style = document.createElementNS("http://www.w3.org/2000/svg", "style");
+    style.textContent = softShadow
+      ? ".finch-node text{font-weight:600}.finch-edge{stroke-linecap:round;stroke-linejoin:round}.finch-edge-label{font-weight:400;paint-order:normal;stroke:none}"
+      : ".finch-node [filter]{filter:none}.finch-node text{font-weight:600}.finch-edge{stroke-linecap:round;stroke-linejoin:round}.finch-edge-label{font-weight:400;paint-order:normal;stroke:none}";
+    svg.append(style);
+    svg.querySelector(`#finch-arrow-${suffix} path`)?.setAttribute("fill", "#536881");
+    if (softShadow) {
+      const shadow = svg.querySelector(`#finch-shadow-${suffix} feDropShadow`);
+      shadow?.setAttribute("dy", "2");
+      shadow?.setAttribute("stdDeviation", "2");
+      shadow?.setAttribute("flood-color", "#172b4d");
+      shadow?.setAttribute("flood-opacity", "0.10");
+    }
+    const focus = svg.querySelector('[data-node-id="arrange"].finch-node');
+    const face = focus?.querySelector(":scope > rect");
+    if (face) {
+      face.setAttribute("fill", "#ffffff");
+      face.setAttribute("stroke", "#2457d6");
+      face.setAttribute("stroke-width", "2");
+      focus.querySelectorAll("text").forEach(text => text.setAttribute("fill", "#1746b8"));
+    }
+    svg.querySelectorAll(".finch-edge-label").forEach(label => {
+      const box = label.getBBox();
+      const plate = document.createElementNS("http://www.w3.org/2000/svg", "rect");
+      plate.setAttribute("x", String(box.x - 5));
+      plate.setAttribute("y", String(box.y - 2));
+      plate.setAttribute("width", String(box.width + 10));
+      plate.setAttribute("height", String(box.height + 4));
+      plate.setAttribute("rx", "2");
+      plate.setAttribute("fill", "#ffffff");
+      label.parentNode.insertBefore(plate, label);
+    });
+  }
+  applyBusinessTreatment(business, "business");
+  applyBusinessTreatment(soft, "soft", true);
+  applyBusinessTreatment(raised, "raised", true);
+  raised.svg.querySelectorAll(".finch-node [filter]").forEach(face => {
+    face.removeAttribute("filter");
+    face.style.filter = "drop-shadow(2px 9px 5px rgba(26, 52, 104, 0.38))";
+  });
+</script>
+</body>
+</html>

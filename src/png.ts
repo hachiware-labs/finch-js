@@ -1,4 +1,5 @@
 import type { PngExportOptions, Size } from "./types.js";
+import { embedImages } from "./images.js";
 
 export async function svgToPngBlob(
   svg: SVGSVGElement,
@@ -27,6 +28,7 @@ export async function svgToPngBlob(
   for (const node of clone.querySelectorAll(".finch-node")) node.classList.remove("is-selected");
   for (const control of clone.querySelectorAll("[data-finch-editor-trigger]")) control.remove();
 
+  await embedImages(clone);
   const markup = new XMLSerializer().serializeToString(clone);
   const source = new Blob([markup], { type: "image/svg+xml;charset=utf-8" });
   const sourceUrl = URL.createObjectURL(source);
@@ -66,4 +68,12 @@ function canvasToBlob(canvas: HTMLCanvasElement): Promise<Blob> {
       else reject(new Error("Finch.js could not encode the diagram as PNG."));
     }, "image/png");
   });
+}
+
+/** Rasterize an immutable page snapshot using an HTML document's canvas runtime. */
+export function svgMarkupToPngBlob(markup:string,document:Document,options:PngExportOptions={}):Promise<Blob>{
+  const parsed=new DOMParser().parseFromString(markup,'image/svg+xml');
+  if(parsed.querySelector('parsererror'))throw new Error('Invalid page SVG.');
+  const svg=document.importNode(parsed.documentElement,true) as unknown as SVGSVGElement;
+  return svgToPngBlob(svg,{width:Number(svg.getAttribute('width')),height:Number(svg.getAttribute('height'))},svg.style.backgroundColor || svg.style.background || 'transparent',options);
 }

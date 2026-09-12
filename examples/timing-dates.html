@@ -1,0 +1,15 @@
+<!doctype html><html lang="ja"><meta charset="utf-8"><title>UTC timing — Finch.js</title>
+<style>body{font:15px sans-serif;background:#f3f6fb;padding:32px}main{background:white;padding:24px;max-width:1100px;margin:auto}</style>
+<main><h1>日時で表す処理スケジュール</h1><p>UTCの基準日時から、日時指定と相対時間を組み合わせます。</p><div id="dates" aria-label="バッチ処理の日時と実行区間"></div></main>
+<script src="../dist/finch.global.js"></script><script>
+const dateSource = `@timing origin=2026-09-01 unit=h end=2026-09-03
+robust job "Batch job"
+@2026-09-01
+job is idle
+@2026-09-01T06:00:00Z as :start
+job is running
+@+6
+job is done
+duration job :start 2026-09-01T12:00:00Z "6 hours"`;
+Finch.render(dateSource,{target:'#dates'});
+</script></html>

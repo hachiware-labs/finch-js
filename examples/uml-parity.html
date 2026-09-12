@@ -1,0 +1,35 @@
+<!doctype html><html lang="ja"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>UML参照と分岐 — Finch.js</title>
+<style>body{background:#f3f6fb;color:#24334b;font:15px Segoe UI,Meiryo,sans-serif;margin:0}main{max-width:1100px;margin:auto;padding:32px}section{background:white;padding:24px;border-radius:12px;margin:24px 0}.diagram{overflow:auto}</style>
+<main><a href="uml-complete.html">← UML拡張</a><h1>参照・待ち時間・分岐</h1><section><h2>参照する処理と待ち時間</h2><div id="sequence" class="diagram" aria-label="参照枠と待ち時間"></div></section><section><h2>ループ外の条件分岐と複数分岐</h2><div id="activity" class="diagram" aria-label="ifとswitchによる分岐"></div></section></main>
+<script src="../dist/finch.global.js"></script><script>
+const sequenceSource = `@sequence
+participant client "Client"
+participant api "API"
+autonumber
+client -> api: request
+ref over client,api: Authentication
+delay 2 seconds
+api --> client: accepted`;
+Finch.render(sequenceSource,{target:'#sequence'});
+const activitySource = `@activity
+start begin
+if access "権限あり？" {
+ action accept "受付"
+}
+else {
+ action reject "権限を申請"
+}
+switch route "処理区分" {
+ case "即時" {
+  action quick "即時処理"
+ }
+ case "else" {
+  action queue "予約処理"
+ }
+}
+end done
+begin -> access
+access.done -> route
+route.done -> done`;
+Finch.render(activitySource,{target:'#activity'});
+</script></html>

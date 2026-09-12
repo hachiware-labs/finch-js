@@ -17,6 +17,31 @@ function geometry(nodes: GeometryNode[], edges: GeometryEdge[]): Geometry {
   return { kind: "deployment", nodes, edges, groups: [], width: 500, height: 400 };
 }
 
+it("leaves a straight approach before an arrow beside a node boundary", () => {
+  const source = node("api", 220, 220, 100, 50);
+  const target = node("identity", 40, 40, 100, 50);
+  const result = geometry([source, target], [edge("verify", "api", "identity", 0)]);
+  rerouteGeometry(result);
+  const points = simplified(result.edges[0]!.points);
+  const end = points[points.length - 1]!;
+  const before = points[points.length - 2]!;
+  expect(before.y).toBe(end.y);
+  expect(before.x - end.x).toBeGreaterThanOrEqual(16);
+  expect(crossesNode(points, target)).toBe(false);
+});
+
+it("separates container entry and exit while using the same horizontal routing level", () => {
+  const docker = node("docker", 100, 20, 80, 40);
+  const metrics = node("metrics", 300, 20, 80, 40);
+  const cloud = { ...node("cloud", 40, 160, 420, 200), shape: "container" };
+  const result = geometry([docker, metrics, cloud], [edge("deploy", "docker", "cloud", 0), edge("logs", "cloud", "metrics", 1)]);
+  rerouteGeometry(result);
+  const deploy = simplified(result.edges[0]!.points);
+  const logs = simplified(result.edges[1]!.points);
+  expect(deploy[deploy.length - 1]!.x).not.toBe(logs[0]!.x);
+  expect(deploy[1]!.y).toBe(logs[1]!.y);
+});
+
 function simplified(points: Point[]): Point[] {
   const result: Point[] = [];
   for (const point of points) {
@@ -69,6 +94,29 @@ function crossingCount(first: Point[], second: Point[]): number {
 }
 
 describe("smart edge routing", () => {
+  it("separates overlapping trunks belonging to unrelated connections", () => {
+    const result = geometry([
+      node("a", 0, 0), node("b", 300, 200),
+      node("c", 0, 100), node("d", 300, 300),
+    ], [edge("ab", "a", "b", 0), edge("cd", "c", "d", 1)]);
+    rerouteGeometry(result);
+    const first = simplified(result.edges[0]!.points);
+    const second = simplified(result.edges[1]!.points);
+    expect(crossingCount(first, second)).toBe(0);
+    for (let i = 1; i < first.length; i += 1) for (let j = 1; j < second.length; j += 1) {
+      const a = first[i - 1]!;
+      const b = first[i]!;
+      const c = second[j - 1]!;
+      const d = second[j]!;
+      if (a.x === b.x && c.x === d.x && a.x === c.x) {
+        expect(Math.min(Math.max(a.y, b.y), Math.max(c.y, d.y)) - Math.max(Math.min(a.y, b.y), Math.min(c.y, d.y))).toBeLessThanOrEqual(0);
+      }
+      if (a.y === b.y && c.y === d.y && a.y === c.y) {
+        expect(Math.min(Math.max(a.x, b.x), Math.max(c.x, d.x)) - Math.max(Math.min(a.x, b.x), Math.min(c.x, d.x))).toBeLessThanOrEqual(0);
+      }
+    }
+  });
+
   it("avoids a node and uses the fewest bends among safe routes", () => {
     const source = node("source", 0, 40);
     const obstacle = node("obstacle", 150, 100);
@@ -92,7 +140,7 @@ describe("smart edge routing", () => {
       node("bottom", 150, 260),
     ], [
       edge("horizontal", "left", "right", 0),
-      edge("vertical", "top", "bottom", 1),
+      { ...edge("vertical", "top", "bottom", 1), attributes: { routing: "avoid-crossings" } },
     ]);
 
     rerouteGeometry(result);

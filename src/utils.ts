@@ -2,6 +2,17 @@ import type { Bounds, LayoutOverlay, Point } from "./types.js";
 
 export const SVG_NS = "http://www.w3.org/2000/svg";
 
+export function routeMidpoint(points: Point[]): Point {
+  const lengths = points.slice(1).map((point,index) => Math.hypot(point.x-points[index]!.x,point.y-points[index]!.y));
+  let remaining = lengths.reduce((a,b)=>a+b,0)/2;
+  for(let i=0;i<lengths.length;i++) {
+    const length=lengths[i]!;
+    if(remaining <= length && length) { const a=points[i]!,b=points[i+1]!; return {x:a.x+(b.x-a.x)*remaining/length,y:a.y+(b.y-a.y)*remaining/length}; }
+    remaining-=length;
+  }
+  return points[0] ?? {x:0,y:0};
+}
+
 export function svgElement<K extends keyof SVGElementTagNameMap>(
   document: Document,
   name: K,
@@ -47,6 +58,7 @@ export function parseOverlay(value?: LayoutOverlay | string): LayoutOverlay {
     version: 1,
     ...(overlay.diagram ? { diagram: overlay.diagram } : {}),
     ...(typeof overlay.editable === "boolean" ? { editable: overlay.editable } : {}),
+    ...(typeof overlay.frozen === "boolean" ? { frozen: overlay.frozen } : {}),
     nodes: Object.fromEntries(Object.entries(overlay.nodes ?? {}).map(([id, node]) => [id, { ...node }])),
   };
 }

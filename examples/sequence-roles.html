@@ -1,0 +1,17 @@
+<!doctype html><html lang="ja"><meta charset="utf-8"><title>Sequence roles — Finch.js</title><style>body{font:15px sans-serif;padding:32px;background:#f3f6fb}main{background:white;padding:24px;max-width:1000px;margin:auto}</style><main><h1>参加者の役割を記号で示す</h1><div id="roles" aria-label="境界・制御・エンティティとデータベース"></div></main><script src="../dist/finch.global.js"></script><script>
+const rolesSource = `@sequence
+boundary ui "UI"
+control service "Service"
+entity model "Model"
+database db "Database"
+collections users "Users"
+queue jobs "Jobs"
+ui -> service: request
+service -> model: update
+model -> db: save
+db --> model: saved
+model --> service: result
+service --> ui: response
+users ->> jobs: enqueue`;
+Finch.render(rolesSource,{target:'#roles'});
+</script></html>

@@ -1,5 +1,19 @@
 import { describe, expect, it } from "vitest";
-import { parseActivity, parseClass, parseComponent, parseDeployment, parseEr, parseFlowchart, parseSequence, parseSlide, parseState, parseUsecase } from "../src/index";
+import { parseActivity, parseClass, parseComponent, parseDeployment, parseEr, parseFlowchart, parseGraph, parseSequence, parseSlide, parseState, parseUsecase } from "../src/index";
+
+it("preserves indented protected class members", () => {
+  const model = parseClass(`@class
+abstract Root {
+  #version: integer
+  #record(): void
+}`);
+  const members = model.nodes[0]!.attributes.members!;
+  expect(members).toContain("version");
+  expect(members).toContain("record");
+  expect(parseDeployment(`@deployment
+  #comment
+node a "A"`).nodes).toHaveLength(1);
+});
 
 describe("deployment DSL", () => {
   it("parses nodes, containers, attributes, and relations", () => {
@@ -96,6 +110,42 @@ save -> done
 
     expect(model.nodes.map((node) => node.shape)).toEqual(["rounded", "parallelogram", "diamond", "rectangle", "rounded"]);
     expect(model.connections[2]).toMatchObject({ from: "valid", to: "save", label: "Yes" });
+  });
+});
+
+describe("graph DSL", () => {
+  it("parses typeless and implicit nodes, direction, and nested groups", () => {
+    const model = parseGraph(`
+@graph direction=LR
+client "Web app"
+group backend "Backend" {
+  client -> api: HTTPS
+  api "API server" [shape=rounded tier=app]
+  api -> db
+}
+`);
+
+    expect(model.direction).toBe("right");
+    expect(model.nodes.map((node) => node.id)).toEqual(["client", "backend", "api", "db"]);
+    expect(model.nodes.find((node) => node.id === "api")).toMatchObject({
+      label: "API server",
+      shape: "rounded",
+      parentId: "backend",
+      attributes: { tier: "app" },
+    });
+    expect(model.nodes.find((node) => node.id === "db")).toMatchObject({
+      label: "db",
+      parentId: "backend",
+    });
+    expect(model.nodes.find((node) => node.id === "backend")?.shape).toBe("container");
+    expect(model.connections).toHaveLength(2);
+  });
+
+  it("defaults to a top-to-bottom graph", () => {
+    const model = parseGraph("@graph\nsource -> destination");
+
+    expect(model.direction).toBe("down");
+    expect(model.nodes.map((node) => node.id)).toEqual(["source", "destination"]);
   });
 });
 
@@ -208,7 +258,7 @@ api -> stripe
 `);
 
     expect(model.kind).toBe("component");
-    expect(model.nodes.map((node) => node.shape)).toEqual(["container", "component", "circle", "external"]);
+    expect(model.nodes.map((node) => node.shape)).toEqual(["container", "component", "uml-provided-interface", "external"]);
     expect(model.nodes.find((node) => node.id === "api")?.parentId).toBe("shop");
   });
 });

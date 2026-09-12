@@ -34,9 +34,9 @@ describe("diagram instance", () => {
     const finch = createBareFinch();
     const instance = finch.render(`
 @deployment
-node short "API"
-node english "A long service label that should wrap at word boundaries inside the node"
-node japanese "表示する場所に合わせて読みやすく折り返すための長い日本語のラベル"
+rectangle short "API"
+rectangle english "A long service label that should wrap at word boundaries inside the node"
+rectangle japanese "表示する場所に合わせて読みやすく折り返すための長い日本語のラベル"
 short -> english
 english -> japanese
 `, "#diagram");
@@ -96,6 +96,34 @@ B --> A: Response
     expect({ x: updated.x, y: updated.y }).toEqual({ x: 321, y: 123 });
     expect(updated.width).toBeGreaterThanOrEqual(api.width);
     expect(instance.geometry.nodes.find((node) => node.id === "cache")).toBeDefined();
+  });
+
+  it("retains stable-id positions when a graph becomes a flowchart", () => {
+    const finch = createBareFinch();
+    const instance = finch.render('@graph\napi "API"\napi -> db', "#diagram");
+    instance.importLayout({
+      version: 1,
+      diagram: "graph",
+      nodes: { api: { x: 321, y: 123, manual: true, pinned: true } },
+    });
+
+    instance.update('@flowchart\nprocess api "Validate request"\nprocess db "Write record"\napi -> db');
+
+    expect(instance.overlay.diagram).toBe("flowchart");
+    expect(instance.geometry.nodes.find((node) => node.id === "api")).toMatchObject({ x: 321, y: 123 });
+    expect(instance.isPinned("api")).toBe(true);
+  });
+
+  it("accepts a layout overlay from another directive when ids are stable", () => {
+    const instance = createBareFinch().render('@flowchart\nprocess api "API"', "#diagram");
+
+    expect(() => instance.importLayout({
+      version: 1,
+      diagram: "graph",
+      nodes: { api: { x: 144, y: 88, manual: true, pinned: false } },
+    })).not.toThrow();
+    expect(instance.overlay.diagram).toBe("flowchart");
+    expect(instance.geometry.nodes.find((node) => node.id === "api")).toMatchObject({ x: 144, y: 88 });
   });
 
   it("exports only active layout state and supports reset", () => {
@@ -217,7 +245,9 @@ g -> worker
 
     const data = instance.geometry.nodes.find((node) => node.id === "data")!;
     const app = instance.geometry.nodes.find((node) => node.id === "app")!;
-    expect(data.height).toBeLessThanOrEqual(320);
+    const databases = instance.geometry.nodes.filter((node) => node.shape === "database");
+    // Compact packing is a row-count constraint, independent of label padding.
+    expect(new Set(databases.map((node) => node.y)).size).toBeLessThanOrEqual(3);
     expect(data.width).toBeGreaterThan(300);
     const overlaps = app.x < data.x + data.width
       && app.x + app.width > data.x
@@ -312,6 +342,8 @@ container platform "Production Platform" {
     expect(node("platform").x + node("platform").width).toBeGreaterThanOrEqual(node("edge").x + node("edge").width + 26);
     const edgeFrame = svg.querySelector<SVGRectElement>('.finch-container[data-node-id="edge"] > rect')!;
     expect(Number(edgeFrame.getAttribute("width"))).toBe(node("edge").width);
+    expect(svg.querySelector('.finch-container-headings [data-node-id="edge"]')?.getAttribute('transform'))
+      .toBe(`translate(${node("edge").x} ${node("edge").y})`);
 
     svg.dispatchEvent(pointer("pointerup", 520, 100));
     expect(changedIds).toEqual(expect.arrayContaining(["edgebox", "edge", "platform"]));
@@ -325,6 +357,8 @@ container platform "Production Platform" {
     expect(node("edge").x).toBeLessThan(shiftedEdgeX);
     expect(node("platform").x).toBeLessThan(shiftedPlatformX);
     expect(node("edge")).toMatchObject({ x: edgeX, y: edgeY, width: edgeWidth, height: edgeHeight });
+    expect(svg.querySelector('.finch-container-headings [data-node-id="edge"]')?.getAttribute('transform'))
+      .toBe(`translate(${edgeX} ${edgeY})`);
     expect(node("platform")).toMatchObject({
       x: platformX,
       y: platformY,
@@ -468,6 +502,32 @@ reject -> done
     expect(node("accept").y).toBeLessThan(node("done").y);
     expect(centerX("begin")).toBe(centerX("prepare"));
     expect(instance.geometry.height).toBeGreaterThan(instance.geometry.width);
+  });
+
+  it("lays out graphs in either direction and fits group frames around their children", () => {
+    const finch = createBareFinch();
+    const vertical = finch.render(`
+@graph
+group services "Services" {
+  web "Web"
+  web -> api
+  api "API"
+}
+api -> db
+`, "#diagram");
+    const verticalNode = (id: string) => vertical.geometry.nodes.find((node) => node.id === id)!;
+    expect(verticalNode("web").y).toBeLessThan(verticalNode("api").y);
+    expect(verticalNode("api").y).toBeLessThan(verticalNode("db").y);
+    expect(verticalNode("services")).toMatchObject({ shape: "container" });
+    expect(verticalNode("services").x).toBeLessThan(verticalNode("web").x);
+    expect(verticalNode("services").x + verticalNode("services").width)
+      .toBeGreaterThan(verticalNode("api").x + verticalNode("api").width);
+
+    document.body.insertAdjacentHTML("beforeend", '<div id="horizontal"></div>');
+    const horizontal = finch.render('@graph direction=LR\na -> b\nb -> c', "#horizontal");
+    const horizontalNode = (id: string) => horizontal.geometry.nodes.find((node) => node.id === id)!;
+    expect(horizontalNode("a").x).toBeLessThan(horizontalNode("b").x);
+    expect(horizontalNode("b").x).toBeLessThan(horizontalNode("c").x);
   });
 
   it("keeps cyclic state transitions on multiple ranks", () => {

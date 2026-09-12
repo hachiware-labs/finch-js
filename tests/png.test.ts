@@ -101,7 +101,7 @@ describe("PNG export", () => {
       downloadedName = this.download;
     });
 
-    instance.downloadSvg("edited-diagram.svg");
+    await instance.downloadSvg("edited-diagram.svg");
     expect(downloadedName).toBe("edited-diagram.svg");
     expect(createObjectUrl).toHaveBeenCalledWith(expect.objectContaining({ type: "image/svg+xml;charset=utf-8" }));
     const svgBlob = createObjectUrl.mock.calls[0]?.[0] as Blob;

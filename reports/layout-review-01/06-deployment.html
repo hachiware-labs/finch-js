@@ -1,0 +1,21 @@
+<!doctype html><html lang="ja"><meta charset="utf-8"><title>入れ子の配置図 | Finch評価01</title><style>body{font:16px system-ui;margin:32px;color:#172b3a}a{color:#125ea5}.frame{overflow:auto;border:1px solid #dbe2e8;padding:24px;width:max-content;min-width:600px}svg{display:block}p{max-width:1000px}</style><a href="index.html">← 採点一覧</a><h1>06-deployment 入れ子の配置図</h1><p>観察対象：境界越えと共有データ接続。架空の評価用モデル／初期自動配置／既定テーマ・既定ルーティング。手動座標なし。</p><div class="frame" id="diagram"></div><script src="./finch.snapshot.js"></script><script>const diagramSource = `@deployment
+container cloud "本番環境" [layout=column] {
+ container front "入口" [layout=row] {
+  node cdn "CDN"
+  node gw "Gateway"
+ }
+ container apps "アプリケーション" [layout=row] {
+  server api "注文API"
+  server worker "非同期Worker"
+ }
+ container data "データ層" [layout=row] {
+  database db "注文DB"
+  node queue "Queue"
+ }
+}
+cdn -> gw: HTTPS
+gw -> api: 転送
+api -> db: 保存
+api -> queue: 配信
+queue -> worker: 購読
+worker -> db: 更新`;window.instance=Finch.render(diagramSource,{target:'#diagram',editor:true});instance.svg.style.width=instance.geometry.width+'px';instance.svg.style.height=instance.geometry.height+'px';instance.svg.style.maxWidth='none';</script></html>

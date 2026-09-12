@@ -26,23 +26,23 @@
 node web "Web Client" [shape=rounded channel=public]
 node mobile "Mobile Client" [shape=rounded channel=public]
 
-container platform "Production Platform" [layout=grid columns=2] {
-  device edgebox "Edge Appliance" [row=1 column=1]
-  artifact release "orders-service:v42" [row=1 column=2]
-  execution runtime "Container Runtime" [row=2 column=1]
-  container ingress "Ingress Tier" [layout=column row=2 column=2] {
+container platform "Production Platform" [layout=architecture] {
+  device edgebox "Edge Appliance"
+  artifact release "orders-service:v42"
+  execution runtime "Container Runtime"
+  container ingress "Ingress Tier" [layout=column] {
     server cdn "Global CDN"
     server waf "Web Application Firewall"
     server gateway "API Gateway"
   }
 
-  container services "Service Tier" [layout=column row=3 column=1] {
+  container services "Service Tier" [layout=column] {
     server identity "Identity Service" [owner=security]
     server orders "Order Service" [owner=commerce]
     server worker "Async Worker" [owner=platform]
   }
 
-  container data "Data Tier" [layout=grid columns=2 row=3 column=2] {
+  container data "Data Tier" [layout=row] {
     database users "User Database"
     database orderdb "Order Database"
     database cache "Redis Cache"
@@ -92,3 +92,4 @@ platform --> observe: telemetry
     </script>
   </body>
 </html>
+

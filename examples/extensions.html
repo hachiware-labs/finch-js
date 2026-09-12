@@ -447,7 +447,7 @@
         parse(source) {
           const translated = source
             .replace(/^[ \t]*@services\b/im, "@deployment")
-            .replace(/^([ \t]*)service\b/gim, "$1node");
+            .replace(/^([ \t]*)service\b/gim, "$1rectangle");
           const model = base.parse(translated);
           return {
             ...model,

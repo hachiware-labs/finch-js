@@ -5,6 +5,7 @@ import { createFinch } from "../src/index";
 
 const examples = [
   { file: "deployment.html", sourceName: "deploymentSource", kind: "deployment", minimumNodes: 15, minimumEdges: 10 },
+  { file: "graph.html", sourceName: "graphSource", kind: "graph", minimumNodes: 12, minimumEdges: 7 },
   { file: "sequence.html", sourceName: "sequenceSource", kind: "sequence", minimumNodes: 8, minimumEdges: 14 },
   { file: "flowchart.html", sourceName: "flowchartSource", kind: "flowchart", minimumNodes: 12, minimumEdges: 15 },
   { file: "state.html", sourceName: "stateSource", kind: "state", minimumNodes: 9, minimumEdges: 12 },

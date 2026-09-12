@@ -1,0 +1,26 @@
+<!doctype html><html lang="ja"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>交差と迂回の調整 — Finch.js</title>
+<style>body{font:16px/1.7 system-ui,sans-serif;background:#f3f6fb;color:#24334b;margin:0}main{max-width:1000px;margin:auto;padding:28px}section{background:white;padding:24px;border-radius:12px;margin-top:20px}.controls{display:flex;gap:20px;flex-wrap:wrap}input{width:85px}#diagram{overflow:auto}pre{white-space:pre-wrap}</style>
+<main><a href="uml-guide.html">UMLサンプルガイド</a><h1>交差と迂回を調整する</h1><p>同じ配置で、縦の接続線の判断を比較します。横の線を先に配置する比較実験です。座標はソースと別のレイアウト情報に保持しています。</p>
+<section class="controls"><label>方針 <select id="mode"><option value="balanced">balanced：交差と迂回を比較</option><option value="avoid-crossings">avoid-crossings：交差回避を優先</option></select></label><label>交差コスト <input id="crossing" type="number" min="1" max="10000" value="120"></label><label>曲がり角コスト <input id="bend" type="number" min="1" max="10000" value="48"></label><label>交差の間隔 <input id="clearance" type="number" min="1" max="10000" value="18"></label></section>
+<section><div id="diagram" aria-label="交差と迂回の比較"></div><p id="metrics"></p><details><summary>現在のソース</summary><pre id="source"></pre></details></section><p>交差コストを上げると迂回しやすく、曲がり角コストを上げると直線的な経路を選びやすくなります。<a href="../docs/reference_ja.md">判断基準と制限</a></p></main>
+<script src="../dist/finch.global.js"></script><script>
+const baseSource = `@deployment
+node left "Left"
+node right "Right"
+node top "Top"
+node bottom "Bottom"
+left -> right [fromPort=right toPort=left]
+top -> bottom [fromPort=bottom toPort=top]`;
+const overlay={version:1,diagram:'deployment',nodes:Object.fromEntries([['left',0,160],['right',440,160],['top',220,0],['bottom',220,320]].map(([id,x,y])=>[id,{x,y,manual:true,pinned:false}]))};
+let instance;
+function update(){
+ const mode=document.getElementById('mode').value,crossing=document.getElementById('crossing'),bend=document.getElementById('bend'),clearance=document.getElementById('clearance');
+ if(!crossing.reportValidity()||!bend.reportValidity()||!clearance.reportValidity())return;
+ const source=baseSource.replace('toPort=top]','toPort=top routing='+mode+' crossingCost='+crossing.value+' bendCost='+bend.value+' crossingClearance='+clearance.value+']');
+ if(instance)instance.update(source);else instance=Finch.render(source,{target:'#diagram',overlay});
+ const points=instance.geometry.edges[1].points;
+ document.getElementById('source').textContent=source;
+ document.getElementById('metrics').textContent='縦の線の経路長：'+Math.round(points.slice(1).reduce((sum,p,i)=>sum+Math.abs(p.x-points[i].x)+Math.abs(p.y-points[i].y),0))+' SVG単位';
+}
+document.querySelectorAll('input,select').forEach(el=>el.addEventListener('change',update));update();
+</script></html>

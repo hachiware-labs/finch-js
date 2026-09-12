@@ -1,0 +1,26 @@
+<!doctype html><html lang="ja"><meta charset="utf-8"><title>Sequence pages — Finch.js</title>
+<style>body{font:15px sans-serif;background:#f3f6fb;padding:32px}main{max-width:1100px;margin:auto}.pages{display:flex;gap:24px;align-items:flex-start;flex-wrap:wrap}.page{background:white;padding:12px}#original{background:white;margin-top:24px}</style>
+<main><h1>シーケンスをページ別に出力</h1><div id="pages" class="pages"></div><details><summary>元の図を編集</summary><div id="original"></div></details></main>
+<script src="../dist/finch.global.js"></script><script>
+const pagedSource = `@sequence
+title "Order processing"
+header "Production"
+footer "Internal use"
+legend "Solid: request / Dashed: response"
+autonumber
+alt Valid order
+client -> api: Submit order
+activate api
+newpage "Persistence"
+api -> store: Save order
+store --> api: Saved
+api --> client: Accepted
+deactivate api
+else Invalid order
+client -> api: Reject
+end`;
+const pagedInstance=Finch.render(pagedSource,{target:'#original'});
+for(const [index,svg] of pagedInstance.toSvgPages().entries()){
+ const section=document.createElement('section');section.className='page';section.id='page-'+index;section.innerHTML=svg;document.querySelector('#pages').append(section);
+}
+</script></html>

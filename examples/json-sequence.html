@@ -1,0 +1,28 @@
+<!doctype html><html lang="ja"><meta charset="utf-8"><title>JSON sequence — Finch.js</title>
+<style>body{font:15px sans-serif;background:#f3f6fb;padding:32px}main{background:white;padding:24px;max-width:1100px;margin:auto}</style>
+<main><h1>設定データから図を生成する</h1><p>参加者と呼び出しをJSONで定義。環境名の更新、オブジェクト配列の反復、ラベルの取得を組み合わせます。</p><div id="json-sequence" aria-label="JSONから生成した注文処理"></div></main>
+<script src="../dist/finch.global.js"></script><script>
+const jsonSequenceSource = `@sequence
+!define CONFIG {"environment":"Test","actors":[{"id":"client","label":"Client"},{"id":"api","label":"Order API"},{"id":"store","label":"PostgreSQL"}],"calls":[{"from":"client","to":"api","label":"Submit order"},{"from":"api","to":"store","label":"Save order"}]}
+!let CONFIG = json_set(CONFIG, "environment", json_encode("Production"))
+!let ENV = json_at(CONFIG, "environment")
+header {{ENV}}
+title "Order processing"
+show footbox
+!foreach ACTOR in json_get(CONFIG, "actors")
+!let ID = json_get(ACTOR, "id")
+!let LABEL = json_at(ACTOR, "label")
+participant {{ID}} {{LABEL}}
+!endfor
+autonumber
+divider "Request"
+!foreach CALL in json_get(CONFIG, "calls")
+!let FROM = json_get(CALL, "from")
+!let TO = json_get(CALL, "to")
+!let LABEL = json_get(CALL, "label")
+{{FROM}} -> {{TO}}: {{LABEL}}
+!endfor
+store --> api: Saved
+api --> client: Accepted`;
+const jsonSequenceInstance = Finch.render(jsonSequenceSource,{target:'#json-sequence',preprocess:{}});
+</script></html>

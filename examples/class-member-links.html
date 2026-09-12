@@ -1,0 +1,12 @@
+<!doctype html><html lang="ja"><meta charset="utf-8"><title>Member links — Finch.js</title><style>body{font:15px sans-serif;padding:32px;background:#f3f6fb}main{background:white;padding:24px}</style><main><h1>属性同士を関連付ける</h1><div id="members" aria-label="AccountのidとRecordのkeyの関連"></div></main><script src="../dist/finch.global.js"></script><script>
+const memberSource = `@class
+class Account {
+ +id: String
+ +save()
+}
+class Record {
+ +key: String
+}
+Account::id --> Record::key: stored as`;
+Finch.render(memberSource,{target:'#members'});
+</script></html>

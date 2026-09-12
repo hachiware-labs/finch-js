@@ -1,0 +1,20 @@
+direction: down
+submit: "申請を提出" {shape: oval}
+check: "申請内容を確認"
+valid: "必要な情報は揃っている？" {shape: diamond}
+fix: "申請内容を修正"
+amount: "10万円以上？" {shape: diamond}
+manager: "部門長が承認"
+finance: "経理が確認"
+pay: "振込を手配"
+done: "申請者へ完了を通知" {shape: oval}
+submit -> check
+check -> valid
+valid -> fix: "不備あり"
+fix -> check: "再申請"
+valid -> amount: "不備なし"
+amount -> manager: "はい"
+amount -> finance: "いいえ"
+manager -> finance: "承認"
+finance -> pay
+pay -> done

@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="ja"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>状態遷移の意味 — Finch.js</title>
+<style>body{margin:0;background:#f3f6fb;color:#24334b;font:15px Segoe UI,Meiryo,sans-serif}main{max-width:1100px;margin:auto;padding:32px}section{background:white;padding:24px;border-radius:12px;margin:24px 0}.diagram{overflow:auto}pre{white-space:pre-wrap;line-height:1.7}a{color:#246a95}</style>
+<main><a href="uml-practical.html">← 実用UML</a><p><a href="state-advanced.html">並行・履歴・サブマシン →</a></p><h1>状態遷移の意味を明示する</h1>
+<p>localは親状態を退出しない遷移、internalはその状態を退出しない内部処理です。×は状態機械の終了、二重丸は領域の完了を表します。</p>
+<section><h2>実行中の再試行・通常完了・強制終了</h2><div id="state" class="diagram" aria-label="local遷移と終了の区別"></div><p>この例の {local} はFinchの明示ラベルです。構造チェックは厳格モードで実行します。</p><pre id="source"></pre></section>
+<section><h2>構造診断</h2><p>既定モードでは不正な構造を診断結果として取得できます。</p><pre id="diagnostics"></pre></section></main>
+<script src="../dist/finch.global.js"></script><script>
+const stateSource = `@state validation=strict
+initial begin
+state running "実行中" {
+ initial start
+ state processing "処理中"
+ final completed
+ start -> processing
+ processing -> completed: finish
+}
+final done
+terminate stopped
+begin -> running
+running -> processing: retry [kind=local fromPort=left toPort=left]
+running -> done
+running -> stopped: abort
+entry running "open()"
+exit running "close()"
+internal processing "tick [ready] / count()"`;
+Finch.render(stateSource,{target:'#state'});
+document.querySelector('#source').textContent=stateSource;
+const invalidSource = `@state
+initial start
+state a
+final done
+start -> a
+start -> done
+done -> a`;
+document.querySelector('#diagnostics').textContent=Finch.parseState(invalidSource).diagnostics.map(d=>`${d.code}: ${d.message}`).join('\n');
+</script></html>
+

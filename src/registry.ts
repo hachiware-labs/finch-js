@@ -1,6 +1,16 @@
-import type { DiagramPlugin, LayoutPlugin, ShapePlugin, ThemePlugin } from "./types.js";
+import type { IconDefinition, DiagramPlugin, LayoutPlugin, ShapePlugin, ThemePlugin } from "./types.js";
 
 export class Registry {
+  readonly icons = new Map<string, IconDefinition>();
+
+  registerIcon(name: string, icon: IconDefinition): void {
+    this.icons.set(normalize(name), Array.isArray(icon) ? icon.map(part => ({ ...part, attributes: { ...part.attributes } })) : { ...icon });
+  }
+
+  icon(name: string): IconDefinition | undefined {
+    return this.icons.get(normalize(name));
+  }
+
   readonly diagrams = new Map<string, DiagramPlugin>();
   readonly shapes = new Map<string, ShapePlugin>();
   readonly layouts = new Map<string, LayoutPlugin>();

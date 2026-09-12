@@ -1,0 +1,15 @@
+<!doctype html><html lang="ja"><meta charset="utf-8"><title>Lane switching — Finch.js</title><style>body{font:15px sans-serif;background:#f3f6fb;padding:32px}main{background:white;padding:24px;max-width:1000px;margin:auto}</style><main><h1>処理の途中で担当を切り替える</h1><div id="lanes" aria-label="利用者とシステムの担当切替"></div></main><script src="../dist/finch.global.js"></script><script>
+const lanesSource = `@activity flow
+lane user "User" {
+ start begin
+ action submit "Submit"
+}
+lane system "System" {
+ action validate "Validate"
+}
+in user
+action confirm "Confirm"
+in system
+end done`;
+Finch.render(lanesSource,{target:'#lanes'});
+</script></html>

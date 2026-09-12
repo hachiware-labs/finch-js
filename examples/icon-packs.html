@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="ja"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Finch.js — アイコンと自分の画像</title>
+<style>body{margin:0;background:#edf1f6;color:#203047;font:15px 'Segoe UI',Meiryo,sans-serif}main{max-width:1120px;margin:40px auto;padding:0 24px}h1{font-size:32px}p{line-height:1.8;color:#53667e}.controls{display:flex;gap:12px;align-items:center;margin:20px 0}button,select{padding:9px;border:1px solid #b8c7d9;border-radius:6px;background:white}#diagram{background:white;border-radius:16px;overflow:auto}#diagram svg{width:100%;height:auto}pre{white-space:pre-wrap;background:#172438;color:#dfeafa;padding:24px;border-radius:12px}#status{color:#b33444}</style>
+<main><h1>いつもの図に、サービスの顔を。</h1><p>Lucide・AWS・Azure・Google Cloud・Kubernetes・Simple Icons と、自分の画像を一枚に。<br>同じソースのままテーマを切り替えられます。</p>
+<div class="controls"><label>テーマ <select id="theme"><option>default</option><option>midnight</option><option>prism</option></select></label><button id="svg">SVG保存</button><button id="png">PNG保存</button></div>
+<p id="status" role="status"></p><div id="diagram" aria-label="5つのアイコンパックと画像の表示例"></div>
+<pre>node scale "Auto Scaling" [icon=aws:application-auto-scaling]
+node repo "GitHub" [icon=simple:github]
+node me "担当者" [image="./image-avatar.svg" imageShape=circle]</pre>
+<p>パックは画像埋め込み済みです。独自の画像URLを指定する場合、SVG・PNG保存時に取得して埋め込みます。<a href="../icon-packs/NOTICE.md">アイコンの出典</a></p></main>
+<script src="../dist/finch.global.js"></script>
+<script src="../icon-packs/aws.js"></script><script src="../icon-packs/azure.js"></script><script src="../icon-packs/gcp.js"></script><script src="../icon-packs/k8s.js"></script><script src="../icon-packs/simple.js"></script>
+<script>
+const imageSource = `
+@deployment
+container samples "ICONS & IMAGES" [layout=grid columns=3] {
+ node generic "API Service" [icon=server tone=cyan row=1 column=1]
+ node aws "Auto Scaling" [icon=aws:application-auto-scaling row=1 column=2]
+ node azure "Azure VM" [icon=azure:virtual-machine row=1 column=3]
+ node gcp "Compute Engine" [icon=gcp:compute-engine row=2 column=1]
+ node pod "Kubernetes Pod" [icon=k8s:pod row=2 column=2]
+ node github "GitHub" [icon=simple:github row=2 column=3]
+ node original "元の縦横比" [image="./image-demo.svg" row=3 column=1]
+ node circle "丸型" [image="./image-avatar.svg" imageShape=circle row=3 column=2]
+ node rounded "角丸" [image="./image-avatar.svg" imageShape=rounded row=3 column=3]
+}`.trim();
+let instance;
+function draw(){instance?.destroy();instance=Finch.render(imageSource,{target:'#diagram',theme:document.querySelector('#theme').value});}
+draw();document.querySelector('#theme').onchange=draw;
+for(const format of ['svg','png'])document.querySelector('#'+format).onclick=async()=>{try{document.querySelector('#status').textContent='';await (format==='svg'?instance.downloadSvg('icon-packs.svg'):instance.downloadPng('icon-packs.png'));}catch(error){document.querySelector('#status').textContent='画像の保存に失敗しました: '+error.message;}};
+</script></html>

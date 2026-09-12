@@ -1,11 +1,11 @@
 ---
 name: finch
-description: Create or update HTML pages that render Finch.js diagrams from supplied requirements. Use for deployment, sequence, flowchart, state, ER, component, slide, class, use-case, and activity diagrams; keep the Finch.js DSL as a JavaScript string inside HTML unless the user explicitly requests a standalone .finch file.
+description: Create or update HTML pages that render Finch.js diagrams from supplied requirements. Use for graph, deployment, sequence, flowchart, state, ER, component, slide, class, use-case, and activity diagrams; keep the Finch.js DSL as a JavaScript string inside HTML unless the user explicitly requests a standalone .finch file.
 ---
 
 # Finch.js HTML Diagrams
 
-Create usable HTML, not a standalone diagram source. Treat `$finch アクティビティ図を描いて` and similar requests as instructions to add the requested diagram to an HTML page.
+Create usable HTML, not a standalone diagram source. Treat requests such as `Use the Finch skill to draw an activity diagram` as instructions to add the requested diagram to an HTML page. In agents with explicit named-skill invocation, the request may instead begin with `$finch` or the agent's equivalent syntax.
 
 ## Workflow
 
@@ -41,6 +41,13 @@ receive -> done
 
 ## Layout intent
 
+- Start with the question the diagram should answer. Form meaningful groups, then consider the internal orders of adjacent groups together using a few shared operation/relationship perspectives. Do not enumerate all permutations or silently change the underlying architecture to make a prettier picture.
+- Render ordinary automatic layout first. For a remaining hard spot, compare a few perspective-based arrangements together with stagger, endpoint sides, and routing space. Respect explicit order, direction, ports, and saved positions. Semantic layout hints belong in DSL; exact coordinates belong in overlays.
+- Treat whitespace as room for connections, labels, and boundaries. Penalize avoidable ambiguity or backtracking rather than area or crossing count alone. A clear crossing can be preferable to a large detour.
+- Separate inherent model complexity from avoidable rendering defects. Stop once relationships are sufficiently traceable; a dense design can produce an acceptable diagram without becoming visually simple. Do not continue optimizing a user-accepted example just to remove every crossing.
+- For README/tutorial images, use the same source as the editable linked HTML, regenerate localized assets together, and inspect at the documentation display size. State source layout hints and current-build versus pinned-release differences. Do not imply that experimental hard-case search applies to every diagram type.
+
+
 - Treat reading direction as part of the diagram's meaning. Flowcharts normally progress from top to bottom, with only same-rank branches spreading horizontally. In state diagrams, keep fork/join regions vertical: fork above, parallel states across one or more middle rows, join below, then the joined successor. Connections touching a state fork or join use top/bottom ports automatically; when an endpoint needs an explicit side, use `fromPort` or `toPort` with `top`, `right`, `bottom`, or `left` as documented in the syntax reference.
 - Avoid unnecessarily wide output. During visual inspection, consider the SVG's intrinsic width and height as well as its responsive viewport size. Prefer a compact or portrait-oriented result when it preserves hierarchy and readable edge routing.
 - For deployment diagrams, use source-level container layout hints when the automatic hierarchy becomes too wide or obscures subsystem structure. Prefer `layout`, `columns`, `order`, `row`, `column`, and `place` over fixed coordinates; read the Deployment section of [references/diagram-syntax.md](references/diagram-syntax.md) for their semantics.
@@ -48,7 +55,7 @@ receive -> done
 
 ## Edit mode and persistence
 
-- `Finch.render()` adds the standard editor automatically. It embeds a compact Finch icon inside the lower-left of the generated SVG; the icon toggles an HTML menu directly below the diagram, with the source-editing pane below its controls. The active icon reverses its foreground/background colors. Pass `editor: { storageKey: "..." }` to configure persistence, or `editor: false` only when the page explicitly needs a bare diagram. SVG and PNG exports omit this UI-only icon.
+- `Finch.render()` adds the standard editor automatically. It embeds a compact Finch icon inside the lower-left of the generated SVG; the icon toggles an HTML menu directly below the diagram, with the source-editing pane below its controls. The active icon reverses its foreground/background colors. Save defaults to an HTML file picker (download fallback), reusing the handle within the page session. Provide top-level `onSave` and `onChange` for host integration. Explicit `editor.storage` remains supported; `storageKey` applies only to that adapter. Use `editor: false` when the page explicitly needs a bare diagram. SVG and PNG exports omit this UI-only icon.
 - The built-in menu includes zoom, Edit ON/OFF, Undo, Pin/Unpin, automatic layout, reset, Fit, explicit Save, SVG export, and PNG export. A diagram using the standard editor is view-only while its menu is closed; opening the menu restores the editing state from that editing session. In view mode, zoom in, zoom out, and reset remain available; Fit and layout-editing controls are disabled.
 - Use `instance.setEditable()` and reflect `instance.editable` with `aria-pressed`. Listen for `finch:editchange` when the toolbar must stay synchronized.
 - Save and restore edit mode through the layout overlay. `exportLayout()` includes `editable`, and `importLayout()` restores it; an older overlay without the field means edit mode on.

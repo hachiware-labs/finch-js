@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Finch — 図を編集して保存</title>
+  <style>
+    *{box-sizing:border-box}body{margin:0;background:#f5f7f6;color:#192c25;font:15px/1.65 system-ui,sans-serif}main{max-width:1320px;margin:0 auto;padding:42px 32px}header{margin-bottom:28px}.eyebrow{color:#347b55;font-weight:750;letter-spacing:.12em;font-size:12px}h1{font-size:32px;letter-spacing:-.04em;margin:10px 0}p{color:#617169;margin:8px 0}.grid{display:grid;grid-template-columns:1fr 1fr;gap:24px}article{min-width:0;background:white;border:1px solid #d9e3dc;border-radius:18px;overflow:hidden}.intro{padding:24px 24px 18px}h2{font-size:20px;margin:8px 0}.tag{display:inline-block;padding:3px 10px;background:#eaf4ed;color:#286440;border-radius:20px;font-size:12px;font-weight:700}.diagram{min-height:230px;overflow:auto;margin:0 16px;border:1px solid #e3e9e4;border-radius:12px}article>.finch-editor{margin:0 16px}.note{padding:16px 24px 20px;font-size:13px}.output{background:#f2f5f3;border-radius:10px;margin-top:12px;padding:12px 14px;color:#365344;white-space:pre-wrap;overflow-wrap:anywhere;font:12px/1.6 ui-monospace,monospace;max-height:150px;overflow:auto}footer{color:#78877f;font-size:12px;margin-top:24px}@media(max-width:850px){.grid{grid-template-columns:1fr}main{padding:24px 16px}} 
+  </style>
+</head>
+<body>
+<main>
+  <header><div class="eyebrow">FINCH / SAVE & CONTINUE</div><h1>図を整えて、そのまま保存。</h1><p>ノードをドラッグ、またはSourceを書き換えて、Saveを押してください。</p></header>
+  <div class="grid">
+    <article>
+      <div class="intro"><span class="tag">ブラウザで使う</span><h2>ページをHTMLに保存</h2><p>初回だけ保存先を選択。このページを開いている間は、同じファイルに上書きします。</p></div>
+      <div id="browser-diagram" class="diagram" aria-label="HTML保存の流れ"></div>
+      <div class="note">保存したHTMLを開き直すと、図の内容と配置が戻ります。<div id="browser-capability" class="output"></div></div>
+    </article>
+    <article>
+      <div class="intro"><span class="tag">エディタと連携する</span><h2>保存をコールバックへ渡す</h2><p>変更をホストへ通知し、SaveでMarkdownを渡します。このサンプルでは下に受信内容を表示します。</p></div>
+      <div id="callback-diagram" class="diagram" aria-label="コールバック連携の流れ"></div>
+      <div class="note"><span id="callback-status">編集すると、ここに変更通知が届きます。</span><pre id="callback-output" class="output">Saveを押すと、受信したMarkdownを表示します。</pre></div>
+    </article>
+  </div>
+  <footer>HTML内の図の状態を保存します。外部スクリプトや画像は、元の参照先から読み込みます。</footer>
+</main>
+<script src="../dist/finch.global.js"></script>
+<script>
+  const browserSource = `@graph direction=LR
+edit "図を編集" [shape=rounded]
+save "Save" [shape=rounded]
+html "HTMLファイル" [shape=rounded]
+edit -> save
+save -> html`;
+  const callbackSource = `@graph direction=LR
+finch "Finch" [shape=rounded]
+host "エディタ" [shape=rounded]
+document "Markdown" [shape=rounded]
+finch -> host
+host -> document`;
+  Finch.render(browserSource, { target: '#browser-diagram', editor: { initiallyOpen: true, htmlFilename: 'finch-save.html' } });
+  let changes = 0;
+  Finch.render(callbackSource, {
+    target: '#callback-diagram', editor: { initiallyOpen: true },
+    onChange: ({source}) => { document.querySelector('#callback-status').textContent = `変更通知 ${++changes}回 · ${source.split('\n').length}行のソースを受信`; },
+    onSave: async ({markdown}) => {
+      document.querySelector('#callback-output').textContent = markdown;
+      document.querySelector('#callback-status').textContent = 'onSaveで受信しました。';
+    },
+  });
+  document.querySelector('#browser-capability').textContent = typeof window.showSaveFilePicker === 'function'
+    ? 'このブラウザでは保存先を選択できます。'
+    : 'このブラウザではHTMLをダウンロードします。';
+</script>
+</body>
+</html>

@@ -1,0 +1,192 @@
+[
+  {
+    "id": "01-linear",
+    "title": "直列処理",
+    "focus": "主経路の整列と等間隔",
+    "source": "@flowchart\nstart s \"開始\"\nprocess a \"注文受付\"\nprocess b \"在庫引当\"\nprocess c \"決済確定\"\nend e \"完了\"\ns -> a\na -> b\nb -> c\nc -> e",
+    "width": 476,
+    "height": 462,
+    "nodes": 5,
+    "edges": 4,
+    "scores": [
+      5,
+      5,
+      5,
+      4
+    ],
+    "total": 19,
+    "status": "良好",
+    "reason": "全5ノードが同じ中心軸に並び、4本の接続が直線。文字の欠けなし。空間−1：図自身の幅476pxに対しノード幅は約104pxで、左右の余白が大きい。"
+  },
+  {
+    "id": "02-branch",
+    "title": "分岐・合流",
+    "focus": "正常経路と例外経路の区別",
+    "source": "@flowchart\nstart s \"開始\"\ndecision c \"在庫あり?\"\nprocess a \"出荷準備\"\nprocess b \"入荷待ち\"\nprocess d \"発送通知\"\nend e \"完了\"\ns -> c\nc -> a: Yes\nc -> b: No\nb -> a: 入荷\na -> d\nd -> e",
+    "width": 476,
+    "height": 680,
+    "nodes": 6,
+    "edges": 6,
+    "scores": [
+      5,
+      5,
+      5,
+      3
+    ],
+    "total": 18,
+    "status": "良好",
+    "reason": "開始→在庫判断→出荷→通知→完了が同一軸。No側の待機と合流も識別でき、Yes/Noは分岐付近にある。空間−2：待機を中間段に置くためYesの直通線が長く、6ノードで高さ680pxになる。"
+  },
+  {
+    "id": "03-retry",
+    "title": "再試行ループ",
+    "focus": "戻り線と順方向の分離",
+    "source": "@flowchart\nstart s \"受付\"\nprocess a \"申請内容を検証\"\ndecision c \"承認可能?\"\nprocess r \"申請者が修正\"\nprocess p \"承認を登録\"\nend e \"完了\"\ns -> a\na -> c\nc -> p: Yes\nc -> r: No\nr -> a: 再申請\np -> e",
+    "width": 476,
+    "height": 590,
+    "nodes": 6,
+    "edges": 6,
+    "scores": [
+      5,
+      3,
+      5,
+      4
+    ],
+    "total": 17,
+    "status": "調整候補",
+    "reason": "承認の主経路は一直線で、修正を左に分離。経路−2：Noの下降線と再申請の戻り線が修正ノード右上で交差し、近接した折り返しを追う必要がある。空間−1：修正側の線が細い通路に密集する一方、外周に余白が残る。"
+  },
+  {
+    "id": "04-parallel",
+    "title": "並列状態",
+    "focus": "fork・joinの上下配置",
+    "source": "@state\ninitial s\nfork f\nstate a \"在庫確保\"\nstate b \"決済認証\"\nstate c \"配送先確認\"\njoin j\nstate d \"注文確定\"\nfinal e\ns -> f\nf -> a\nf -> b\nf -> c\na -> j\nb -> j\nc -> j\nj -> d\nd -> e",
+    "width": 496,
+    "height": 492,
+    "nodes": 8,
+    "edges": 9,
+    "scores": [
+      5,
+      5,
+      5,
+      5
+    ],
+    "total": 20,
+    "status": "良好",
+    "reason": "fork→3状態→join→確定が上下に並び、3状態の高さと間隔も揃う。joinへの矢印は離れて到着し、並列区間が一目で分かる。fork後の共有線は並列分岐の意味と整合し減点しない。長い経路ラベルの耐性はこの例では未評価。"
+  },
+  {
+    "id": "05-dense",
+    "title": "密な依存関係",
+    "focus": "多対多接続の追跡性",
+    "source": "@graph direction=LR\na \"注文API\"\nb \"管理API\"\nc \"集計API\"\nx \"注文DB\"\ny \"顧客DB\"\nz \"監査DB\"\na -> x: 更新\na -> y: 参照\na -> z: 記録\nb -> x: 参照\nb -> y: 更新\nb -> z: 記録\nc -> x: 集計\nc -> y: 集計\nc -> z: 記録",
+    "width": 360,
+    "height": 337.6,
+    "nodes": 6,
+    "edges": 9,
+    "scores": [
+      4,
+      1,
+      2,
+      3
+    ],
+    "total": 10,
+    "status": "要改善",
+    "reason": "API列とDB列は明確。配置−1：中央の接続量に対して列間が狭い。経路−4：中央で多数の縦線・横線・ジャンプが密集し、個別の接続先を連続して追いにくい。ラベル−3：参照・更新・記録・集計が近接し、どの線の文字か判別しにくい。空間−2：中央を圧縮したまま右・下に迂回し、小面積でも読みやすさに結び付いていない。"
+  },
+  {
+    "id": "06-deployment",
+    "title": "入れ子の配置図",
+    "focus": "境界越えと共有データ接続",
+    "source": "@deployment\ncontainer cloud \"本番環境\" [layout=column] {\n container front \"入口\" [layout=row] {\n  node cdn \"CDN\"\n  node gw \"Gateway\"\n }\n container apps \"アプリケーション\" [layout=row] {\n  server api \"注文API\"\n  server worker \"非同期Worker\"\n }\n container data \"データ層\" [layout=row] {\n  database db \"注文DB\"\n  node queue \"Queue\"\n }\n}\ncdn -> gw: HTTPS\ngw -> api: 転送\napi -> db: 保存\napi -> queue: 配信\nqueue -> worker: 購読\nworker -> db: 更新",
+    "width": 472,
+    "height": 622,
+    "nodes": 10,
+    "edges": 6,
+    "scores": [
+      4,
+      2,
+      4,
+      4
+    ],
+    "total": 14,
+    "status": "調整候補",
+    "reason": "入口・アプリケーション・データ層の階層は明確。配置−1：注文APIの下がQueue、Workerの下がDBとなり、保存と購読が回り込む。経路−3：Gatewayからの転送、APIの保存、Queueからの購読が中央と外周を使い、特に購読はデータ層の下から右端を大回りする。ラベル−1：転送・配信・保存を近接する縦線と対応付ける必要がある。空間−1：枠内に余白がある一方で中央通路が狭い。"
+  },
+  {
+    "id": "07-component",
+    "title": "共通部品への依存",
+    "focus": "枠と集中する接続の整理",
+    "source": "@component\nsystem shop \"注文システム\" {\n component ui \"注文画面\"\n component api \"注文API\"\n component auth \"認証\"\n component audit \"監査\"\n database db \"注文DB\"\n}\nexternal pay \"決済サービス\"\nui -> api: 注文\nui -> auth: ログイン\napi -> auth: 検証\napi -> audit: 記録\napi -> db: 保存\napi -> pay: 決済\npay -> audit: 結果通知",
+    "width": 820,
+    "height": 407,
+    "nodes": 7,
+    "edges": 7,
+    "scores": [
+      5,
+      3,
+      5,
+      4
+    ],
+    "total": 17,
+    "status": "調整候補",
+    "reason": "画面→API→内部部品の左から右への依存と、外部決済の境界が明確。経路−2：API右の縦通路を認証・監査・DB・決済への線が共有し、上部でログイン線と交差するため分岐元を追い直す必要がある。ラベルは読める。空間−1：外部決済への上方迂回で横幅820pxになり、外部側下部の空白が大きい。"
+  },
+  {
+    "id": "08-er",
+    "title": "注文データモデル",
+    "focus": "多重度・関係名と表の離隔",
+    "source": "@er\nentity customers \"顧客\" {\n id UUID pk\n name string\n}\nentity orders \"注文\" {\n id UUID pk\n customer_id UUID fk\n}\nentity items \"注文明細\" {\n id UUID pk\n order_id UUID fk\n product_id UUID fk\n}\nentity products \"商品\" {\n id UUID pk\n name string\n}\nentity payments \"支払い\" {\n id UUID pk\n order_id UUID fk\n}\ncustomers 1 -> many orders: 発注\norders 1 -> many items: 明細\nproducts 1 -> many items: 対象\norders 1 -> many payments: 決済",
+    "width": 770,
+    "height": 309.625,
+    "nodes": 5,
+    "edges": 4,
+    "scores": [
+      5,
+      4,
+      5,
+      5
+    ],
+    "total": 19,
+    "status": "良好",
+    "reason": "顧客→注文→支払い／明細の関係が左から右へ流れ、商品も明細に直接接続する。関係名と1/Nを区別して読める。経路−1：商品→明細が途中でわずかに段差を作る。両者の接続高さを揃えれば、より単純な線にできそう。"
+  },
+  {
+    "id": "09-class",
+    "title": "継承と関連",
+    "focus": "異なる線種と継承階層",
+    "source": "@class\ninterface Repository {\n +save(): void\n}\nclass OrderRepository {\n +save(): void\n}\nclass CustomerRepository {\n +save(): void\n}\nclass Order {\n -id: UUID\n +submit(): void\n}\nclass LineItem {\n -quantity: int\n}\nOrderRepository ..|> Repository\nCustomerRepository ..|> Repository\nOrderRepository --> Order: 保存\nOrder \"1\" *-- \"1..N\" LineItem: 明細",
+    "width": 596,
+    "height": 703,
+    "nodes": 5,
+    "edges": 4,
+    "scores": [
+      4,
+      5,
+      5,
+      4
+    ],
+    "total": 18,
+    "status": "良好",
+    "reason": "Repositoryを上に置き、実装2クラスを同じ段に配置。実現の破線・関連の矢印・合成の菱形、多重度を識別できる。配置−1：OrderがOrderRepositoryの真下ではなく全体中央に置かれ、保存の線に横移動が入る。空間−1：CustomerRepositoryの下に大きい空白が残る。"
+  },
+  {
+    "id": "10-long-label",
+    "title": "長文の判断・経路名",
+    "focus": "ラベルの折り返しと経路識別",
+    "source": "@flowchart\nstart s \"審査開始\"\nprocess a \"法人顧客の申請内容と添付書類を照合する\"\ndecision c \"本人確認と利用条件の審査をすべて通過したか?\"\nprocess b \"不足している証明書類の追加提出を依頼する\"\nprocess d \"利用開始の案内と初回設定の手順を通知する\"\nend e \"審査完了\"\ns -> a\na -> c\nc -> d: すべての審査項目を通過\nc -> b: 証明書類に不足がある\nb -> a: 追加書類を受領して再審査\nd -> e",
+    "width": 525,
+    "height": 666,
+    "nodes": 6,
+    "edges": 6,
+    "scores": [
+      5,
+      3,
+      4,
+      4
+    ],
+    "total": 16,
+    "status": "調整候補",
+    "reason": "長い処理名は枠内で折り返され、正常経路と書類追加の枝も分離している。経路−2：不足の枝と再審査の戻り線が左側で交差し、狭い折り返しになる。ラベル−1：戻り線のラベルが長い縦線の中央にあり、矢印から離れているため方向と対応を追い直す。空間−1：左側の長い経路ラベル用の幅と中央判断の幅が重なり、通路の余裕が少ない。"
+  }
+]

@@ -61,7 +61,7 @@ function embeddedSources(html) {
 }
 
 const runtimePath = await findRuntime(process.cwd());
-const { default: Finch } = await import(pathToFileURL(runtimePath).href);
+const { default: Finch, preprocess } = await import(pathToFileURL(runtimePath).href);
 
 let failed = false;
 for (const input of inputs) {
@@ -73,7 +73,7 @@ for (const input of inputs) {
 
     for (const entry of sources) {
       try {
-        Finch.parse(entry.source);
+        Finch.parse(/^\s*!(?:define|let|if|procedure|include(?:_once)?|foreach|while|assert|function)\b/m.test(entry.source) ? preprocess(entry.source) : entry.source);
       } catch (error) {
         throw new Error(`${entry.name}: ${error instanceof Error ? error.message : String(error)}`);
       }

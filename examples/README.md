@@ -6,11 +6,16 @@ Every rendered diagram uses the standard Finch editor: the compact icon in the S
 
 The looping [`readme-demo.html`](./readme-demo.html) page is the source for the README animation. Add `?frame=0` through `?frame=4` to hold a specific stage for screenshots or visual review.
 
+[`label-wrapping.html`](./label-wrapping.html) demonstrates explicit line breaks, automatic Japanese and English wrapping, shape containment, multiline messages, and complete slide text.
+
+[UML example guide](./uml-guide.html) — basic and advanced examples grouped by diagram type, with a suggested review order.
+
 ## Software (UML / ER)
 
 | File | Concepts |
 | --- | --- |
 | `deployment.html` | Nested containers, stable IDs, Shape overrides, container layout hints, subsystem telemetry |
+| `graph.html` | Typeless and implicit nodes, grouped boundaries, shape overrides, left-to-right layout |
 | `sequence.html` | Explicit participants, nested frames, loop, opt, self message, call/return activations |
 | `flowchart.html` | Vertical reading flow, multiple decisions, labeled branches, exceptional dashed path, retry cycles |
 | `state.html` | Cyclic transitions, cancellation, semantic junction, vertical fork/join path |
@@ -19,6 +24,16 @@ The looping [`readme-demo.html`](./readme-demo.html) page is the source for the 
 | `class.html` | UML classifiers, members, visibility, relationships, multiplicities |
 | `usecase.html` | Actors, system boundary, include, extend, generalization |
 | `activity.html` | Actions, guards, fork/join bars, decisions, merge points, object nodes |
+| [timing.html](./timing.html) | Signals, clocks, time anchors, uncertain ranges and hidden intervals. |
+| [class-views.html](./class-views.html) | Visibility filters and notes attached to attribute or operation rows. |
+| [class-namespaces.html](./class-namespaces.html) | Local names, qualified references and isolated classifiers. |
+| [template-binding.html](./template-binding.html) | Formal-to-actual template argument substitutions. |
+| [sequence-external.html](./sequence-external.html) | Boundary messages, found sources and lost destinations. |
+| [sequence-roles.html](./sequence-roles.html) | Boundary, control, entity, database, collections and queue symbols. |
+| [activity-split.html](./activity-split.html) | Split processing with terminated paths excluded from the merge. |
+| [objects-templates.html](./objects-templates.html) | Instance slots and generic parameter compartments. |
+| [uml-complete.html](./uml-complete.html) | State-machine and sequence lifetime examples. |
+| [state-advanced.html](./state-advanced.html) | History and composite-state boundary connection points. |
 
 ## Slides
 
@@ -38,6 +53,7 @@ The standalone pages are:
 
 - `readme-demo.html`
 - `deployment.html`
+- `graph.html`
 - `sequence.html`
 - `flowchart.html`
 - `state.html`

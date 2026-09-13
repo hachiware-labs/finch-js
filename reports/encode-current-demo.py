@@ -1,7 +1,7 @@
 import json
 from pathlib import Path
 from PIL import Image
-for lang in ('en',):
+for lang in ('en', 'ja'):
     root = Path(f'reports/doc-media-audit/editing-{lang}')
     manifest = json.loads((root/'frames.json').read_text())
     frames = [Image.open(root/f['file']).convert('RGB') for f in manifest]

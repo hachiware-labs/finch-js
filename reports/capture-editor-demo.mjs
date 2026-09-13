@@ -17,7 +17,7 @@ await new Promise(r => server.listen(0, '127.0.0.1', r));
 const base = `http://127.0.0.1:${server.address().port}`;
 const browser = await chromium.launch({ channel: 'msedge', headless: true });
 try {
-  for (const lang of ['en']) {
+  for (const lang of ['en', 'ja']) {
     const dir = `reports/doc-media-audit/editing-${lang}`;
     await mkdir(dir, { recursive: true });
     const page = await browser.newPage({ viewport: { width: 900, height: 1000 }, deviceScaleFactor: 1 });
@@ -44,20 +44,20 @@ try {
     await move(box.x + box.width/2, box.y + box.height/2); await shot(1300);
     await trigger.click(); await shot(1100);
     assert(await page.locator('[data-source]').isVisible());
-    await caption('2. Add Redis and connect it to the API server');
+    await caption(lang === 'ja' ? '2. RedisとAPIサーバーへの接続を追加する' : '2. Add Redis and connect it to the API server');
     const source = page.locator('[data-source]');
     const sb = await source.boundingBox(); await move(sb.x+170,sb.y+60);
     await source.focus();
     await source.evaluate(el => {const start = el.value.indexOf('}'); el.setSelectionRange(start,start);});
     await shot(900);
-    await page.keyboard.insertText('  database cache "Redis cache" [icon=database tone=amber]\n');
+    await page.keyboard.insertText(lang === 'ja' ? '  database cache "Redisキャッシュ" [icon=database tone=amber]\n' : '  database cache "Redis cache" [icon=database tone=amber]\n');
     await page.waitForTimeout(500); await shot(1400);
     assert(await page.locator('[data-node-id="cache"]').count());
     await source.press('Control+End');
-    await page.keyboard.insertText('\napi -> cache: Cache');
+    await page.keyboard.insertText(lang === 'ja' ? '\napi -> cache: キャッシュ' : '\napi -> cache: Cache');
     await page.waitForTimeout(500); await shot(1700);
-    assert((await page.locator('#diagram > svg').textContent()).includes('Cache'));
-    await caption('3. Drag nodes to arrange the deployment');
+    assert((await page.locator('#diagram > svg').textContent()).includes(lang === 'ja' ? 'キャッシュ' : 'Cache'));
+    await caption(lang === 'ja' ? '3. ノードをドラッグして配置を整える' : '3. Drag nodes to arrange the deployment');
     const cache = await page.locator('[data-node-id="cache"]').first().boundingBox();
     const cx = cache.x+cache.width/2, cy = cache.y+cache.height/2;
     await move(cx,cy); await shot(600); await page.mouse.down();
@@ -70,7 +70,7 @@ try {
     for (let i=1;i<=10;i++) { await move(ax-30*i/10,ay); await shot(80); }
     await page.mouse.up(); await shot(1100);
     assert(await page.evaluate(() => JSON.parse(diagram.exportLayout()).nodes.api.manual));
-    await caption('Add, connect, arrange. Save as editable HTML.');
+    await caption(lang === 'ja' ? '追加・接続・配置。編集可能なHTMLとして保存。' : 'Add, connect, arrange. Save as editable HTML.');
     const save = await page.locator('[data-action="save"]').boundingBox();
     await move(save.x+save.width/2,save.y+save.height/2);await shot(2200);
     assert.deepEqual(errors,[]);

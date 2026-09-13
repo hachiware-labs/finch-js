@@ -44,11 +44,11 @@ IDと表示名は別です。`api` は変えず、`"API server"` だけを書き
 
 図の左下にあるピンクの **Finchボタン** をクリックすると、エディターが開きます。**Source** で要素と接続を追加し、ノードをドラッグ＆ドロップして配置を整えます。
 
-[![Finchを開き、配備図にRedisと接続を追加してからノードを移動する](./docs/assets/finch-editing-demo.gif)](./examples/readme-demo.html)
+[![Finchを開き、配備図にRedisと接続を追加してからノードを移動する](./docs/assets/finch-editing-demo-ja.gif)](./examples/readme-demo.html?lang=ja)
 
 ソースをもう一度書き換えても、移動したノードは手で決めた位置を保ちます。ノードのIDはそのままにしてください。
 
-デモではRedisキャッシュを追加し、APIサーバーから接続をつないで、ノードを移動しています。[編集できる配備図の作例](./examples/readme-demo.html)で試せます。**Save** を押すと、ソースと配置をまとめて編集可能なHTMLに保存できます。一通りの操作は[15分チュートリアル](./docs/tutorial_ja.md)で確認できます。
+デモではRedisキャッシュを追加し、APIサーバーから接続をつないで、ノードを移動しています。[編集できる配備図の作例](./examples/readme-demo.html?lang=ja)で試せます。**Save** を押すと、ソースと配置をまとめて編集可能なHTMLに保存できます。一通りの操作は[15分チュートリアル](./docs/tutorial_ja.md)で確認できます。
 
 [チュートリアル](./docs/tutorial_ja.md) · [作例を見る](./examples/README.md) · [npm パッケージ](https://www.npmjs.com/package/@hachiware-labs/finch-js)
 

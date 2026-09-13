@@ -34,9 +34,29 @@ container cloud "Production" [layout=row tone=cyan] {
 browser -> api
 api -> db: SQL
   `.trim();
-  const diagram = Finch.render(deploymentSource, { target: '#diagram' });
+  const japanese = new URLSearchParams(location.search).get('lang') === 'ja';
+  const localizedSource = japanese ? deploymentSource.replace('Web app', 'Webアプリ').replace('Production', '本番環境').replace('API server', 'APIサーバー') : deploymentSource;
+  const diagram = Finch.render(localizedSource, { target: '#diagram' });
+  if (japanese) {
+    document.documentElement.lang = 'ja';
+    document.querySelector('#instruction').textContent = '1. ピンクのFinchボタンをクリックして編集を開く';
+    document.querySelector('#hint').textContent = 'ソースでサービスと接続を追加し、ノードをドラッグして配置を整えます。';
+    document.querySelector('#diagram').setAttribute('aria-label', 'アプリケーションの配備図');
+    const labels = { 'zoom-out': '縮小', 'zoom-in': '拡大', 'edit': '編集 ON', 'undo': '元に戻す', 'pin': '固定 / 解除', 'layout': '自動配置', 'reset': '配置をリセット', 'fit': '全体表示', 'width': '幅に合わせる', 'save': '保存' };
+    const localizeEditor = () => {
+      for (const [action, label] of Object.entries(labels)) document.querySelector('[data-action="' + action + '"]').textContent = action === 'edit' ? (diagram.editable ? '編集 ON' : '編集 OFF') : label;
+      document.querySelector('.finch-editor__header strong').textContent = 'Finchエディター';
+      document.querySelector('.finch-editor__source > span').textContent = 'ソース';
+      const status = document.querySelector('.finch-editor__status');
+      status.textContent = status.classList.contains('is-dirty') ? '未保存' : '保存済み';
+    };
+    document.querySelector('#diagram').addEventListener('finch:layoutchange', () => queueMicrotask(localizeEditor));
+    document.querySelector('#diagram').addEventListener('finch:editchange', () => queueMicrotask(localizeEditor));
+    document.querySelector('[data-source]').addEventListener('input', () => setTimeout(localizeEditor, 400));
+    localizeEditor();
+  }
   diagram.setZoom(0.85);
-  document.querySelector('[data-action="save-as"]').textContent = 'Save as';
-  document.querySelector('[data-action="freeze"]').textContent = 'Freeze';
+  document.querySelector('[data-action="save-as"]').textContent = japanese ? '名前を付けて保存' : 'Save as';
+  document.querySelector('[data-action="freeze"]').textContent = japanese ? 'フリーズ' : 'Freeze';
 </script>
 </html>

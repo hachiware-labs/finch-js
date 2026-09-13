@@ -8,9 +8,9 @@ All 16 English/Japanese style PNGs were rendered from the 0.7.0 repository build
 
 ## Editing demo update — 2026-09-13
 
-The editing demonstration now uses the 0.7.0 repository build and the actual built-in editor. Both READMEs use one English deployment GIF with 20 captured frames: open Finch, add Redis and its connection in Source, then move the cache and API server into place before pointing to Save. The capture checks that the Redis node and connection appear and both dragged nodes acquire manual positions. Save is indicated, not clicked in the GIF.
+The editing demonstration now uses the 0.7.0 repository build and the actual built-in editor. The English and Japanese READMEs use localized deployment GIFs with the same 20 captured frames and action sequence: open Finch, add Redis and its connection in Source, then move the cache and API server into place before pointing to Save. The capture checks that the Redis node and connection appear and both dragged nodes acquire manual positions. Save is indicated, not clicked in the GIF.
 
-Source: [editable demo](../examples/readme-demo.html) (English). Regenerate with `npm run build`, `node reports/capture-current-demo.mjs`, then `python reports/encode-current-demo.py`. The capture uses a temporary loopback HTTP server and Edge through Playwright; `PLAYWRIGHT_MODULE` can override the local Playwright module path. Python requires Pillow.
+Source: [editable demo](../examples/readme-demo.html) (`?lang=ja` selects Japanese). Regenerate with `npm run build`, `node reports/capture-current-demo.mjs`, then `python reports/encode-current-demo.py`. The capture uses a temporary loopback HTTP server and Edge through Playwright; `PLAYWRIGHT_MODULE` can override the local Playwright module path. Python requires Pillow.
 
 README and tutorial snippets target CDN version 0.7.0. Publication-status notices were removed from the reader-facing onboarding text in preparation for release. Other PNG assets were retained from the generation recorded below.
 

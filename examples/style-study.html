@@ -75,7 +75,7 @@
   <div class="masthead"><a href="./index.html">FINCH / DRAWING STUDIES</a><span>02 — SHADOW</span></div>
   <h1>影が、図の印象をどう変えるか。</h1>
   <p><a href="./component-study.html">形状・余白をコンポーネント別に確認 →</a></p>
-  <p class="intro">Default、Business、Precision、Editorialを同じ内容で比較します。各テーマのスイッチは独立しているため、影だけを加えたり外したりして輪郭・余白・配色との相性を確認できます。</p>
+  <p class="intro">Default・Prism・Midnightと、カスタム作例のBusiness・Precision・Editorialを同じ内容で比較します。各テーマのスイッチは独立しているため、影だけを加えたり外したりして輪郭・余白・配色との相性を確認できます。</p>
 
   <div class="toolbar" aria-label="比較条件">
     <div class="control-set">
@@ -212,7 +212,26 @@ review -> complete
 
   const diagrams = { graph: graphSource, sequence: sequenceSource, flowchart: flowchartSource };
   const instances = {};
-  const shadowEnabled = { default: true, business: false, precision: false, editorial: false };
+  for (const name of ['prism', 'midnight']) {
+    const title = name[0].toUpperCase() + name.slice(1);
+    const template = document.querySelector('[data-theme-card="default"]');
+    const card = template.cloneNode(true);
+    card.dataset.themeCard = name;
+    card.querySelector('h2').textContent = title;
+    card.querySelector('.theme-index').textContent = 'BUILT-IN / ' + title.toUpperCase();
+    card.querySelector('[data-shadow-toggle]').dataset.shadowToggle = name;
+    card.querySelector('.diagram').id = 'diagram-' + name;
+    card.querySelector('.diagram').setAttribute('aria-label', title + ' theme comparison');
+    card.querySelector('.description').firstChild.textContent = title + ' — built-in dark theme. ';
+    card.querySelector('[data-shadow-spec]').dataset.shadowSpec = name;
+    card.querySelector('[data-export]').dataset.export = name;
+    card.querySelector('.card-head').style.background = '#fff';
+    card.querySelector('.card-foot').style.background = '#fff';
+    document.querySelector('.grid').append(card);
+    themes[name] = { theme: name === 'prism' ? Finch.prismTheme : Finch.midnightTheme,
+      focus: null, shadow: 'drop-shadow(0 2px 3px rgba(0,0,0,.28))', shadowLabel: '0 2px 3px · Black 28%' };
+  }
+  const shadowEnabled = { prism: false, midnight: true, default: true, business: false, precision: false, editorial: false };
 
   function namespaceSvgDefinitions(svg, suffix) {
     const definitions = [

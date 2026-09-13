@@ -22,12 +22,12 @@ try {
     await page.selectOption('#kind', 'flowchart');
     await page.addStyleTag({content: '.diagram {width:560px;height:560px;padding:24px;overflow:hidden}.diagram svg{max-height:512px;max-width:512px}.theme-card{width:560px;min-width:560px}.grid{display:block}'});
     await page.evaluate(() => document.fonts.ready);
-    for (const style of ['default','business','business-shadow','precision','editorial']) {
-      const name = style === 'business-shadow' ? 'business' : style;
+    for (const style of ['default','prism','midnight','business','business-shadow','precision','editorial','editorial-shadow']) {
+      const name = style.replace('-shadow', '');
       await page.evaluate(({lang,name,style}) => {
         let source = diagrams.flowchart;
         if (lang === 'en') for (const [ja,en] of Object.entries({'注文を受け付ける':'Order received','在庫はある？':'In stock?','出荷を手配':'Arrange shipment','入荷予定を確認':'Check restock date','顧客へ案内':'Notify customer','はい':'Yes','いいえ':'No'})) source = source.replaceAll(ja,en);
-        shadowEnabled[name] = style === 'default' || style === 'business-shadow';
+        shadowEnabled[name] = style === 'default' || style === 'midnight' || style.endsWith('-shadow');
         renderTheme(name,source,'flowchart');
         const svg=document.querySelector('#diagram-'+name+' svg');svg.style.width='512px';svg.style.height='512px';svg.style.maxWidth='512px';svg.style.maxHeight='512px';
       }, {lang,name,style});

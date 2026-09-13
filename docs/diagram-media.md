@@ -1,5 +1,11 @@
 # Documentation diagram freshness
 
+## Style gallery update — 2026-09-13
+
+Both READMEs now show eight 180px thumbnails in four columns: Default, Prism, Midnight, Precision, Business, Business with shadow, Editorial, and Editorial with shadow. Six themes are represented; shadow variants are not additional themes. Default, Prism, and Midnight are built in; the other themes are defined in the linked style study.
+
+All 16 English/Japanese style PNGs were rendered from the 0.7.0 repository build with `node reports/render-current-styles.mjs`. The comparison page now includes Prism and Midnight, with working shadow controls and SVG exports. The eight-thumbnail layout was visually inspected at README display size.
+
 ## Editing demo update — 2026-09-13
 
 The editing demonstration now uses the 0.7.0 repository build and the actual built-in editor. Both READMEs use one English deployment GIF with 20 captured frames: open Finch, add Redis and its connection in Source, then move the cache and API server into place before pointing to Save. The capture checks that the Redis node and connection appear and both dragged nodes acquire manual positions. Save is indicated, not clicked in the GIF.

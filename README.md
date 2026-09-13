@@ -97,11 +97,21 @@ For standalone HTML, load the published browser bundle:
 The same flowchart, rendered in different styles.
 
 <table>
-<tr><td align="center"><strong>Default</strong><br><img src="./docs/assets/finch-style-default-en.png" alt="Default: order fulfillment flowchart" width="380"></td><td align="center"><strong>Precision</strong><br><img src="./docs/assets/finch-style-precision-en.png" alt="Precision: order fulfillment flowchart" width="380"></td></tr>
-<tr><td align="center"><strong>Business</strong><br><img src="./docs/assets/finch-style-business-en.png" alt="Business: order fulfillment flowchart" width="380"></td><td align="center"><strong>Editorial</strong><br><img src="./docs/assets/finch-style-editorial-en.png" alt="Editorial: order fulfillment flowchart" width="380"></td></tr>
+<tr>
+<td align="center" width="25%"><strong>Default</strong><br><a href="./examples/style-study.html"><img src="./docs/assets/finch-style-default-en.png" alt="Default: order fulfillment flowchart" width="180"></a></td>
+<td align="center" width="25%"><strong>Prism</strong><br><a href="./examples/style-study.html"><img src="./docs/assets/finch-style-prism-en.png" alt="Prism: order fulfillment flowchart" width="180"></a></td>
+<td align="center" width="25%"><strong>Midnight</strong><br><a href="./examples/style-study.html"><img src="./docs/assets/finch-style-midnight-en.png" alt="Midnight: order fulfillment flowchart" width="180"></a></td>
+<td align="center" width="25%"><strong>Precision</strong><br><a href="./examples/style-study.html"><img src="./docs/assets/finch-style-precision-en.png" alt="Precision: order fulfillment flowchart" width="180"></a></td>
+</tr>
+<tr>
+<td align="center" width="25%"><strong>Business</strong><br><a href="./examples/style-study.html"><img src="./docs/assets/finch-style-business-en.png" alt="Business: order fulfillment flowchart" width="180"></a></td>
+<td align="center" width="25%"><strong>Business + shadow</strong><br><a href="./examples/style-study.html"><img src="./docs/assets/finch-style-business-shadow-en.png" alt="Business + shadow: order fulfillment flowchart" width="180"></a></td>
+<td align="center" width="25%"><strong>Editorial</strong><br><a href="./examples/style-study.html"><img src="./docs/assets/finch-style-editorial-en.png" alt="Editorial: order fulfillment flowchart" width="180"></a></td>
+<td align="center" width="25%"><strong>Editorial + shadow</strong><br><a href="./examples/style-study.html"><img src="./docs/assets/finch-style-editorial-shadow-en.png" alt="Editorial + shadow: order fulfillment flowchart" width="180"></a></td>
+</tr>
 </table>
 
-[Compare styles](./examples/style-study.html), toggle shadows, and export SVGs. Business, Precision, and Editorial are custom theme examples defined in that page; Business-shadow is the shadow-enabled Business variant.
+[Compare styles](./examples/style-study.html), toggle shadows, and export SVGs. Default, Prism, and Midnight are built-in themes. Business, Precision, and Editorial are custom theme examples defined in that page; “+ shadow” shows a shadow-enabled variant.
 
 ## Icons, role colors, and your images
 

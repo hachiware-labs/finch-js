@@ -99,11 +99,21 @@ script 要素から使う場合は、ブラウザーグローバル版を読み�
 同じフローチャートを、スタイルを変えて描いています。
 
 <table>
-<tr><td align="center"><strong>Default</strong><br><img src="./docs/assets/finch-style-default-ja.png" alt="Default: 注文処理のフローチャート" width="380"></td><td align="center"><strong>Precision</strong><br><img src="./docs/assets/finch-style-precision-ja.png" alt="Precision: 注文処理のフローチャート" width="380"></td></tr>
-<tr><td align="center"><strong>Business</strong><br><img src="./docs/assets/finch-style-business-ja.png" alt="Business: 注文処理のフローチャート" width="380"></td><td align="center"><strong>Editorial</strong><br><img src="./docs/assets/finch-style-editorial-ja.png" alt="Editorial: 注文処理のフローチャート" width="380"></td></tr>
+<tr>
+<td align="center" width="25%"><strong>Default</strong><br><a href="./examples/style-study.html"><img src="./docs/assets/finch-style-default-ja.png" alt="Default: 注文処理のフローチャート" width="180"></a></td>
+<td align="center" width="25%"><strong>Prism</strong><br><a href="./examples/style-study.html"><img src="./docs/assets/finch-style-prism-ja.png" alt="Prism: 注文処理のフローチャート" width="180"></a></td>
+<td align="center" width="25%"><strong>Midnight</strong><br><a href="./examples/style-study.html"><img src="./docs/assets/finch-style-midnight-ja.png" alt="Midnight: 注文処理のフローチャート" width="180"></a></td>
+<td align="center" width="25%"><strong>Precision</strong><br><a href="./examples/style-study.html"><img src="./docs/assets/finch-style-precision-ja.png" alt="Precision: 注文処理のフローチャート" width="180"></a></td>
+</tr>
+<tr>
+<td align="center" width="25%"><strong>Business</strong><br><a href="./examples/style-study.html"><img src="./docs/assets/finch-style-business-ja.png" alt="Business: 注文処理のフローチャート" width="180"></a></td>
+<td align="center" width="25%"><strong>Business + shadow</strong><br><a href="./examples/style-study.html"><img src="./docs/assets/finch-style-business-shadow-ja.png" alt="Business + shadow: 注文処理のフローチャート" width="180"></a></td>
+<td align="center" width="25%"><strong>Editorial</strong><br><a href="./examples/style-study.html"><img src="./docs/assets/finch-style-editorial-ja.png" alt="Editorial: 注文処理のフローチャート" width="180"></a></td>
+<td align="center" width="25%"><strong>Editorial + shadow</strong><br><a href="./examples/style-study.html"><img src="./docs/assets/finch-style-editorial-shadow-ja.png" alt="Editorial + shadow: 注文処理のフローチャート" width="180"></a></td>
+</tr>
 </table>
 
-[スタイル比較ページ](./examples/style-study.html)では、図の種類や影の有無を切り替えて、SVGを保存できます。Business・Precision・Editorialは比較ページで定義したカスタムテーマの作例で、Business-shadowはBusinessの影あり版です。
+[スタイル比較ページ](./examples/style-study.html)で図の種類や影の有無を切り替え、SVGを保存できます。Default・Prism・Midnightは組み込みテーマ、Business・Precision・Editorialは比較ページで定義したカスタムテーマの作例です。「+ shadow」は影ありのバリエーションです。
 
 ## アイコン・役割色・自分の画像
 

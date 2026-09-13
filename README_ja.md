@@ -1,6 +1,6 @@
 # Finch.js <img src="./docs/assets/green-warbler-finch-silhouette-profile-pink.png" alt="横を向いたグリーンムシクイフィンチのピンク色のシルエット" width="56" align="middle" />
 
-## きれいな図を描こう
+## もっと、きれいな図をかこう！
 
 [English](./README.md)
 

@@ -6,9 +6,7 @@ Allow about 15 minutes: draw, arrange, edit, save, and choose a type. You need a
 
 ## 1. Render the first diagram
 
-Save this as `order-flow.html` in UTF-8 and open it in your browser. It uses version 0.7.0; no installation or build is needed. An internet connection is required.
-
-The CDN example requires 0.7.0 to be published to npm. For use before publication, see the [README quick start](../README.md#quick-start).
+No install, no build. Save as `order-flow.html` and open it.
 
 ```html
 <!doctype html>

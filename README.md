@@ -6,13 +6,9 @@
 
 [![Editable application architecture with AWS, PostgreSQL, and Lucide icons](./docs/assets/finch-architecture-hero-en.png)](./examples/readme-hero.html)
 
-Images and linked examples use the repository build. [Sources and freshness record](./docs/diagram-media.md).
-
 ## Quick start
 
-Save this as `diagram.html` in UTF-8 and open it in your browser. It uses version 0.7.0; no installation or build is needed. An internet connection is required.
-
-This README and tutorial target **0.7.0**. The CDN examples become available when 0.7.0 is published to npm. Before publication, follow [Development](#development), save the HTML under `examples/`, and change its script URL to `../dist/finch.global.js`.
+No install, no build. Save as `diagram.html` and open it.
 
 ```html
 <!doctype html>
@@ -23,37 +19,34 @@ This README and tutorial target **0.7.0**. The CDN examples become available whe
   #diagram { min-height: 100vh; overflow: auto; padding: 24px; }
 </style>
 
-<main id="diagram" aria-label="Order fulfillment flowchart"></main>
+<main id="diagram" aria-label="Application deployment diagram"></main>
 
 <script src="https://cdn.jsdelivr.net/npm/@hachiware-labs/finch-js@0.7.0/dist/finch.global.js"></script>
 <script>
-  const orderFlowSource = `
-@flowchart
-start received "Order received"
-process validate "Check inventory"
-decision available "In stock?"
-process reserve "Reserve items"
-end confirmed "Order confirmed"
-end backorder "Await restock"
-
-received -> validate
-validate -> available
-available -> reserve: Yes
-available -> backorder: No
-reserve -> confirmed
+  const deploymentSource = `
+@deployment
+node browser "Web app" [icon=monitor]
+container cloud "Production" [layout=row tone=cyan] {
+  server api "API server" [icon=server]
+  database db "PostgreSQL" [icon=database]
+}
+browser -> api
+api -> db: SQL
   `.trim();
 
-  Finch.render(orderFlowSource, { target: "#diagram" });
+  Finch.render(deploymentSource, { target: "#diagram" });
 </script>
 ```
 
-IDs and labels are separate. Keep `validate` stable while changing `"Check inventory"`; the saved position belongs to the ID.
+IDs and labels are separate. Keep `api` stable while changing `"API server"`; the saved position belongs to the ID.
 
 ## Click Finch to edit
 
 Click the pink **Finch button** in the lower-left of the diagram to open the editor. Add elements and connections in **Source**, then drag and drop nodes to arrange the diagram.
 
 [![Open Finch, add Redis and its connection to a deployment diagram, then drag nodes into place](./docs/assets/finch-editing-demo.gif)](./examples/readme-demo.html)
+
+Edit the source again — the nodes you moved stay where you put them. Keep their IDs unchanged.
 
 The demo adds a Redis cache, connects it to the API server, and moves the nodes into place. [Try the editable deployment example](./examples/readme-demo.html). Press **Save** to save your source and layout together as editable HTML, or follow the [15-minute tutorial](./docs/tutorial.md).
 
@@ -83,10 +76,10 @@ npm install @hachiware-labs/finch-js
 ```
 
 ```js
-import Finch, { createFinch } from "@hachiware-labs/finch-js";
+import Finch from "@hachiware-labs/finch-js";
 ```
 
-For standalone HTML, load the published browser bundle:
+For standalone HTML, load the browser bundle:
 
 ```html
 <script src="https://cdn.jsdelivr.net/npm/@hachiware-labs/finch-js@0.7.0/dist/finch.global.js"></script>
@@ -98,16 +91,20 @@ The same flowchart, rendered in different styles.
 
 <table>
 <tr>
-<td align="center" width="25%"><strong>Default</strong><br><a href="./examples/style-study.html"><img src="./docs/assets/finch-style-default-en.png" alt="Default: order fulfillment flowchart" width="180"></a></td>
-<td align="center" width="25%"><strong>Prism</strong><br><a href="./examples/style-study.html"><img src="./docs/assets/finch-style-prism-en.png" alt="Prism: order fulfillment flowchart" width="180"></a></td>
-<td align="center" width="25%"><strong>Midnight</strong><br><a href="./examples/style-study.html"><img src="./docs/assets/finch-style-midnight-en.png" alt="Midnight: order fulfillment flowchart" width="180"></a></td>
-<td align="center" width="25%"><strong>Precision</strong><br><a href="./examples/style-study.html"><img src="./docs/assets/finch-style-precision-en.png" alt="Precision: order fulfillment flowchart" width="180"></a></td>
+<td align="center" width="50%"><strong>Default</strong><br><a href="./examples/style-study.html"><img src="./docs/assets/finch-style-default-en.png" alt="Default: order fulfillment flowchart" width="320"></a></td>
+<td align="center" width="50%"><strong>Prism</strong><br><a href="./examples/style-study.html"><img src="./docs/assets/finch-style-prism-en.png" alt="Prism: order fulfillment flowchart" width="320"></a></td>
 </tr>
 <tr>
-<td align="center" width="25%"><strong>Business</strong><br><a href="./examples/style-study.html"><img src="./docs/assets/finch-style-business-en.png" alt="Business: order fulfillment flowchart" width="180"></a></td>
-<td align="center" width="25%"><strong>Business + shadow</strong><br><a href="./examples/style-study.html"><img src="./docs/assets/finch-style-business-shadow-en.png" alt="Business + shadow: order fulfillment flowchart" width="180"></a></td>
-<td align="center" width="25%"><strong>Editorial</strong><br><a href="./examples/style-study.html"><img src="./docs/assets/finch-style-editorial-en.png" alt="Editorial: order fulfillment flowchart" width="180"></a></td>
-<td align="center" width="25%"><strong>Editorial + shadow</strong><br><a href="./examples/style-study.html"><img src="./docs/assets/finch-style-editorial-shadow-en.png" alt="Editorial + shadow: order fulfillment flowchart" width="180"></a></td>
+<td align="center" width="50%"><strong>Midnight</strong><br><a href="./examples/style-study.html"><img src="./docs/assets/finch-style-midnight-en.png" alt="Midnight: order fulfillment flowchart" width="320"></a></td>
+<td align="center" width="50%"><strong>Precision</strong><br><a href="./examples/style-study.html"><img src="./docs/assets/finch-style-precision-en.png" alt="Precision: order fulfillment flowchart" width="320"></a></td>
+</tr>
+<tr>
+<td align="center" width="50%"><strong>Business</strong><br><a href="./examples/style-study.html"><img src="./docs/assets/finch-style-business-en.png" alt="Business: order fulfillment flowchart" width="320"></a></td>
+<td align="center" width="50%"><strong>Business + shadow</strong><br><a href="./examples/style-study.html"><img src="./docs/assets/finch-style-business-shadow-en.png" alt="Business + shadow: order fulfillment flowchart" width="320"></a></td>
+</tr>
+<tr>
+<td align="center" width="50%"><strong>Editorial</strong><br><a href="./examples/style-study.html"><img src="./docs/assets/finch-style-editorial-en.png" alt="Editorial: order fulfillment flowchart" width="320"></a></td>
+<td align="center" width="50%"><strong>Editorial + shadow</strong><br><a href="./examples/style-study.html"><img src="./docs/assets/finch-style-editorial-shadow-en.png" alt="Editorial + shadow: order fulfillment flowchart" width="320"></a></td>
 </tr>
 </table>
 
@@ -153,10 +150,9 @@ Use `exportMarkdown()` and `Finch.renderMarkdown()` to save and restore a diagra
 
 - [Tutorial](./docs/tutorial.md): draw, arrange, edit, save, and choose a type in about 15 minutes.
 - [Reference](./docs/reference.md): syntax, editing controls, persistence, events, export, and the instance API.
-- [Advanced examples](./examples/README.md): complete, editable diagrams for every supported type.
+- [Examples](./examples/README.md): complete, editable diagrams for every supported type.
 - [Extending Finch.js](./docs/extensions.md): custom diagrams, shapes, layouts, and themes.
 - [Slide patterns](./docs/slide-patterns.md): reusable KPI, data-story, roadmap, comparison, and customer-evidence recipes.
-
 - [Embedding and saving](./docs/embedding.md)
 - [Generate a diagram from a prompt](./docs/generating.md)
 - [UML examples and extensions](./examples/uml-guide.html)
@@ -172,6 +168,8 @@ npm run check
 ```
 
 To browse the examples locally, run `python -m http.server 8000` and open `http://127.0.0.1:8000/examples/`.
+
+Images and linked examples use the repository build. [Sources and freshness record](./docs/diagram-media.md).
 
 Finch.js is licensed under the [MIT License](./LICENSE).
 

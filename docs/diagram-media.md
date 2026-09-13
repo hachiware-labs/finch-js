@@ -2,9 +2,9 @@
 
 ## Style gallery update — 2026-09-13
 
-Both READMEs now show eight 180px thumbnails in four columns: Default, Prism, Midnight, Precision, Business, Business with shadow, Editorial, and Editorial with shadow. Six themes are represented; shadow variants are not additional themes. Default, Prism, and Midnight are built in; the other themes are defined in the linked style study.
+Both READMEs now show eight 320px thumbnails in two columns: Default, Prism, Midnight, Precision, Business, Business with shadow, Editorial, and Editorial with shadow. Six themes are represented; shadow variants are not additional themes. Default, Prism, and Midnight are built in; the other themes are defined in the linked style study.
 
-All 16 English/Japanese style PNGs were rendered from the 0.7.0 repository build with `node reports/render-current-styles.mjs`. The comparison page now includes Prism and Midnight, with working shadow controls and SVG exports. The eight-thumbnail layout was visually inspected at README display size.
+All 16 English/Japanese style PNGs were rendered from the 0.7.0 repository build with `node reports/render-current-styles.mjs`. The comparison page now includes Prism and Midnight, with working shadow controls and SVG exports. The previous 180px, four-column layout was inspected on GitHub and its labels were too small, so the README now uses two columns.
 
 ## Editing demo update — 2026-09-13
 
@@ -12,7 +12,7 @@ The editing demonstration now uses the 0.7.0 repository build and the actual bui
 
 Source: [editable demo](../examples/readme-demo.html) (English). Regenerate with `npm run build`, `node reports/capture-current-demo.mjs`, then `python reports/encode-current-demo.py`. The capture uses a temporary loopback HTTP server and Edge through Playwright; `PLAYWRIGHT_MODULE` can override the local Playwright module path. Python requires Pillow.
 
-README and tutorial snippets now target CDN version 0.7.0. CDN availability depends on the npm release; the README describes how to use the local build before publication. Other PNG assets were retained from the generation recorded below.
+README and tutorial snippets target CDN version 0.7.0. Publication-status notices were removed from the reader-facing onboarding text in preparation for release. Other PNG assets were retained from the generation recorded below.
 
 ## Previous full media generation — 2026-09-12
 

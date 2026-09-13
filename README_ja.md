@@ -6,13 +6,9 @@
 
 [![AWS・PostgreSQL・Lucideアイコンで描いた編集可能なアプリケーション構成図](./docs/assets/finch-architecture-hero-ja.png)](./examples/readme-hero.html?lang=ja)
 
-図版・作例はリポジトリ版です。[生成元と更新記録](./docs/diagram-media.md)。
-
 ## クイックスタート
 
-次を `diagram.html` としてUTF-8で保存し、ブラウザーで開いてください。0.7.0を使います。インストールやビルドは不要です。ネット接続が必要です。
-
-このREADMEとチュートリアルは **0.7.0** を対象とします。CDNの例は0.7.0のnpm公開後に利用できます。公開前は[開発手順](#開発)でビルドし、HTMLを `examples/` に保存して、scriptのURLを `../dist/finch.global.js` に変更してください。
+インストールもビルドも不要。`diagram.html` に保存してブラウザーで開くだけです。
 
 ```html
 <!doctype html>
@@ -23,37 +19,34 @@
   #diagram { min-height: 100vh; overflow: auto; padding: 24px; }
 </style>
 
-<main id="diagram" aria-label="注文処理のフローチャート"></main>
+<main id="diagram" aria-label="アプリケーションの配備図"></main>
 
 <script src="https://cdn.jsdelivr.net/npm/@hachiware-labs/finch-js@0.7.0/dist/finch.global.js"></script>
 <script>
-  const orderFlowSource = `
-@flowchart
-start received "注文を受け付ける"
-process validate "在庫を確認する"
-decision available "在庫あり?"
-process reserve "商品を確保する"
-end confirmed "注文確定"
-end backorder "入荷待ち"
-
-received -> validate
-validate -> available
-available -> reserve: Yes
-available -> backorder: No
-reserve -> confirmed
+  const deploymentSource = `
+@deployment
+node browser "Web app" [icon=monitor]
+container cloud "Production" [layout=row tone=cyan] {
+  server api "API server" [icon=server]
+  database db "PostgreSQL" [icon=database]
+}
+browser -> api
+api -> db: SQL
   `.trim();
 
-  Finch.render(orderFlowSource, { target: "#diagram" });
+  Finch.render(deploymentSource, { target: "#diagram" });
 </script>
 ```
 
-ID と表示名は別です。`validate` は変えず、`"在庫を確認する"` だけを書き換えれば、保存した位置を引き継げます。
+IDと表示名は別です。`api` は変えず、`"API server"` だけを書き換えれば、保存した位置を引き継げます。
 
 ## Finchをクリックして編集する
 
 図の左下にあるピンクの **Finchボタン** をクリックすると、エディターが開きます。**Source** で要素と接続を追加し、ノードをドラッグ＆ドロップして配置を整えます。
 
 [![Finchを開き、配備図にRedisと接続を追加してからノードを移動する](./docs/assets/finch-editing-demo.gif)](./examples/readme-demo.html)
+
+ソースをもう一度書き換えても、移動したノードは手で決めた位置を保ちます。ノードのIDはそのままにしてください。
 
 デモではRedisキャッシュを追加し、APIサーバーから接続をつないで、ノードを移動しています。[編集できる配備図の作例](./examples/readme-demo.html)で試せます。**Save** を押すと、ソースと配置をまとめて編集可能なHTMLに保存できます。一通りの操作は[15分チュートリアル](./docs/tutorial_ja.md)で確認できます。
 
@@ -85,7 +78,7 @@ npm install @hachiware-labs/finch-js
 ```
 
 ```js
-import Finch, { createFinch } from "@hachiware-labs/finch-js";
+import Finch from "@hachiware-labs/finch-js";
 ```
 
 script 要素から使う場合は、ブラウザーグローバル版を読み込みます。
@@ -100,16 +93,20 @@ script 要素から使う場合は、ブラウザーグローバル版を読み�
 
 <table>
 <tr>
-<td align="center" width="25%"><strong>Default</strong><br><a href="./examples/style-study.html"><img src="./docs/assets/finch-style-default-ja.png" alt="Default: 注文処理のフローチャート" width="180"></a></td>
-<td align="center" width="25%"><strong>Prism</strong><br><a href="./examples/style-study.html"><img src="./docs/assets/finch-style-prism-ja.png" alt="Prism: 注文処理のフローチャート" width="180"></a></td>
-<td align="center" width="25%"><strong>Midnight</strong><br><a href="./examples/style-study.html"><img src="./docs/assets/finch-style-midnight-ja.png" alt="Midnight: 注文処理のフローチャート" width="180"></a></td>
-<td align="center" width="25%"><strong>Precision</strong><br><a href="./examples/style-study.html"><img src="./docs/assets/finch-style-precision-ja.png" alt="Precision: 注文処理のフローチャート" width="180"></a></td>
+<td align="center" width="50%"><strong>Default</strong><br><a href="./examples/style-study.html"><img src="./docs/assets/finch-style-default-ja.png" alt="Default: 注文処理のフローチャート" width="320"></a></td>
+<td align="center" width="50%"><strong>Prism</strong><br><a href="./examples/style-study.html"><img src="./docs/assets/finch-style-prism-ja.png" alt="Prism: 注文処理のフローチャート" width="320"></a></td>
 </tr>
 <tr>
-<td align="center" width="25%"><strong>Business</strong><br><a href="./examples/style-study.html"><img src="./docs/assets/finch-style-business-ja.png" alt="Business: 注文処理のフローチャート" width="180"></a></td>
-<td align="center" width="25%"><strong>Business + shadow</strong><br><a href="./examples/style-study.html"><img src="./docs/assets/finch-style-business-shadow-ja.png" alt="Business + shadow: 注文処理のフローチャート" width="180"></a></td>
-<td align="center" width="25%"><strong>Editorial</strong><br><a href="./examples/style-study.html"><img src="./docs/assets/finch-style-editorial-ja.png" alt="Editorial: 注文処理のフローチャート" width="180"></a></td>
-<td align="center" width="25%"><strong>Editorial + shadow</strong><br><a href="./examples/style-study.html"><img src="./docs/assets/finch-style-editorial-shadow-ja.png" alt="Editorial + shadow: 注文処理のフローチャート" width="180"></a></td>
+<td align="center" width="50%"><strong>Midnight</strong><br><a href="./examples/style-study.html"><img src="./docs/assets/finch-style-midnight-ja.png" alt="Midnight: 注文処理のフローチャート" width="320"></a></td>
+<td align="center" width="50%"><strong>Precision</strong><br><a href="./examples/style-study.html"><img src="./docs/assets/finch-style-precision-ja.png" alt="Precision: 注文処理のフローチャート" width="320"></a></td>
+</tr>
+<tr>
+<td align="center" width="50%"><strong>Business</strong><br><a href="./examples/style-study.html"><img src="./docs/assets/finch-style-business-ja.png" alt="Business: 注文処理のフローチャート" width="320"></a></td>
+<td align="center" width="50%"><strong>Business + shadow</strong><br><a href="./examples/style-study.html"><img src="./docs/assets/finch-style-business-shadow-ja.png" alt="Business + shadow: 注文処理のフローチャート" width="320"></a></td>
+</tr>
+<tr>
+<td align="center" width="50%"><strong>Editorial</strong><br><a href="./examples/style-study.html"><img src="./docs/assets/finch-style-editorial-ja.png" alt="Editorial: 注文処理のフローチャート" width="320"></a></td>
+<td align="center" width="50%"><strong>Editorial + shadow</strong><br><a href="./examples/style-study.html"><img src="./docs/assets/finch-style-editorial-shadow-ja.png" alt="Editorial + shadow: 注文処理のフローチャート" width="320"></a></td>
 </tr>
 </table>
 
@@ -155,10 +152,9 @@ npx skills add hachiware-labs/finch-js --skill finch
 
 - [チュートリアル](./docs/tutorial_ja.md)：約15分で描画・配置・更新・保存・図法選びを試します。
 - [リファレンス](./docs/reference_ja.md)：記法、編集操作、保存、イベント、画像出力、インスタンス API を確認できます。
-- [発展例](./examples/README.md)：対応するすべての図法を、編集できる完成例で確認できます。
+- [作例](./examples/README.md)：対応するすべての図法を、編集できる完成例で確認できます。
 - [Finch.js の拡張](./docs/extensions_ja.md)：独自の図、Shape、Layout、Theme を追加します。
 - [スライドパターン](./docs/slide-patterns_ja.md)：KPI、データストーリー、ロードマップ、比較、顧客の声を再利用できる形で組み立てます。
-
 - [アプリへの組み込みと保存](./docs/embedding_ja.md)
 - [ことばから図を作るデモ](./docs/generating_ja.md)
 - [UML作例と追加記法](./examples/uml-guide.html)
@@ -174,6 +170,8 @@ npm run check
 ```
 
 作例をローカルで見るには `python -m http.server 8000` を実行し、`http://127.0.0.1:8000/examples/` を開いてください。
+
+図版・作例はリポジトリ版です。[生成元と更新記録](./docs/diagram-media.md)。
 
 Finch.js は [MIT License](./LICENSE) で公開しています。
 

@@ -25,7 +25,7 @@
 <script>
   const deploymentSource = `
 @deployment
-node browser "Web app" [icon=monitor]
+node browser "Web app" [icon=app-window]
 container cloud "Production" [layout=row tone=cyan] {
   server api "API server" [icon=server]
   database db "PostgreSQL" [icon=database]

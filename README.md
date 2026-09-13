@@ -1,32 +1,16 @@
 # Finch.js <img src="./docs/assets/green-warbler-finch-silhouette-profile-pink.png" alt="Pink silhouette of a Green Warbler-Finch in profile" width="56" align="middle" />
 
-[Plugin development guide (Japanese)](./docs/plugin-development_ja.md)
-
 [日本語](./README_ja.md)
 
-# 🐦 Draw beautiful diagrams.
+**Draw diagrams from text, then keep your hand-tuned layout as the text changes.** Finch.js renders editable SVG diagrams and preserves positions through stable node IDs.
 
 [![Editable application architecture with AWS, PostgreSQL, and Lucide icons](./docs/assets/finch-architecture-hero-en.png)](./examples/readme-hero.html)
 
-This example groups order intake, event processing, and storage/delivery by responsibility. Each group reads vertically and shows the connections needed for this flow. The linked diagram is editable with the current repository build.
-
-Turn concise text into polished SVG diagrams, then drag and pin nodes until the layout feels right. Stable node IDs keep those decisions when the text changes.
-
-Diagram media are regenerated from the current repository build. [Sources and freshness record](./docs/diagram-media.md).
-
-## Fine-tune your diagram
-
-[![Finch.js keeps a hand-tuned layout while the diagram source changes](./docs/assets/finch-editing-demo.gif)](./examples/readme-demo.html)
-
-[Tutorial](./docs/tutorial.md) · [Example gallery](./examples/README.md) · [npm package](https://www.npmjs.com/package/@hachiware-labs/finch-js)
-
-## Save diagrams in Markdown
-
-Use `exportMarkdown()` and `Finch.renderMarkdown()` to save and restore a diagram and its node positions in one code fence. See the [Markdown guide (Japanese)](./docs/markdown_ja.md).
+Images and linked examples use the repository build. [Sources and freshness record](./docs/diagram-media.md).
 
 ## Quick start
 
-From the repository root, run `npm ci` and `npm run build`. Save the following as `examples/diagram.html`, run `python -m http.server 8000`, and open `http://127.0.0.1:8000/examples/diagram.html`. This uses the current checkout.
+Save this as `diagram.html` in UTF-8 and open it in your browser. It uses published version 0.5.1; no installation or build is needed. An internet connection is required.
 
 ```html
 <!doctype html>
@@ -39,7 +23,7 @@ From the repository root, run `npm ci` and `npm run build`. Save the following a
 
 <main id="diagram" aria-label="Order fulfillment flowchart"></main>
 
-<script src="../dist/finch.global.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@hachiware-labs/finch-js@0.5.1/dist/finch.global.js"></script>
 <script>
   const orderFlowSource = `
 @flowchart
@@ -65,6 +49,31 @@ Press the pink bird icon in the diagram's lower-left to open Edit mode. Drag a n
 
 IDs and labels are separate. Keep `validate` stable while changing `"Check inventory"`; the saved position belongs to the ID.
 
+This entry point pins published **0.5.1**. Save uses browser storage. HTML saving, Markdown, timing, and additional UML syntax use the repository build. Try the [15-minute tutorial](./docs/tutorial.md).
+
+## Fine-tune your diagram
+
+[![Finch.js keeps a hand-tuned layout while the diagram source changes](./docs/assets/finch-editing-demo.gif)](./examples/readme-demo.html)
+
+[Tutorial](./docs/tutorial.md) · [Example gallery](./examples/README.md) · [npm package](https://www.npmjs.com/package/@hachiware-labs/finch-js)
+
+## Diagram types
+
+| Directive | Use it for | Example |
+| --- | --- | --- |
+| `@deployment` | Systems and infrastructure | [Deployment](./examples/deployment.html) |
+| `@graph` | General relationships and grouped systems | [Graph](./examples/graph.html) |
+| `@sequence` | Ordered interactions | [Sequence](./examples/sequence.html) |
+| `@flowchart` | Processes and decisions | [Flowchart](./examples/flowchart.html) |
+| `@state` | Lifecycles and transitions | [State](./examples/state.html) |
+| `@er` | Entities and relationships | [ER](./examples/er.html) |
+| `@component` | Software boundaries and interfaces | [Component](./examples/component.html) |
+| `@slide` | Presentation visuals | [Slide](./examples/slide.html) |
+| `@class` | Classes and UML relationships | [Class](./examples/class.html) |
+| `@usecase` | Actors and system goals | [Use case](./examples/usecase.html) |
+| `@activity` | Actions and control flow | [Activity](./examples/activity.html) |
+| `@timing` | Signals and states over time | [Timing](./examples/timing.html) |
+
 ## Install
 
 ```bash
@@ -75,10 +84,10 @@ npm install @hachiware-labs/finch-js
 import Finch, { createFinch } from "@hachiware-labs/finch-js";
 ```
 
-For a page saved under `examples/`, load the locally built browser bundle:
+For standalone HTML, load the published browser bundle:
 
 ```html
-<script src="../dist/finch.global.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@hachiware-labs/finch-js@0.5.1/dist/finch.global.js"></script>
 ```
 
 ## Styles
@@ -87,8 +96,7 @@ The same flowchart, rendered in different styles.
 
 <table>
 <tr><td align="center"><strong>Default</strong><br><img src="./docs/assets/finch-style-default-en.png" alt="Default: order fulfillment flowchart" width="380"></td><td align="center"><strong>Precision</strong><br><img src="./docs/assets/finch-style-precision-en.png" alt="Precision: order fulfillment flowchart" width="380"></td></tr>
-<tr><td align="center"><strong>Business</strong><br><img src="./docs/assets/finch-style-business-en.png" alt="Business: order fulfillment flowchart" width="380"></td><td align="center"><strong>Business-shadow</strong><br><img src="./docs/assets/finch-style-business-shadow-en.png" alt="Business-shadow: order fulfillment flowchart" width="380"></td></tr>
-<tr><td align="center"><strong>Editorial</strong><br><img src="./docs/assets/finch-style-editorial-en.png" alt="Editorial: order fulfillment flowchart" width="380"></td><td></td></tr>
+<tr><td align="center"><strong>Business</strong><br><img src="./docs/assets/finch-style-business-en.png" alt="Business: order fulfillment flowchart" width="380"></td><td align="center"><strong>Editorial</strong><br><img src="./docs/assets/finch-style-editorial-en.png" alt="Editorial: order fulfillment flowchart" width="380"></td></tr>
 </table>
 
 [Compare styles](./examples/style-study.html), toggle shadows, and export SVGs. Business, Precision, and Editorial are custom theme examples defined in that page; Business-shadow is the shadow-enabled Business variant.
@@ -107,23 +115,7 @@ container services "Services" [tone=green] {
 
 Lucide is the default. Optional AWS, Azure, Google Cloud, Kubernetes, and Simple Icons packs use names such as `icon=aws:application-auto-scaling` and `icon=simple:github`. Load the required pack after Finch. Use `image="./photo.png"` for your own image, optionally with `imageShape=circle` or `imageShape=rounded`.
 
-These features use the current repository build. Run `npm ci` and `npm run build`, then open the [icon and image example](./examples/icon-packs.html). See [the tutorial](./docs/tutorial.md#8-add-icons-role-colors-and-images) for a complete HTML example and export requirements, and [pack sources](./icon-packs/NOTICE.md) for asset versions and terms.
-
-## Diagram types
-
-| Directive | Use it for | Example |
-| --- | --- | --- |
-| `@deployment` | Systems and infrastructure | [Deployment](./examples/deployment.html) |
-| `@graph` | General relationships and grouped systems | [Graph](./examples/graph.html) |
-| `@sequence` | Ordered interactions | [Sequence](./examples/sequence.html) |
-| `@flowchart` | Processes and decisions | [Flowchart](./examples/flowchart.html) |
-| `@state` | Lifecycles and transitions | [State](./examples/state.html) |
-| `@er` | Entities and relationships | [ER](./examples/er.html) |
-| `@component` | Software boundaries and interfaces | [Component](./examples/component.html) |
-| `@slide` | Presentation visuals | [Slide](./examples/slide.html) |
-| `@class` | Classes and UML relationships | [Class](./examples/class.html) |
-| `@usecase` | Actors and system goals | [Use case](./examples/usecase.html) |
-| `@activity` | Actions and control flow | [Activity](./examples/activity.html) |
+These features use the current repository build. Run `npm ci` and `npm run build`, then open the [icon and image example](./examples/icon-packs.html). See [the icon guide](./docs/icons.md) for a complete HTML example and export requirements, and [pack sources](./icon-packs/NOTICE.md) for asset versions and terms.
 
 ## Create diagrams with your coding agent
 
@@ -141,13 +133,24 @@ npx skills add hachiware-labs/finch-js --skill finch
 
 The installer lets you select the target agent. You can also specify agents directly, for example with `--agent claude-code cursor`. Add `--global` to make the skill available across repositories, and restart an agent if a newly installed skill is not listed.
 
+## Save diagrams in Markdown
+
+Use `exportMarkdown()` and `Finch.renderMarkdown()` to save and restore a diagram and its node positions in one code fence. See the [Markdown guide (Japanese)](./docs/markdown_ja.md).
+
 ## Learn more
 
-- [Tutorial](./docs/tutorial.md): render, arrange, update, save, and embed a diagram.
+- [Tutorial](./docs/tutorial.md): draw, arrange, edit, save, and choose a type in about 15 minutes.
 - [Reference](./docs/reference.md): syntax, editing controls, persistence, events, export, and the instance API.
 - [Advanced examples](./examples/README.md): complete, editable diagrams for every supported type.
 - [Extending Finch.js](./docs/extensions.md): custom diagrams, shapes, layouts, and themes.
 - [Slide patterns](./docs/slide-patterns.md): reusable KPI, data-story, roadmap, comparison, and customer-evidence recipes.
+
+- [Embedding and saving](./docs/embedding.md)
+- [Generate a diagram from a prompt](./docs/generating.md)
+- [UML examples and extensions](./examples/uml-guide.html)
+- [Includes, loops, and functions](./docs/preprocessing.md)
+- [Notes and sequence pages](./docs/annotations.md)
+- [Plugin development guide (Japanese)](./docs/plugin-development_ja.md)
 
 ## Development
 
@@ -172,38 +175,3 @@ Both images were simplified, recolored, and repositioned as silhouettes.
 <p align="right">
   <img src="./docs/assets/green-warbler-finch-silhouette-foraging-pink.png" alt="Pink silhouette of a foraging Green Warbler-Finch" width="180" />
 </p>
-
-
-
-## Concise UML extensions
-
-Use `note Order "Explanation"` or `constraint Item "quantity > 0"` for annotations, and `note api->stock "Idempotent"` for the first matching connection. Sequence frames accept `else condition` inside `alt` and `and description` inside `par`.
-
-Use `state id { ... }` for composite states, `region id { ... }` for parallel regions, `lane id { ... }` for activity ownership, and `package id { ... }` for class packages. IDs remain unique across the diagram. State diagrams now flow downward by default; flat state diagrams accept `@state direction=LR`.
-
-These features require the current repository build. See the [editable example](./examples/uml-concise.html) and [syntax and limitations (Japanese)](./docs/uml-concise_ja.md). Constraints are displayed, not executed. Class/object namespaces are supported; nested swimlanes are not. Nested state layouts remain vertical.
-
-
-## Practical UML notation
-
-Sequence diagrams distinguish synchronous `->`, asynchronous `->>`, and reply `-->` messages. Use `activate` / `deactivate` for explicit execution intervals, and `create` / `destroy` for lifetimes. State bodies accept `entry`, `exit`, `do`, and `internal`. Add roles with `stereotype id "service"`; class members accept `static` and `abstract` prefixes.
-
-Activity diagrams accept `while id "condition" { ... }` and `repeat id "condition" { ... }`, with sequential action bodies and nested loops. Use `id.done` as the exit. Class relations accept `[fromRole=owner toRole=items]`, and `association Link A->B` attaches a declared association class to the first matching relationship.
-
-See the [editable example](./examples/uml-practical.html) and [detailed syntax and limitations (Japanese)](./docs/uml-practical_ja.md). These features require the current repository build. They describe behavior and perform structural checks; they do not execute behavior. Explicit activations replace inference for the controlled participant. See the [current coverage ledger](docs/plantuml-parity_ja.md) for branch-dependent lifetimes, structured control flow and association-class connections.
-
-
-[UML extensions and examples](examples/uml-complete.html) · [Syntax and validation](docs/uml-complete_ja.md)
-
-
-Timing diagrams support discrete states, concise intervals, binary signals, analog values and clocks on a shared time axis. See the [editable timing example](examples/timing.html).
-
-
-[Reusable source: includes, loops, functions and validation](docs/preprocessing.md)
-
-[Notes and sequence pages](docs/annotations.md)
-
-
-## Explore the UML examples
-
-The [UML example guide](examples/uml-guide.html) pairs basic diagrams with deeper examples: branch-dependent lifetimes, state history and parallel regions, inheritance, loop interruption, association classes and templates. Use the editor button within each diagram to change its source. Structural checks do not execute behavior.

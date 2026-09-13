@@ -1,5 +1,7 @@
 # Finch.js <img src="./docs/assets/green-warbler-finch-silhouette-profile-pink.png" alt="Pink silhouette of a Green Warbler-Finch in profile" width="56" align="middle" />
 
+## Draw beautiful diagrams.
+
 [日本語](./README_ja.md)
 
 **Draw diagrams from text, then keep your hand-tuned layout as the text changes.** Finch.js renders editable SVG diagrams and preserves positions through stable node IDs.

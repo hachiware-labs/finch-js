@@ -1,5 +1,7 @@
 # Finch.js <img src="./docs/assets/green-warbler-finch-silhouette-profile-pink.png" alt="横を向いたグリーンムシクイフィンチのピンク色のシルエット" width="56" align="middle" />
 
+## きれいな図を描こう
+
 [English](./README.md)
 
 **テキストで図を描き、手で整えた配置を、テキストの変更後も保つ。** ノードIDで配置を引き継ぐ、編集可能なSVGダイアグラムライブラリです。

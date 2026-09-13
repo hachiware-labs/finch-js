@@ -1,5 +1,15 @@
 # Documentation diagram freshness
 
+## Editing demo update — 2026-09-13
+
+The editing demonstration now uses the 0.7.0 repository build and the actual built-in editor. Both READMEs use one English deployment GIF with 20 captured frames: open Finch, add Redis and its connection in Source, then move the cache and API server into place before pointing to Save. The capture checks that the Redis node and connection appear and both dragged nodes acquire manual positions. Save is indicated, not clicked in the GIF.
+
+Source: [editable demo](../examples/readme-demo.html) (English). Regenerate with `npm run build`, `node reports/capture-current-demo.mjs`, then `python reports/encode-current-demo.py`. The capture uses a temporary loopback HTTP server and Edge through Playwright; `PLAYWRIGHT_MODULE` can override the local Playwright module path. Python requires Pillow.
+
+README and tutorial snippets now target CDN version 0.7.0. CDN availability depends on the npm release; the README describes how to use the local build before publication. Other PNG assets were retained from the generation recorded below.
+
+## Previous full media generation — 2026-09-12
+
 Updated: 2026-09-12. Repository package: 0.6.0. All diagram media directly embedded in README.md, README_ja.md, docs/tutorial.md and docs/tutorial_ja.md were regenerated from the current checkout in this update. This does not claim that the npm-published release has the same code.
 
 | Media | Count | Source |

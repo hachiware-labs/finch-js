@@ -10,7 +10,9 @@ Images and linked examples use the repository build. [Sources and freshness reco
 
 ## Quick start
 
-Save this as `diagram.html` in UTF-8 and open it in your browser. It uses published version 0.5.1; no installation or build is needed. An internet connection is required.
+Save this as `diagram.html` in UTF-8 and open it in your browser. It uses version 0.7.0; no installation or build is needed. An internet connection is required.
+
+This README and tutorial target **0.7.0**. The CDN examples become available when 0.7.0 is published to npm. Before publication, follow [Development](#development), save the HTML under `examples/`, and change its script URL to `../dist/finch.global.js`.
 
 ```html
 <!doctype html>
@@ -23,7 +25,7 @@ Save this as `diagram.html` in UTF-8 and open it in your browser. It uses publis
 
 <main id="diagram" aria-label="Order fulfillment flowchart"></main>
 
-<script src="https://cdn.jsdelivr.net/npm/@hachiware-labs/finch-js@0.5.1/dist/finch.global.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@hachiware-labs/finch-js@0.7.0/dist/finch.global.js"></script>
 <script>
   const orderFlowSource = `
 @flowchart
@@ -45,15 +47,15 @@ reserve -> confirmed
 </script>
 ```
 
-Press the pink bird icon in the diagram's lower-left to open Edit mode. Drag a node, then double-click it to pin the position. Change a visible label in the source and watch the diagram update without losing the hand-tuned layout. Nothing is persisted until you press Save.
-
 IDs and labels are separate. Keep `validate` stable while changing `"Check inventory"`; the saved position belongs to the ID.
 
-This entry point pins published **0.5.1**. Save uses browser storage. HTML saving, Markdown, timing, and additional UML syntax use the repository build. Try the [15-minute tutorial](./docs/tutorial.md).
+## Click Finch to edit
 
-## Fine-tune your diagram
+Click the pink **Finch button** in the lower-left of the diagram to open the editor. Add elements and connections in **Source**, then drag and drop nodes to arrange the diagram.
 
-[![Finch.js keeps a hand-tuned layout while the diagram source changes](./docs/assets/finch-editing-demo.gif)](./examples/readme-demo.html)
+[![Open Finch, add Redis and its connection to a deployment diagram, then drag nodes into place](./docs/assets/finch-editing-demo.gif)](./examples/readme-demo.html)
+
+The demo adds a Redis cache, connects it to the API server, and moves the nodes into place. [Try the editable deployment example](./examples/readme-demo.html). Press **Save** to save your source and layout together as editable HTML, or follow the [15-minute tutorial](./docs/tutorial.md).
 
 [Tutorial](./docs/tutorial.md) · [Example gallery](./examples/README.md) · [npm package](https://www.npmjs.com/package/@hachiware-labs/finch-js)
 
@@ -87,7 +89,7 @@ import Finch, { createFinch } from "@hachiware-labs/finch-js";
 For standalone HTML, load the published browser bundle:
 
 ```html
-<script src="https://cdn.jsdelivr.net/npm/@hachiware-labs/finch-js@0.5.1/dist/finch.global.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@hachiware-labs/finch-js@0.7.0/dist/finch.global.js"></script>
 ```
 
 ## Styles
@@ -115,7 +117,7 @@ container services "Services" [tone=green] {
 
 Lucide is the default. Optional AWS, Azure, Google Cloud, Kubernetes, and Simple Icons packs use names such as `icon=aws:application-auto-scaling` and `icon=simple:github`. Load the required pack after Finch. Use `image="./photo.png"` for your own image, optionally with `imageShape=circle` or `imageShape=rounded`.
 
-These features use the current repository build. Run `npm ci` and `npm run build`, then open the [icon and image example](./examples/icon-packs.html). See [the icon guide](./docs/icons.md) for a complete HTML example and export requirements, and [pack sources](./icon-packs/NOTICE.md) for asset versions and terms.
+For icons in 0.7.0, open the [icon and image example](./examples/icon-packs.html). See [the icon guide](./docs/icons.md) for a complete HTML example and export requirements, and [pack sources](./icon-packs/NOTICE.md) for asset versions and terms.
 
 ## Create diagrams with your coding agent
 

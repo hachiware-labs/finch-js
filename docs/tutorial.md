@@ -6,7 +6,9 @@ Allow about 15 minutes: draw, arrange, edit, save, and choose a type. You need a
 
 ## 1. Render the first diagram
 
-Save this as `order-flow.html` in UTF-8 and open it in your browser. It uses published version 0.5.1; no installation or build is needed. An internet connection is required.
+Save this as `order-flow.html` in UTF-8 and open it in your browser. It uses version 0.7.0; no installation or build is needed. An internet connection is required.
+
+The CDN example requires 0.7.0 to be published to npm. For use before publication, see the [README quick start](../README.md#quick-start).
 
 ```html
 <!doctype html>
@@ -23,7 +25,7 @@ Save this as `order-flow.html` in UTF-8 and open it in your browser. It uses pub
   <body>
     <main id="diagram" aria-label="Order fulfillment flowchart"></main>
 
-    <script src="https://cdn.jsdelivr.net/npm/@hachiware-labs/finch-js@0.5.1/dist/finch.global.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@hachiware-labs/finch-js@0.7.0/dist/finch.global.js"></script>
     <script>
       const orderFlowSource = `
 @flowchart
@@ -100,11 +102,11 @@ Next, decide where the layout should live.
 
 ## 4. Save the source and layout
 
-In **0.5.1**, used here, **Save** stores source and layout in browser local storage. Reload the same file in the same browser and check that your changed label and pinned position return. It does not rewrite the HTML file.
+Press **Save** to save an HTML page containing the source and node positions. Choose a destination on the first save; later saves reuse it during the same page session. Use **名前を付けて保存** (Save As) for another file. Browsers without the file picker API download the HTML instead.
 
-If your browser restricts local-file storage, run `python -m http.server 8000` in the file’s folder and open `http://localhost:8000/order-flow.html` to try saving and reloading (requires Python).
+Open the saved HTML in your browser and check that your changed label and pinned position return. Switching editing on or off does not save. An internet connection is still required to load the library from the CDN.
 
-In the repository build, Save saves editable HTML instead. See [HTML saving (Japanese)](saving_ja.md), [Markdown saving (Japanese)](markdown_ja.md), or [application integration](embedding.md) when you need them.
+Continue to [HTML saving (Japanese)](saving_ja.md), [Markdown saving (Japanese)](markdown_ja.md), or [application integration](embedding.md) when needed.
 
 Next, choose a diagram from the question you need to answer.
 
@@ -128,7 +130,6 @@ Next, choose a diagram from the question you need to answer.
 Open a nearby example and edit its source instead of learning the entire vocabulary first. The [reference](./reference.md) lists the common declarations and links to every complete example.
 
 
-Examples and reference pages target the repository build; timing and additional UML syntax are not in 0.5.1. See [local setup](../README.md#development).
 
 ## Next steps
 

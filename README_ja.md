@@ -10,7 +10,9 @@
 
 ## クイックスタート
 
-次を `diagram.html` としてUTF-8で保存し、ブラウザーで開いてください。公開済みの0.5.1を使うため、インストールやビルドは不要です。ネット接続が必要です。
+次を `diagram.html` としてUTF-8で保存し、ブラウザーで開いてください。0.7.0を使います。インストールやビルドは不要です。ネット接続が必要です。
+
+このREADMEとチュートリアルは **0.7.0** を対象とします。CDNの例は0.7.0のnpm公開後に利用できます。公開前は[開発手順](#開発)でビルドし、HTMLを `examples/` に保存して、scriptのURLを `../dist/finch.global.js` に変更してください。
 
 ```html
 <!doctype html>
@@ -23,7 +25,7 @@
 
 <main id="diagram" aria-label="注文処理のフローチャート"></main>
 
-<script src="https://cdn.jsdelivr.net/npm/@hachiware-labs/finch-js@0.5.1/dist/finch.global.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@hachiware-labs/finch-js@0.7.0/dist/finch.global.js"></script>
 <script>
   const orderFlowSource = `
 @flowchart
@@ -45,15 +47,15 @@ reserve -> confirmed
 </script>
 ```
 
-図の左下にあるピンクの鳥アイコンを押すと、Edit モードが開きます。ノードをドラッグしてからダブルクリックし、位置を固定します。ソース内の表示名を変えてみてください。図はその場で更新されますが、手で整えた配置は失われません。Save を押すまでは永続化されません。
-
 ID と表示名は別です。`validate` は変えず、`"在庫を確認する"` だけを書き換えれば、保存した位置を引き継げます。
 
-この入口は公開済み **0.5.1** に固定しています。Saveはブラウザー内への保存です。HTML保存・Markdown・timing・UML追加記法などはリポジトリ版を使います。[15分チュートリアル](./docs/tutorial_ja.md)で保存まで試せます。
+## Finchをクリックして編集する
 
-## 仕上げは思いどおりに
+図の左下にあるピンクの **Finchボタン** をクリックすると、エディターが開きます。**Source** で要素と接続を追加し、ノードをドラッグ＆ドロップして配置を整えます。
 
-[![ソースを変更しても人が整えた配置を保つ Finch.js](./docs/assets/finch-editing-demo.gif)](./examples/readme-demo.html)
+[![Finchを開き、配備図にRedisと接続を追加してからノードを移動する](./docs/assets/finch-editing-demo.gif)](./examples/readme-demo.html)
+
+デモではRedisキャッシュを追加し、APIサーバーから接続をつないで、ノードを移動しています。[編集できる配備図の作例](./examples/readme-demo.html)で試せます。**Save** を押すと、ソースと配置をまとめて編集可能なHTMLに保存できます。一通りの操作は[15分チュートリアル](./docs/tutorial_ja.md)で確認できます。
 
 [チュートリアル](./docs/tutorial_ja.md) · [作例を見る](./examples/README.md) · [npm パッケージ](https://www.npmjs.com/package/@hachiware-labs/finch-js)
 
@@ -89,7 +91,7 @@ import Finch, { createFinch } from "@hachiware-labs/finch-js";
 script 要素から使う場合は、ブラウザーグローバル版を読み込みます。
 
 ```html
-<script src="https://cdn.jsdelivr.net/npm/@hachiware-labs/finch-js@0.5.1/dist/finch.global.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@hachiware-labs/finch-js@0.7.0/dist/finch.global.js"></script>
 ```
 
 ## スタイル一覧
@@ -117,7 +119,7 @@ container services "サービス" [tone=green] {
 
 デフォルトはLucideです。AWS・Azure・Google Cloud・Kubernetes・Simple Iconsの追加パックを読み込めば、`icon=aws:application-auto-scaling` や `icon=simple:github` を指定できます。自分の画像は `image="./photo.png"`、丸型・角丸は `imageShape=circle`・`imageShape=rounded` で指定します。
 
-これらは現在のリポジトリ版の機能です。`npm ci` と `npm run build` で作った本体を使ってください。[アイコンと画像の作例](./examples/icon-packs.html)、[アイコンガイド](./docs/icons_ja.md)、[パックの出典](./icon-packs/NOTICE.md)を参照してください。
+0.7.0のアイコンの使い方は、[アイコンと画像の作例](./examples/icon-packs.html)、[アイコンガイド](./docs/icons_ja.md)、[パックの出典](./icon-packs/NOTICE.md)を参照してください。
 
 ## コーディングエージェントで図を作る
 

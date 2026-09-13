@@ -6,7 +6,9 @@
 
 ## 1. 最初の図を表示する
 
-次を `order-flow.html` としてUTF-8で保存し、ブラウザーで開いてください。公開済みの0.5.1を使うため、インストールやビルドは不要です。ネット接続が必要です。
+次を `order-flow.html` としてUTF-8で保存し、ブラウザーで開いてください。0.7.0を使います。インストールやビルドは不要です。ネット接続が必要です。
+
+CDNの例は0.7.0のnpm公開後に利用できます。公開前に試す方法は[READMEのクイックスタート](../README_ja.md#クイックスタート)を参照してください。
 
 ```html
 <!doctype html>
@@ -23,7 +25,7 @@
   <body>
     <main id="diagram" aria-label="注文処理のフローチャート"></main>
 
-    <script src="https://cdn.jsdelivr.net/npm/@hachiware-labs/finch-js@0.5.1/dist/finch.global.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@hachiware-labs/finch-js@0.7.0/dist/finch.global.js"></script>
     <script>
       const orderFlowSource = `
 @flowchart
@@ -100,11 +102,11 @@ reserve --> audit: 非同期
 
 ## 4. ソースと配置を保存する
 
-このチュートリアルの **0.5.1** では、**Save** を押すとソースと配置をブラウザーのローカルストレージに保存します。同じブラウザーで同じファイルを再読み込みし、変更した表示名と固定位置が復元されることを確認してください。HTMLファイルそのものは書き換わりません。
+**Save** を押して、ソースとノードの配置を含むHTMLを保存します。初回は保存先を選び、同じページを開いている間はその保存先を再利用します。「名前を付けて保存」で別のファイルに保存できます。ファイル選択APIに対応していないブラウザーではHTMLをダウンロードします。
 
-ローカルファイルの保存がブラウザーに制限される場合は、ファイルのあるフォルダーで `python -m http.server 8000` を実行し、`http://localhost:8000/order-flow.html` で保存・再読み込みを試してください（Pythonが必要です）。
+保存したHTMLをブラウザーで開き、変更した表示名と固定位置が復元されることを確認してください。編集モードのON/OFFでは保存されません。CDNからライブラリを読み込むため、保存したHTMLを開くときもネット接続が必要です。
 
-リポジトリ版のSaveは編集可能なHTMLを保存します。[HTML保存](saving_ja.md)、[Markdown保存](markdown_ja.md)、[アプリへの組み込み](embedding_ja.md)は必要になったときに進めます。
+詳しくは[HTML保存](saving_ja.md)、[Markdown保存](markdown_ja.md)、[アプリへの組み込み](embedding_ja.md)へ進めます。
 
 次は、答えたい問いから図法を選びます。
 
@@ -128,7 +130,6 @@ reserve --> audit: 非同期
 最初から全語彙を覚えず、目的に近い作例を開いてソースを変更してください。[リファレンス](./reference_ja.md)には、よく使う宣言とすべての完成例へのリンクがあります。
 
 
-作例とリファレンスはリポジトリ版を対象とし、timing・UML追加記法などは0.5.1に含まれません。[ローカルでの実行手順](../README_ja.md#開発)を参照してください。
 
 ## 次に進む
 

@@ -51,7 +51,7 @@ Expected result: a top-to-bottom order flow and a small pink bird icon in the di
 
 Next, make the generated layout yours.
 
-[![Order flow with a separate out-of-stock branch](./assets/tutorial-order-en.png)](../examples/tutorial-order-en.html)
+[![Order flow with a separate out-of-stock branch](./assets/tutorial-order-en.png)](https://hachiware-labs.github.io/finch-js/examples/tutorial-order-en.html)
 
 The image and linked example use the repository build, so visual details may differ. Stop when the normal path and its exception are easy to follow. Symmetry and zero crossings are not requirements.
 
@@ -112,18 +112,18 @@ Next, choose a diagram from the question you need to answer.
 
 | If the reader needs to understand… | Start with | Example |
 | --- | --- | --- |
-| where software runs | `@deployment` | [Production services](../examples/deployment.html) |
-| how otherwise untyped things relate | `@graph` | [Commerce system map](../examples/graph.html) |
-| what happens in time order | `@sequence` | [Checkout calls](../examples/sequence.html) |
-| how a process branches | `@flowchart` | [Review flow](../examples/flowchart.html) |
-| how something changes state | `@state` | [Job lifecycle](../examples/state.html) |
-| how data relates | `@er` | [Order data](../examples/er.html) |
-| where software responsibilities end | `@component` | [Application boundaries](../examples/component.html) |
-| how classes relate | `@class` | [Order domain](../examples/class.html) |
-| what users want from a system | `@usecase` | [System goals](../examples/usecase.html) |
-| how UML actions coordinate | `@activity` | [Order activity](../examples/activity.html) |
-| one presentation takeaway | `@slide` | [KPI summary](../examples/slide-patterns.html) |
-| how signals change over time | `@timing` | [Timing](../examples/timing.html) |
+| where software runs | `@deployment` | [Production services](https://hachiware-labs.github.io/finch-js/examples/deployment.html) |
+| how otherwise untyped things relate | `@graph` | [Commerce system map](https://hachiware-labs.github.io/finch-js/examples/graph.html) |
+| what happens in time order | `@sequence` | [Checkout calls](https://hachiware-labs.github.io/finch-js/examples/sequence.html) |
+| how a process branches | `@flowchart` | [Review flow](https://hachiware-labs.github.io/finch-js/examples/flowchart.html) |
+| how something changes state | `@state` | [Job lifecycle](https://hachiware-labs.github.io/finch-js/examples/state.html) |
+| how data relates | `@er` | [Order data](https://hachiware-labs.github.io/finch-js/examples/er.html) |
+| where software responsibilities end | `@component` | [Application boundaries](https://hachiware-labs.github.io/finch-js/examples/component.html) |
+| how classes relate | `@class` | [Order domain](https://hachiware-labs.github.io/finch-js/examples/class.html) |
+| what users want from a system | `@usecase` | [System goals](https://hachiware-labs.github.io/finch-js/examples/usecase.html) |
+| how UML actions coordinate | `@activity` | [Order activity](https://hachiware-labs.github.io/finch-js/examples/activity.html) |
+| one presentation takeaway | `@slide` | [KPI summary](https://hachiware-labs.github.io/finch-js/examples/slide-patterns.html) |
+| how signals change over time | `@timing` | [Timing](https://hachiware-labs.github.io/finch-js/examples/timing.html) |
 
 Open a nearby example and edit its source instead of learning the entire vocabulary first. The [reference](./reference.md) lists the common declarations and links to every complete example.
 
@@ -135,4 +135,4 @@ Open a nearby example and edit its source instead of learning the entire vocabul
 - [Generate a diagram from a prompt](generating.md)
 - [Application integration](embedding.md)
 - [Icons, colors, and images](icons.md)
-- [UML example guide](../examples/uml-guide.html)
+- [UML example guide](https://hachiware-labs.github.io/finch-js/examples/uml-guide.html)

@@ -51,7 +51,7 @@ reserve -> confirmed
 
 次は、自動生成された配置を自分の図へ仕上げます。
 
-[![正常経路と在庫切れを分けた注文処理](./assets/tutorial-order-ja.png)](../examples/tutorial-order-ja.html)
+[![正常経路と在庫切れを分けた注文処理](./assets/tutorial-order-ja.png)](https://hachiware-labs.github.io/finch-js/examples/tutorial-order-ja.html)
 
 画像と作例はリポジトリ版のため、細部の見た目が異なる場合があります。正常経路と例外の関係が読めれば、対称性や交差ゼロを目指して整え続ける必要はありません。
 
@@ -112,18 +112,18 @@ reserve --> audit: 非同期
 
 | 読み手が知りたいこと | 最初に試す図法 | 作例 |
 | --- | --- | --- |
-| ソフトウェアがどこで動くか | `@deployment` | [本番サービス](../examples/deployment.html) |
-| 型を決めずに要素同士の関係を見たい | `@graph` | [コマースシステムマップ](../examples/graph.html) |
-| 何がどの順番で起きるか | `@sequence` | [購入処理の呼び出し](../examples/sequence.html) |
-| 手順がどう分岐するか | `@flowchart` | [審査フロー](../examples/flowchart.html) |
-| 状態がどう変わるか | `@state` | [ジョブのライフサイクル](../examples/state.html) |
-| データがどう関係するか | `@er` | [注文データ](../examples/er.html) |
-| ソフトウェアの責任境界がどこか | `@component` | [アプリケーション境界](../examples/component.html) |
-| クラスがどう関係するか | `@class` | [注文ドメイン](../examples/class.html) |
-| 利用者がシステムで何をしたいか | `@usecase` | [システムの目的](../examples/usecase.html) |
-| UML のアクションがどう協調するか | `@activity` | [注文アクティビティ](../examples/activity.html) |
-| プレゼンで何を一つ伝えるか | `@slide` | [KPI サマリー](../examples/slide-patterns.html) |
-| 信号や状態がいつ変わるか | `@timing` | [Timing](../examples/timing.html) |
+| ソフトウェアがどこで動くか | `@deployment` | [本番サービス](https://hachiware-labs.github.io/finch-js/examples/deployment.html) |
+| 型を決めずに要素同士の関係を見たい | `@graph` | [コマースシステムマップ](https://hachiware-labs.github.io/finch-js/examples/graph.html) |
+| 何がどの順番で起きるか | `@sequence` | [購入処理の呼び出し](https://hachiware-labs.github.io/finch-js/examples/sequence.html) |
+| 手順がどう分岐するか | `@flowchart` | [審査フロー](https://hachiware-labs.github.io/finch-js/examples/flowchart.html) |
+| 状態がどう変わるか | `@state` | [ジョブのライフサイクル](https://hachiware-labs.github.io/finch-js/examples/state.html) |
+| データがどう関係するか | `@er` | [注文データ](https://hachiware-labs.github.io/finch-js/examples/er.html) |
+| ソフトウェアの責任境界がどこか | `@component` | [アプリケーション境界](https://hachiware-labs.github.io/finch-js/examples/component.html) |
+| クラスがどう関係するか | `@class` | [注文ドメイン](https://hachiware-labs.github.io/finch-js/examples/class.html) |
+| 利用者がシステムで何をしたいか | `@usecase` | [システムの目的](https://hachiware-labs.github.io/finch-js/examples/usecase.html) |
+| UML のアクションがどう協調するか | `@activity` | [注文アクティビティ](https://hachiware-labs.github.io/finch-js/examples/activity.html) |
+| プレゼンで何を一つ伝えるか | `@slide` | [KPI サマリー](https://hachiware-labs.github.io/finch-js/examples/slide-patterns.html) |
+| 信号や状態がいつ変わるか | `@timing` | [Timing](https://hachiware-labs.github.io/finch-js/examples/timing.html) |
 
 最初から全語彙を覚えず、目的に近い作例を開いてソースを変更してください。[リファレンス](./reference_ja.md)には、よく使う宣言とすべての完成例へのリンクがあります。
 
@@ -135,4 +135,4 @@ reserve --> audit: 非同期
 - [ことばから図を作るデモ](generating_ja.md)
 - [アプリへの組み込み](embedding_ja.md)
 - [アイコン・色・画像](icons_ja.md)
-- [UML example guide](../examples/uml-guide.html)
+- [UML example guide](https://hachiware-labs.github.io/finch-js/examples/uml-guide.html)

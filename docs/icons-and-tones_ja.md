@@ -79,7 +79,7 @@ node app "自社サービス" [image="https://example.com/logo.svg" imageShape=r
 
 外部画像の取得には配信元のCORS許可が必要です。file://で開いたローカル画像は表示できても書き出し時の取得をブラウザが拒否する場合があるため、HTTPで開くかdata URLを使ってください。取得失敗時は欠落したまま保存せずエラーを返します。編集用HTMLの保存はソースの画像参照を保持するので、画像・パック・ランタイムも一緒に配布してください。
 
-[全パックと画像の例](../examples/icon-packs.html)
+[全パックと画像の例](https://hachiware-labs.github.io/finch-js/examples/icon-packs.html)
 
 Lucide のライセンスは配布物の `LUCIDE-LICENSE.txt` に含めています。
 

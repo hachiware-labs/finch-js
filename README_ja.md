@@ -4,7 +4,7 @@
 
 **テキストで図を描き、手で整えた配置を、テキストの変更後も保つ。** ノードIDで配置を引き継ぐ、編集可能なSVGダイアグラムライブラリです。
 
-[![AWS・PostgreSQL・Lucideアイコンで描いた編集可能なアプリケーション構成図](./docs/assets/finch-architecture-hero-ja.png)](./examples/readme-hero.html?lang=ja)
+[![AWS・PostgreSQL・Lucideアイコンで描いた編集可能なアプリケーション構成図](./docs/assets/finch-architecture-hero-ja.png)](https://hachiware-labs.github.io/finch-js/examples/readme-hero.html?lang=ja)
 
 ## クイックスタート
 
@@ -44,11 +44,11 @@ IDと表示名は別です。`api` は変えず、`"API server"` だけを書き
 
 図の左下にあるピンクの **Finchボタン** をクリックすると、エディターが開きます。**Source** で要素と接続を追加し、ノードをドラッグ＆ドロップして配置を整えます。
 
-[![Finchを開き、配備図にRedisと接続を追加してからノードを移動する](./docs/assets/finch-editing-demo-ja.gif)](./examples/readme-demo.html?lang=ja)
+[![Finchを開き、配備図にRedisと接続を追加してからノードを移動する](./docs/assets/finch-editing-demo-ja.gif)](https://hachiware-labs.github.io/finch-js/examples/readme-demo.html?lang=ja)
 
 ソースをもう一度書き換えても、移動したノードは手で決めた位置を保ちます。ノードのIDはそのままにしてください。
 
-デモではRedisキャッシュを追加し、APIサーバーから接続をつないで、ノードを移動しています。[編集できる配備図の作例](./examples/readme-demo.html?lang=ja)で試せます。**Save** を押すと、ソースと配置をまとめて編集可能なHTMLに保存できます。一通りの操作は[15分チュートリアル](./docs/tutorial_ja.md)で確認できます。
+デモではRedisキャッシュを追加し、APIサーバーから接続をつないで、ノードを移動しています。[編集できる配備図の作例](https://hachiware-labs.github.io/finch-js/examples/readme-demo.html?lang=ja)で試せます。**Save** を押すと、ソースと配置をまとめて編集可能なHTMLに保存できます。一通りの操作は[15分チュートリアル](./docs/tutorial_ja.md)で確認できます。
 
 [チュートリアル](./docs/tutorial_ja.md) · [作例を見る](./examples/README.md) · [npm パッケージ](https://www.npmjs.com/package/@hachiware-labs/finch-js)
 
@@ -56,18 +56,18 @@ IDと表示名は別です。`api` は変えず、`"API server"` だけを書き
 
 | ディレクティブ | 用途 | 作例 |
 | --- | --- | --- |
-| `@deployment` | システムやインフラの構成 | [Deployment](./examples/deployment.html) |
-| `@graph` | 汎用的な関係とグループ化したシステム | [Graph](./examples/graph.html) |
-| `@sequence` | 時系列のやり取り | [Sequence](./examples/sequence.html) |
-| `@flowchart` | 手順や分岐 | [Flowchart](./examples/flowchart.html) |
-| `@state` | 状態と遷移 | [State](./examples/state.html) |
-| `@er` | エンティティと関連 | [ER](./examples/er.html) |
-| `@component` | ソフトウェアの境界とインターフェース | [Component](./examples/component.html) |
-| `@slide` | プレゼンテーション用の図 | [Slide](./examples/slide.html) |
-| `@class` | クラスと UML の関係 | [Class](./examples/class.html) |
-| `@usecase` | アクターとシステムの目的 | [Use case](./examples/usecase.html) |
-| `@activity` | アクションと制御フロー | [Activity](./examples/activity.html) |
-| `@timing` | 信号と状態の時間変化 | [Timing](./examples/timing.html) |
+| `@deployment` | システムやインフラの構成 | [Deployment](https://hachiware-labs.github.io/finch-js/examples/deployment.html) |
+| `@graph` | 汎用的な関係とグループ化したシステム | [Graph](https://hachiware-labs.github.io/finch-js/examples/graph.html) |
+| `@sequence` | 時系列のやり取り | [Sequence](https://hachiware-labs.github.io/finch-js/examples/sequence.html) |
+| `@flowchart` | 手順や分岐 | [Flowchart](https://hachiware-labs.github.io/finch-js/examples/flowchart.html) |
+| `@state` | 状態と遷移 | [State](https://hachiware-labs.github.io/finch-js/examples/state.html) |
+| `@er` | エンティティと関連 | [ER](https://hachiware-labs.github.io/finch-js/examples/er.html) |
+| `@component` | ソフトウェアの境界とインターフェース | [Component](https://hachiware-labs.github.io/finch-js/examples/component.html) |
+| `@slide` | プレゼンテーション用の図 | [Slide](https://hachiware-labs.github.io/finch-js/examples/slide.html) |
+| `@class` | クラスと UML の関係 | [Class](https://hachiware-labs.github.io/finch-js/examples/class.html) |
+| `@usecase` | アクターとシステムの目的 | [Use case](https://hachiware-labs.github.io/finch-js/examples/usecase.html) |
+| `@activity` | アクションと制御フロー | [Activity](https://hachiware-labs.github.io/finch-js/examples/activity.html) |
+| `@timing` | 信号と状態の時間変化 | [Timing](https://hachiware-labs.github.io/finch-js/examples/timing.html) |
 
 ## インストール
 
@@ -93,24 +93,24 @@ script 要素から使う場合は、ブラウザーグローバル版を読み�
 
 <table>
 <tr>
-<td align="center" width="50%"><strong>Default</strong><br><a href="./examples/style-study.html"><img src="./docs/assets/finch-style-default-ja.png" alt="Default: 注文処理のフローチャート" width="320"></a></td>
-<td align="center" width="50%"><strong>Prism</strong><br><a href="./examples/style-study.html"><img src="./docs/assets/finch-style-prism-ja.png" alt="Prism: 注文処理のフローチャート" width="320"></a></td>
+<td align="center" width="50%"><strong>Default</strong><br><a href="https://hachiware-labs.github.io/finch-js/examples/style-study.html"><img src="./docs/assets/finch-style-default-ja.png" alt="Default: 注文処理のフローチャート" width="320"></a></td>
+<td align="center" width="50%"><strong>Prism</strong><br><a href="https://hachiware-labs.github.io/finch-js/examples/style-study.html"><img src="./docs/assets/finch-style-prism-ja.png" alt="Prism: 注文処理のフローチャート" width="320"></a></td>
 </tr>
 <tr>
-<td align="center" width="50%"><strong>Midnight</strong><br><a href="./examples/style-study.html"><img src="./docs/assets/finch-style-midnight-ja.png" alt="Midnight: 注文処理のフローチャート" width="320"></a></td>
-<td align="center" width="50%"><strong>Precision</strong><br><a href="./examples/style-study.html"><img src="./docs/assets/finch-style-precision-ja.png" alt="Precision: 注文処理のフローチャート" width="320"></a></td>
+<td align="center" width="50%"><strong>Midnight</strong><br><a href="https://hachiware-labs.github.io/finch-js/examples/style-study.html"><img src="./docs/assets/finch-style-midnight-ja.png" alt="Midnight: 注文処理のフローチャート" width="320"></a></td>
+<td align="center" width="50%"><strong>Precision</strong><br><a href="https://hachiware-labs.github.io/finch-js/examples/style-study.html"><img src="./docs/assets/finch-style-precision-ja.png" alt="Precision: 注文処理のフローチャート" width="320"></a></td>
 </tr>
 <tr>
-<td align="center" width="50%"><strong>Business</strong><br><a href="./examples/style-study.html"><img src="./docs/assets/finch-style-business-ja.png" alt="Business: 注文処理のフローチャート" width="320"></a></td>
-<td align="center" width="50%"><strong>Business + shadow</strong><br><a href="./examples/style-study.html"><img src="./docs/assets/finch-style-business-shadow-ja.png" alt="Business + shadow: 注文処理のフローチャート" width="320"></a></td>
+<td align="center" width="50%"><strong>Business</strong><br><a href="https://hachiware-labs.github.io/finch-js/examples/style-study.html"><img src="./docs/assets/finch-style-business-ja.png" alt="Business: 注文処理のフローチャート" width="320"></a></td>
+<td align="center" width="50%"><strong>Business + shadow</strong><br><a href="https://hachiware-labs.github.io/finch-js/examples/style-study.html"><img src="./docs/assets/finch-style-business-shadow-ja.png" alt="Business + shadow: 注文処理のフローチャート" width="320"></a></td>
 </tr>
 <tr>
-<td align="center" width="50%"><strong>Editorial</strong><br><a href="./examples/style-study.html"><img src="./docs/assets/finch-style-editorial-ja.png" alt="Editorial: 注文処理のフローチャート" width="320"></a></td>
-<td align="center" width="50%"><strong>Editorial + shadow</strong><br><a href="./examples/style-study.html"><img src="./docs/assets/finch-style-editorial-shadow-ja.png" alt="Editorial + shadow: 注文処理のフローチャート" width="320"></a></td>
+<td align="center" width="50%"><strong>Editorial</strong><br><a href="https://hachiware-labs.github.io/finch-js/examples/style-study.html"><img src="./docs/assets/finch-style-editorial-ja.png" alt="Editorial: 注文処理のフローチャート" width="320"></a></td>
+<td align="center" width="50%"><strong>Editorial + shadow</strong><br><a href="https://hachiware-labs.github.io/finch-js/examples/style-study.html"><img src="./docs/assets/finch-style-editorial-shadow-ja.png" alt="Editorial + shadow: 注文処理のフローチャート" width="320"></a></td>
 </tr>
 </table>
 
-[スタイル比較ページ](./examples/style-study.html)で図の種類や影の有無を切り替え、SVGを保存できます。Default・Prism・Midnightは組み込みテーマ、Business・Precision・Editorialは比較ページで定義したカスタムテーマの作例です。「+ shadow」は影ありのバリエーションです。
+[スタイル比較ページ](https://hachiware-labs.github.io/finch-js/examples/style-study.html)で図の種類や影の有無を切り替え、SVGを保存できます。Default・Prism・Midnightは組み込みテーマ、Business・Precision・Editorialは比較ページで定義したカスタムテーマの作例です。「+ shadow」は影ありのバリエーションです。
 
 ## アイコン・役割色・自分の画像
 
@@ -126,7 +126,7 @@ container services "サービス" [tone=green] {
 
 デフォルトはLucideです。AWS・Azure・Google Cloud・Kubernetes・Simple Iconsの追加パックを読み込めば、`icon=aws:application-auto-scaling` や `icon=simple:github` を指定できます。自分の画像は `image="./photo.png"`、丸型・角丸は `imageShape=circle`・`imageShape=rounded` で指定します。
 
-0.7.0のアイコンの使い方は、[アイコンと画像の作例](./examples/icon-packs.html)、[アイコンガイド](./docs/icons_ja.md)、[パックの出典](./icon-packs/NOTICE.md)を参照してください。
+0.7.0のアイコンの使い方は、[アイコンと画像の作例](https://hachiware-labs.github.io/finch-js/examples/icon-packs.html)、[アイコンガイド](./docs/icons_ja.md)、[パックの出典](./icon-packs/NOTICE.md)を参照してください。
 
 ## コーディングエージェントで図を作る
 
@@ -157,7 +157,7 @@ npx skills add hachiware-labs/finch-js --skill finch
 - [スライドパターン](./docs/slide-patterns_ja.md)：KPI、データストーリー、ロードマップ、比較、顧客の声を再利用できる形で組み立てます。
 - [アプリへの組み込みと保存](./docs/embedding_ja.md)
 - [ことばから図を作るデモ](./docs/generating_ja.md)
-- [UML作例と追加記法](./examples/uml-guide.html)
+- [UML作例と追加記法](https://hachiware-labs.github.io/finch-js/examples/uml-guide.html)
 - [include・繰り返し・関数](./docs/preprocessing_ja.md)
 - [注釈とシーケンスのページ出力](./docs/annotations_ja.md)
 - [プラグイン開発ガイド](./docs/plugin-development_ja.md)

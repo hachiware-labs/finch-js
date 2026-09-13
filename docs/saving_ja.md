@@ -1,6 +1,6 @@
 # HTML保存とホスト連携
 
-[動くサンプル](../examples/save.html) · [リファレンス](./reference_ja.md)
+[動くサンプル](https://hachiware-labs.github.io/finch-js/examples/save.html) · [リファレンス](./reference_ja.md)
 
 エディタ拡張や投稿サービスへ組み込む場合は、[プラグイン開発ガイド](./plugin-development_ja.md)を参照してください。
 

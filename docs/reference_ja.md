@@ -28,17 +28,17 @@ billing-api -> ledger: SQL
 
 | ディレクティブ | よく使う宣言 | 完成例 |
 | --- | --- | --- |
-| `@deployment` | `node`、`device`、`execution`、`artifact`、`server`、`database`、`container` | [deployment.html](../examples/deployment.html) |
-| `@graph` | 型なしノード、接続時の暗黙ノード、`group`、`direction=LR` | [graph.html](../examples/graph.html) |
-| `@sequence` | `participant`、`actor`、メッセージ、`group`、`alt`、`opt`、`loop`、`par`、`critical`、`break` | [sequence.html](../examples/sequence.html) |
-| `@flowchart` | `start`、`process`、`decision`、`input`、`output`、`end` | [flowchart.html](../examples/flowchart.html) |
-| `@state` | `initial`、`state`、`choice`、`fork`、`join`、`history`、`deep-history`、`final` | [state.html](../examples/state.html) |
-| `@er` | `entity`、フィールド、`pk`、`fk`、`unique`、多重度 | [er.html](../examples/er.html) |
-| `@component` | `system`、`component`、`port`、`provided`、`required`、`artifact`、`external` | [component.html](../examples/component.html) |
-| `@slide` | `title`、`subtitle`、レイアウト、`card`、`metric`、`bar`、`quote`、`milestone`、`callout`、`arrow` | [slide.html](../examples/slide.html) |
-| `@class` | `class`、`abstract`、`interface`、`enum`、メンバー、UML 関係、多重度 | [class.html](../examples/class.html) |
-| `@usecase` | `actor`、`system`、`usecase`、`include`、`extend`、`generalize` | [usecase.html](../examples/usecase.html) |
-| `@activity` | `action`、`decision`、`merge`、`fork`、`join`、`object`、ガード | [activity.html](../examples/activity.html) |
+| `@deployment` | `node`、`device`、`execution`、`artifact`、`server`、`database`、`container` | [deployment.html](https://hachiware-labs.github.io/finch-js/examples/deployment.html) |
+| `@graph` | 型なしノード、接続時の暗黙ノード、`group`、`direction=LR` | [graph.html](https://hachiware-labs.github.io/finch-js/examples/graph.html) |
+| `@sequence` | `participant`、`actor`、メッセージ、`group`、`alt`、`opt`、`loop`、`par`、`critical`、`break` | [sequence.html](https://hachiware-labs.github.io/finch-js/examples/sequence.html) |
+| `@flowchart` | `start`、`process`、`decision`、`input`、`output`、`end` | [flowchart.html](https://hachiware-labs.github.io/finch-js/examples/flowchart.html) |
+| `@state` | `initial`、`state`、`choice`、`fork`、`join`、`history`、`deep-history`、`final` | [state.html](https://hachiware-labs.github.io/finch-js/examples/state.html) |
+| `@er` | `entity`、フィールド、`pk`、`fk`、`unique`、多重度 | [er.html](https://hachiware-labs.github.io/finch-js/examples/er.html) |
+| `@component` | `system`、`component`、`port`、`provided`、`required`、`artifact`、`external` | [component.html](https://hachiware-labs.github.io/finch-js/examples/component.html) |
+| `@slide` | `title`、`subtitle`、レイアウト、`card`、`metric`、`bar`、`quote`、`milestone`、`callout`、`arrow` | [slide.html](https://hachiware-labs.github.io/finch-js/examples/slide.html) |
+| `@class` | `class`、`abstract`、`interface`、`enum`、メンバー、UML 関係、多重度 | [class.html](https://hachiware-labs.github.io/finch-js/examples/class.html) |
+| `@usecase` | `actor`、`system`、`usecase`、`include`、`extend`、`generalize` | [usecase.html](https://hachiware-labs.github.io/finch-js/examples/usecase.html) |
+| `@activity` | `action`、`decision`、`merge`、`fork`、`join`、`object`、ガード | [activity.html](https://hachiware-labs.github.io/finch-js/examples/activity.html) |
 
 ## 標準エディター
 
@@ -105,7 +105,7 @@ review -> done: 確認が完了したら\n利用者に結果を知らせる
 `;
 ```
 
-保存済みの座標とピン留めは維持します。保存済みの幅や高さが現在の文字を収めるには小さすぎる場合は、必要な大きさまで広げます。[折り返しの作例](../examples/label-wrapping.html)で挙動を確認できます。
+保存済みの座標とピン留めは維持します。保存済みの幅や高さが現在の文字を収めるには小さすぎる場合は、必要な大きさまで広げます。[折り返しの作例](https://hachiware-labs.github.io/finch-js/examples/label-wrapping.html)で挙動を確認できます。
 
 ## 保存
 
@@ -188,7 +188,7 @@ diagram.setTheme("default");
 diagram.setLayout("compact");
 ```
 
-独自の Diagram、Shape、Layout、Theme を登録する場合は、`createFinch()` で独立した registry を作れます。plugin の契約は[Finch.js の拡張](./extensions_ja.md)、一式を組み合わせる完成例は [extensions.html](../examples/extensions.html)を参照してください。
+独自の Diagram、Shape、Layout、Theme を登録する場合は、`createFinch()` で独立した registry を作れます。plugin の契約は[Finch.js の拡張](./extensions_ja.md)、一式を組み合わせる完成例は [extensions.html](https://hachiware-labs.github.io/finch-js/examples/extensions.html)を参照してください。
 
 ## インスタンス API
 

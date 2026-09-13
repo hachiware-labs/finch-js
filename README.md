@@ -4,7 +4,7 @@
 
 **Draw diagrams from text, then keep your hand-tuned layout as the text changes.** Finch.js renders editable SVG diagrams and preserves positions through stable node IDs.
 
-[![Editable application architecture with AWS, PostgreSQL, and Lucide icons](./docs/assets/finch-architecture-hero-en.png)](./examples/readme-hero.html)
+[![Editable application architecture with AWS, PostgreSQL, and Lucide icons](./docs/assets/finch-architecture-hero-en.png)](https://hachiware-labs.github.io/finch-js/examples/readme-hero.html)
 
 ## Quick start
 
@@ -44,11 +44,11 @@ IDs and labels are separate. Keep `api` stable while changing `"API server"`; th
 
 Click the pink **Finch button** in the lower-left of the diagram to open the editor. Add elements and connections in **Source**, then drag and drop nodes to arrange the diagram.
 
-[![Open Finch, add Redis and its connection to a deployment diagram, then drag nodes into place](./docs/assets/finch-editing-demo.gif)](./examples/readme-demo.html)
+[![Open Finch, add Redis and its connection to a deployment diagram, then drag nodes into place](./docs/assets/finch-editing-demo.gif)](https://hachiware-labs.github.io/finch-js/examples/readme-demo.html)
 
 Edit the source again — the nodes you moved stay where you put them. Keep their IDs unchanged.
 
-The demo adds a Redis cache, connects it to the API server, and moves the nodes into place. [Try the editable deployment example](./examples/readme-demo.html). Press **Save** to save your source and layout together as editable HTML, or follow the [15-minute tutorial](./docs/tutorial.md).
+The demo adds a Redis cache, connects it to the API server, and moves the nodes into place. [Try the editable deployment example](https://hachiware-labs.github.io/finch-js/examples/readme-demo.html). Press **Save** to save your source and layout together as editable HTML, or follow the [15-minute tutorial](./docs/tutorial.md).
 
 [Tutorial](./docs/tutorial.md) · [Example gallery](./examples/README.md) · [npm package](https://www.npmjs.com/package/@hachiware-labs/finch-js)
 
@@ -56,18 +56,18 @@ The demo adds a Redis cache, connects it to the API server, and moves the nodes 
 
 | Directive | Use it for | Example |
 | --- | --- | --- |
-| `@deployment` | Systems and infrastructure | [Deployment](./examples/deployment.html) |
-| `@graph` | General relationships and grouped systems | [Graph](./examples/graph.html) |
-| `@sequence` | Ordered interactions | [Sequence](./examples/sequence.html) |
-| `@flowchart` | Processes and decisions | [Flowchart](./examples/flowchart.html) |
-| `@state` | Lifecycles and transitions | [State](./examples/state.html) |
-| `@er` | Entities and relationships | [ER](./examples/er.html) |
-| `@component` | Software boundaries and interfaces | [Component](./examples/component.html) |
-| `@slide` | Presentation visuals | [Slide](./examples/slide.html) |
-| `@class` | Classes and UML relationships | [Class](./examples/class.html) |
-| `@usecase` | Actors and system goals | [Use case](./examples/usecase.html) |
-| `@activity` | Actions and control flow | [Activity](./examples/activity.html) |
-| `@timing` | Signals and states over time | [Timing](./examples/timing.html) |
+| `@deployment` | Systems and infrastructure | [Deployment](https://hachiware-labs.github.io/finch-js/examples/deployment.html) |
+| `@graph` | General relationships and grouped systems | [Graph](https://hachiware-labs.github.io/finch-js/examples/graph.html) |
+| `@sequence` | Ordered interactions | [Sequence](https://hachiware-labs.github.io/finch-js/examples/sequence.html) |
+| `@flowchart` | Processes and decisions | [Flowchart](https://hachiware-labs.github.io/finch-js/examples/flowchart.html) |
+| `@state` | Lifecycles and transitions | [State](https://hachiware-labs.github.io/finch-js/examples/state.html) |
+| `@er` | Entities and relationships | [ER](https://hachiware-labs.github.io/finch-js/examples/er.html) |
+| `@component` | Software boundaries and interfaces | [Component](https://hachiware-labs.github.io/finch-js/examples/component.html) |
+| `@slide` | Presentation visuals | [Slide](https://hachiware-labs.github.io/finch-js/examples/slide.html) |
+| `@class` | Classes and UML relationships | [Class](https://hachiware-labs.github.io/finch-js/examples/class.html) |
+| `@usecase` | Actors and system goals | [Use case](https://hachiware-labs.github.io/finch-js/examples/usecase.html) |
+| `@activity` | Actions and control flow | [Activity](https://hachiware-labs.github.io/finch-js/examples/activity.html) |
+| `@timing` | Signals and states over time | [Timing](https://hachiware-labs.github.io/finch-js/examples/timing.html) |
 
 ## Install
 
@@ -91,24 +91,24 @@ The same flowchart, rendered in different styles.
 
 <table>
 <tr>
-<td align="center" width="50%"><strong>Default</strong><br><a href="./examples/style-study.html"><img src="./docs/assets/finch-style-default-en.png" alt="Default: order fulfillment flowchart" width="320"></a></td>
-<td align="center" width="50%"><strong>Prism</strong><br><a href="./examples/style-study.html"><img src="./docs/assets/finch-style-prism-en.png" alt="Prism: order fulfillment flowchart" width="320"></a></td>
+<td align="center" width="50%"><strong>Default</strong><br><a href="https://hachiware-labs.github.io/finch-js/examples/style-study.html"><img src="./docs/assets/finch-style-default-en.png" alt="Default: order fulfillment flowchart" width="320"></a></td>
+<td align="center" width="50%"><strong>Prism</strong><br><a href="https://hachiware-labs.github.io/finch-js/examples/style-study.html"><img src="./docs/assets/finch-style-prism-en.png" alt="Prism: order fulfillment flowchart" width="320"></a></td>
 </tr>
 <tr>
-<td align="center" width="50%"><strong>Midnight</strong><br><a href="./examples/style-study.html"><img src="./docs/assets/finch-style-midnight-en.png" alt="Midnight: order fulfillment flowchart" width="320"></a></td>
-<td align="center" width="50%"><strong>Precision</strong><br><a href="./examples/style-study.html"><img src="./docs/assets/finch-style-precision-en.png" alt="Precision: order fulfillment flowchart" width="320"></a></td>
+<td align="center" width="50%"><strong>Midnight</strong><br><a href="https://hachiware-labs.github.io/finch-js/examples/style-study.html"><img src="./docs/assets/finch-style-midnight-en.png" alt="Midnight: order fulfillment flowchart" width="320"></a></td>
+<td align="center" width="50%"><strong>Precision</strong><br><a href="https://hachiware-labs.github.io/finch-js/examples/style-study.html"><img src="./docs/assets/finch-style-precision-en.png" alt="Precision: order fulfillment flowchart" width="320"></a></td>
 </tr>
 <tr>
-<td align="center" width="50%"><strong>Business</strong><br><a href="./examples/style-study.html"><img src="./docs/assets/finch-style-business-en.png" alt="Business: order fulfillment flowchart" width="320"></a></td>
-<td align="center" width="50%"><strong>Business + shadow</strong><br><a href="./examples/style-study.html"><img src="./docs/assets/finch-style-business-shadow-en.png" alt="Business + shadow: order fulfillment flowchart" width="320"></a></td>
+<td align="center" width="50%"><strong>Business</strong><br><a href="https://hachiware-labs.github.io/finch-js/examples/style-study.html"><img src="./docs/assets/finch-style-business-en.png" alt="Business: order fulfillment flowchart" width="320"></a></td>
+<td align="center" width="50%"><strong>Business + shadow</strong><br><a href="https://hachiware-labs.github.io/finch-js/examples/style-study.html"><img src="./docs/assets/finch-style-business-shadow-en.png" alt="Business + shadow: order fulfillment flowchart" width="320"></a></td>
 </tr>
 <tr>
-<td align="center" width="50%"><strong>Editorial</strong><br><a href="./examples/style-study.html"><img src="./docs/assets/finch-style-editorial-en.png" alt="Editorial: order fulfillment flowchart" width="320"></a></td>
-<td align="center" width="50%"><strong>Editorial + shadow</strong><br><a href="./examples/style-study.html"><img src="./docs/assets/finch-style-editorial-shadow-en.png" alt="Editorial + shadow: order fulfillment flowchart" width="320"></a></td>
+<td align="center" width="50%"><strong>Editorial</strong><br><a href="https://hachiware-labs.github.io/finch-js/examples/style-study.html"><img src="./docs/assets/finch-style-editorial-en.png" alt="Editorial: order fulfillment flowchart" width="320"></a></td>
+<td align="center" width="50%"><strong>Editorial + shadow</strong><br><a href="https://hachiware-labs.github.io/finch-js/examples/style-study.html"><img src="./docs/assets/finch-style-editorial-shadow-en.png" alt="Editorial + shadow: order fulfillment flowchart" width="320"></a></td>
 </tr>
 </table>
 
-[Compare styles](./examples/style-study.html), toggle shadows, and export SVGs. Default, Prism, and Midnight are built-in themes. Business, Precision, and Editorial are custom theme examples defined in that page; “+ shadow” shows a shadow-enabled variant.
+[Compare styles](https://hachiware-labs.github.io/finch-js/examples/style-study.html), toggle shadows, and export SVGs. Default, Prism, and Midnight are built-in themes. Business, Precision, and Editorial are custom theme examples defined in that page; “+ shadow” shows a shadow-enabled variant.
 
 ## Icons, role colors, and your images
 
@@ -124,7 +124,7 @@ container services "Services" [tone=green] {
 
 Lucide is the default. Optional AWS, Azure, Google Cloud, Kubernetes, and Simple Icons packs use names such as `icon=aws:application-auto-scaling` and `icon=simple:github`. Load the required pack after Finch. Use `image="./photo.png"` for your own image, optionally with `imageShape=circle` or `imageShape=rounded`.
 
-For icons in 0.7.0, open the [icon and image example](./examples/icon-packs.html). See [the icon guide](./docs/icons.md) for a complete HTML example and export requirements, and [pack sources](./icon-packs/NOTICE.md) for asset versions and terms.
+For icons in 0.7.0, open the [icon and image example](https://hachiware-labs.github.io/finch-js/examples/icon-packs.html). See [the icon guide](./docs/icons.md) for a complete HTML example and export requirements, and [pack sources](./icon-packs/NOTICE.md) for asset versions and terms.
 
 ## Create diagrams with your coding agent
 
@@ -155,7 +155,7 @@ Use `exportMarkdown()` and `Finch.renderMarkdown()` to save and restore a diagra
 - [Slide patterns](./docs/slide-patterns.md): reusable KPI, data-story, roadmap, comparison, and customer-evidence recipes.
 - [Embedding and saving](./docs/embedding.md)
 - [Generate a diagram from a prompt](./docs/generating.md)
-- [UML examples and extensions](./examples/uml-guide.html)
+- [UML examples and extensions](https://hachiware-labs.github.io/finch-js/examples/uml-guide.html)
 - [Includes, loops, and functions](./docs/preprocessing.md)
 - [Notes and sequence pages](./docs/annotations.md)
 - [Plugin development guide (Japanese)](./docs/plugin-development_ja.md)

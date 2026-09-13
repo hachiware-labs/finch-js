@@ -1,6 +1,6 @@
 # 簡潔なUML拡張
 
-[編集できるサンプル](../examples/uml-concise.html)に、次の記法を含む4種類の図を掲載しています。現在のリポジトリのビルドを使用してください。
+[編集できるサンプル](https://hachiware-labs.github.io/finch-js/examples/uml-concise.html)に、次の記法を含む4種類の図を掲載しています。現在のリポジトリのビルドを使用してください。
 
 ## 注釈と制約
 

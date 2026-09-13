@@ -4,7 +4,7 @@
 
 Finch.js exposes four plugin boundaries. A Diagram plugin turns source into meaning, a Shape plugin measures and draws one kind of node, a Layout plugin turns measured items into geometry, and a Theme plugin supplies visual tokens. These boundaries meet at public models, so an extension does not need access to the parser, router, scene, or SVG renderer internals.
 
-The [browser extension example](../examples/extensions.html) combines all four plugins into a small service-map DSL. This guide explains why each part exists and what its contract must preserve.
+The [browser extension example](https://hachiware-labs.github.io/finch-js/examples/extensions.html) combines all four plugins into a small service-map DSL. This guide explains why each part exists and what its contract must preserve.
 
 ## Start with an isolated engine
 
@@ -227,7 +227,7 @@ const serviceLanes: LayoutPlugin = {
 finch.registerLayout("service-lanes", serviceLanes);
 ```
 
-The abbreviated body is intentional: the full, working implementation is embedded in [`examples/extensions.html`](../examples/extensions.html). A useful layout must make several decisions together, and copying only its coordinate loop would hide important responsibilities.
+The abbreviated body is intentional: the full, working implementation is embedded in [`examples/extensions.html`](https://hachiware-labs.github.io/finch-js/examples/extensions.html). A useful layout must make several decisions together, and copying only its coordinate loop would hide important responsibilities.
 
 A layout should preserve these behaviors:
 

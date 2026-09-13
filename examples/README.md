@@ -4,50 +4,50 @@ These examples intentionally combine several supported DSL features while remain
 
 Every rendered diagram uses the standard Finch editor: the compact icon in the SVG's lower-left opens the connected editor below the image. A closed editor keeps the diagram in view mode. Save is explicit, and SVG/PNG exports omit the editor icon.
 
-The looping [`readme-demo.html`](./readme-demo.html) page is the source for the README animation. Add `?frame=0` through `?frame=4` to hold a specific stage for screenshots or visual review.
+The interactive [`readme-demo.html`](https://hachiware-labs.github.io/finch-js/examples/readme-demo.html) page is the source for the README animation. Use `?lang=ja` for the Japanese demo. The capture script performs the actions used in the README animation.
 
-[`label-wrapping.html`](./label-wrapping.html) demonstrates explicit line breaks, automatic Japanese and English wrapping, shape containment, multiline messages, and complete slide text.
+[`label-wrapping.html`](https://hachiware-labs.github.io/finch-js/examples/label-wrapping.html) demonstrates explicit line breaks, automatic Japanese and English wrapping, shape containment, multiline messages, and complete slide text.
 
-[UML example guide](./uml-guide.html) — basic and advanced examples grouped by diagram type, with a suggested review order.
+[UML example guide](https://hachiware-labs.github.io/finch-js/examples/uml-guide.html) — basic and advanced examples grouped by diagram type, with a suggested review order.
 
 ## Software (UML / ER)
 
 | File | Concepts |
 | --- | --- |
-| `deployment.html` | Nested containers, stable IDs, Shape overrides, container layout hints, subsystem telemetry |
-| `graph.html` | Typeless and implicit nodes, grouped boundaries, shape overrides, left-to-right layout |
-| `sequence.html` | Explicit participants, nested frames, loop, opt, self message, call/return activations |
-| `flowchart.html` | Vertical reading flow, multiple decisions, labeled branches, exceptional dashed path, retry cycles |
-| `state.html` | Cyclic transitions, cancellation, semantic junction, vertical fork/join path |
-| `er.html` | Entity fields, PK/FK/unique flags, one-to-many and optional cardinalities |
-| `component.html` | Nested systems, components, interfaces, databases, external dependencies |
-| `class.html` | UML classifiers, members, visibility, relationships, multiplicities |
-| `usecase.html` | Actors, system boundary, include, extend, generalization |
-| `activity.html` | Actions, guards, fork/join bars, decisions, merge points, object nodes |
-| [timing.html](./timing.html) | Signals, clocks, time anchors, uncertain ranges and hidden intervals. |
-| [class-views.html](./class-views.html) | Visibility filters and notes attached to attribute or operation rows. |
-| [class-namespaces.html](./class-namespaces.html) | Local names, qualified references and isolated classifiers. |
-| [template-binding.html](./template-binding.html) | Formal-to-actual template argument substitutions. |
-| [sequence-external.html](./sequence-external.html) | Boundary messages, found sources and lost destinations. |
-| [sequence-roles.html](./sequence-roles.html) | Boundary, control, entity, database, collections and queue symbols. |
-| [activity-split.html](./activity-split.html) | Split processing with terminated paths excluded from the merge. |
-| [objects-templates.html](./objects-templates.html) | Instance slots and generic parameter compartments. |
-| [uml-complete.html](./uml-complete.html) | State-machine and sequence lifetime examples. |
-| [state-advanced.html](./state-advanced.html) | History and composite-state boundary connection points. |
+| [deployment.html](https://hachiware-labs.github.io/finch-js/examples/deployment.html) | Nested containers, stable IDs, Shape overrides, container layout hints, subsystem telemetry |
+| [graph.html](https://hachiware-labs.github.io/finch-js/examples/graph.html) | Typeless and implicit nodes, grouped boundaries, shape overrides, left-to-right layout |
+| [sequence.html](https://hachiware-labs.github.io/finch-js/examples/sequence.html) | Explicit participants, nested frames, loop, opt, self message, call/return activations |
+| [flowchart.html](https://hachiware-labs.github.io/finch-js/examples/flowchart.html) | Vertical reading flow, multiple decisions, labeled branches, exceptional dashed path, retry cycles |
+| [state.html](https://hachiware-labs.github.io/finch-js/examples/state.html) | Cyclic transitions, cancellation, semantic junction, vertical fork/join path |
+| [er.html](https://hachiware-labs.github.io/finch-js/examples/er.html) | Entity fields, PK/FK/unique flags, one-to-many and optional cardinalities |
+| [component.html](https://hachiware-labs.github.io/finch-js/examples/component.html) | Nested systems, components, interfaces, databases, external dependencies |
+| [class.html](https://hachiware-labs.github.io/finch-js/examples/class.html) | UML classifiers, members, visibility, relationships, multiplicities |
+| [usecase.html](https://hachiware-labs.github.io/finch-js/examples/usecase.html) | Actors, system boundary, include, extend, generalization |
+| [activity.html](https://hachiware-labs.github.io/finch-js/examples/activity.html) | Actions, guards, fork/join bars, decisions, merge points, object nodes |
+| [timing.html](https://hachiware-labs.github.io/finch-js/examples/timing.html) | Signals, clocks, time anchors, uncertain ranges and hidden intervals. |
+| [class-views.html](https://hachiware-labs.github.io/finch-js/examples/class-views.html) | Visibility filters and notes attached to attribute or operation rows. |
+| [class-namespaces.html](https://hachiware-labs.github.io/finch-js/examples/class-namespaces.html) | Local names, qualified references and isolated classifiers. |
+| [template-binding.html](https://hachiware-labs.github.io/finch-js/examples/template-binding.html) | Formal-to-actual template argument substitutions. |
+| [sequence-external.html](https://hachiware-labs.github.io/finch-js/examples/sequence-external.html) | Boundary messages, found sources and lost destinations. |
+| [sequence-roles.html](https://hachiware-labs.github.io/finch-js/examples/sequence-roles.html) | Boundary, control, entity, database, collections and queue symbols. |
+| [activity-split.html](https://hachiware-labs.github.io/finch-js/examples/activity-split.html) | Split processing with terminated paths excluded from the merge. |
+| [objects-templates.html](https://hachiware-labs.github.io/finch-js/examples/objects-templates.html) | Instance slots and generic parameter compartments. |
+| [uml-complete.html](https://hachiware-labs.github.io/finch-js/examples/uml-complete.html) | State-machine and sequence lifetime examples. |
+| [state-advanced.html](https://hachiware-labs.github.io/finch-js/examples/state-advanced.html) | History and composite-state boundary connection points. |
 
 ## Slides
 
 | File | Concepts |
 | --- | --- |
-| `slide.html` | Presentation titles, row and grid composition, automatic arrows, notes, callouts, badges |
-| `slide-story.html` | A presentation-ready before/after story with one focused takeaway |
-| `slide-patterns.html` | KPI summary, data story, roadmap, and customer quotation patterns |
+| [slide.html](https://hachiware-labs.github.io/finch-js/examples/slide.html) | Presentation titles, row and grid composition, automatic arrows, notes, callouts, badges |
+| [slide-story.html](https://hachiware-labs.github.io/finch-js/examples/slide-story.html) | A presentation-ready before/after story with one focused takeaway |
+| [slide-patterns.html](https://hachiware-labs.github.io/finch-js/examples/slide-patterns.html) | KPI summary, data story, roadmap, and customer quotation patterns |
 
 ## Plugin composition
 
 | File | Concepts |
 | --- | --- |
-| `extensions.html` | Custom `@services` syntax with card, browser, gateway, shield, star, document, and database shapes |
+| [extensions.html](https://hachiware-labs.github.io/finch-js/examples/extensions.html) | Custom `@services` syntax with card, browser, gateway, shield, star, document, and database shapes |
 
 The standalone pages are:
 

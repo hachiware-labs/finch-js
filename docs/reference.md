@@ -30,17 +30,17 @@ billing-api -> ledger: SQL
 
 | Directive | Common declarations | Complete example |
 | --- | --- | --- |
-| `@deployment` | `node`, `device`, `execution`, `artifact`, `server`, `database`, `container` | [deployment.html](../examples/deployment.html) |
-| `@graph` | typeless nodes, implicit edge endpoints, `group`, `direction=LR` | [graph.html](../examples/graph.html) |
-| `@sequence` | `participant`, `actor`, messages, `group`, `alt`, `opt`, `loop`, `par`, `critical`, `break` | [sequence.html](../examples/sequence.html) |
-| `@flowchart` | `start`, `process`, `decision`, `input`, `output`, `end` | [flowchart.html](../examples/flowchart.html) |
-| `@state` | `initial`, `state`, `choice`, `fork`, `join`, `history`, `deep-history`, `final` | [state.html](../examples/state.html) |
-| `@er` | `entity`, fields, `pk`, `fk`, `unique`, cardinalities | [er.html](../examples/er.html) |
-| `@component` | `system`, `component`, `port`, `provided`, `required`, `artifact`, `external` | [component.html](../examples/component.html) |
-| `@slide` | `title`, `subtitle`, layout blocks, `card`, `metric`, `bar`, `quote`, `milestone`, `callout`, `arrow` | [slide.html](../examples/slide.html) |
-| `@class` | `class`, `abstract`, `interface`, `enum`, members, UML relations and multiplicities | [class.html](../examples/class.html) |
-| `@usecase` | `actor`, `system`, `usecase`, `include`, `extend`, `generalize` | [usecase.html](../examples/usecase.html) |
-| `@activity` | `action`, `decision`, `merge`, `fork`, `join`, `object`, guards | [activity.html](../examples/activity.html) |
+| `@deployment` | `node`, `device`, `execution`, `artifact`, `server`, `database`, `container` | [deployment.html](https://hachiware-labs.github.io/finch-js/examples/deployment.html) |
+| `@graph` | typeless nodes, implicit edge endpoints, `group`, `direction=LR` | [graph.html](https://hachiware-labs.github.io/finch-js/examples/graph.html) |
+| `@sequence` | `participant`, `actor`, messages, `group`, `alt`, `opt`, `loop`, `par`, `critical`, `break` | [sequence.html](https://hachiware-labs.github.io/finch-js/examples/sequence.html) |
+| `@flowchart` | `start`, `process`, `decision`, `input`, `output`, `end` | [flowchart.html](https://hachiware-labs.github.io/finch-js/examples/flowchart.html) |
+| `@state` | `initial`, `state`, `choice`, `fork`, `join`, `history`, `deep-history`, `final` | [state.html](https://hachiware-labs.github.io/finch-js/examples/state.html) |
+| `@er` | `entity`, fields, `pk`, `fk`, `unique`, cardinalities | [er.html](https://hachiware-labs.github.io/finch-js/examples/er.html) |
+| `@component` | `system`, `component`, `port`, `provided`, `required`, `artifact`, `external` | [component.html](https://hachiware-labs.github.io/finch-js/examples/component.html) |
+| `@slide` | `title`, `subtitle`, layout blocks, `card`, `metric`, `bar`, `quote`, `milestone`, `callout`, `arrow` | [slide.html](https://hachiware-labs.github.io/finch-js/examples/slide.html) |
+| `@class` | `class`, `abstract`, `interface`, `enum`, members, UML relations and multiplicities | [class.html](https://hachiware-labs.github.io/finch-js/examples/class.html) |
+| `@usecase` | `actor`, `system`, `usecase`, `include`, `extend`, `generalize` | [usecase.html](https://hachiware-labs.github.io/finch-js/examples/usecase.html) |
+| `@activity` | `action`, `decision`, `merge`, `fork`, `join`, `object`, guards | [activity.html](https://hachiware-labs.github.io/finch-js/examples/activity.html) |
 
 ## Standard editor
 
@@ -89,7 +89,7 @@ review -> done: Review complete\nNotify the applicant
 `;
 ```
 
-Saved node positions and pins remain unchanged. A saved width or height smaller than the current label requires is expanded. For working examples, see [label-wrapping.html](../examples/label-wrapping.html).
+Saved node positions and pins remain unchanged. A saved width or height smaller than the current label requires is expanded. For working examples, see [label-wrapping.html](https://hachiware-labs.github.io/finch-js/examples/label-wrapping.html).
 
 ## Freeze a diagram
 
@@ -189,7 +189,7 @@ diagram.setTheme("default");
 diagram.setLayout("compact");
 ```
 
-Use `createFinch()` to create an isolated registry before registering custom diagrams, shapes, layouts, or themes. See [Extending Finch.js](./extensions.md) for the plugin contracts and [extensions.html](../examples/extensions.html) for a complete composition.
+Use `createFinch()` to create an isolated registry before registering custom diagrams, shapes, layouts, or themes. See [Extending Finch.js](./extensions.md) for the plugin contracts and [extensions.html](https://hachiware-labs.github.io/finch-js/examples/extensions.html) for a complete composition.
 
 ## Instance API
 

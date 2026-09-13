@@ -1,6 +1,6 @@
 # エディタ・投稿サービス向けプラグイン開発ガイド
 
-[README](../README_ja.md) · [APIリファレンス](./reference_ja.md) · [保存の仕様](./saving_ja.md) · [動くサンプル](../examples/save.html)
+[README](../README_ja.md) · [APIリファレンス](./reference_ja.md) · [保存の仕様](./saving_ja.md) · [動くサンプル](https://hachiware-labs.github.io/finch-js/examples/save.html)
 
 FinchをMarkdownエディタ、エディタ拡張、投稿サービスに組み込むためのガイドです。まず、公開した投稿などに図を閲覧専用で表示する最小の組み込みを説明します。その後、利用者が図を編集できるサービスやエディタへ進み、変更通知と文書保存を接続します。独自のShapeやLayoutを登録する拡張は、[Finch.jsを拡張する](./extensions_ja.md)を参照してください。
 
@@ -206,4 +206,4 @@ async function saveFromHost() {
 7. プレビュー破棄時にインスタンスとホスト側の購読を解除する。
 8. 閲覧画面の `freeze()` では保存処理を呼ばず、編集メニュー・鳥アイコン・ノード編集を利用できなくなる。
 
-実装例の入口は [save.html](../examples/save.html)、APIの契約は [types.ts](../src/types.ts)、保存・通知の回帰テストは [document-save.test.ts](../tests/document-save.test.ts) と [freeze.test.ts](../tests/freeze.test.ts) にあります。このガイドには特定のエディタSDKや完成済みのプラグインは含みません。
+実装例の入口は [save.html](https://hachiware-labs.github.io/finch-js/examples/save.html)、APIの契約は [types.ts](../src/types.ts)、保存・通知の回帰テストは [document-save.test.ts](../tests/document-save.test.ts) と [freeze.test.ts](../tests/freeze.test.ts) にあります。このガイドには特定のエディタSDKや完成済みのプラグインは含みません。

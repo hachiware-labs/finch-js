@@ -1,6 +1,6 @@
 # 状態図の構造チェックと遷移
 
-[動作例](../examples/state-semantics.html)
+[動作例](https://hachiware-labs.github.io/finch-js/examples/state-semantics.html)
 
 `terminate` は×、`final` は二重丸で描画します。各ノードの `attributes.stateKind` はstate / region / initial / final / terminate / fork / join等を保持し、テーマやshapeの指定から独立しています。
 
@@ -72,7 +72,7 @@ output -> done
 
 未定義の機械、循環参照、機械名の重複、サブマシン状態に通常の子状態を持たせる構造、接続点を逆向きに使う構造を診断します。定義の内部も検証します。解析結果の `stateMachines` に定義ごとのSemanticModelを保持します。定義は利用図に自動展開せず、必要に応じて別図として描画します。
 
-[並行・履歴・サブマシンの動作例](../examples/state-advanced.html)
+[並行・履歴・サブマシンの動作例](https://hachiware-labs.github.io/finch-js/examples/state-advanced.html)
 
 ## 残る制限
 

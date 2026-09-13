@@ -1,6 +1,6 @@
 # UML拡張と検証範囲
 
-[編集できる7つのサンプル](../examples/uml-complete.html)
+[編集できる7つのサンプル](https://hachiware-labs.github.io/finch-js/examples/uml-complete.html)
 
 ## 分岐ごとのシーケンス
 

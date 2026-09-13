@@ -27,7 +27,7 @@ const diagram = Finch.render(source, {
 });
 ```
 
-[編集できるサンプル](../examples/reusable-sequence.html)
+[編集できるサンプル](https://hachiware-labs.github.io/finch-js/examples/reusable-sequence.html)
 
 ## 変数・式・検証
 
@@ -161,7 +161,7 @@ participant {{ID}}
 入れ子の更新は内側のJSONを取得・更新してから親のキーへ設定します。変数自体の型は従来どおり文字列ですが、json_atとJSON形式の更新値を使えばJSONの型を失わず受け渡せます。JSON解析は入れ子も含め非有限数を拒否します。
 
 
-[JSONからシーケンスを生成するサンプル](../examples/json-sequence.html)では、環境名の更新とオブジェクト配列の反復を組み合わせています。HTML保存・復元後もJSONを含む元のソースを編集できます。
+[JSONからシーケンスを生成するサンプル](https://hachiware-labs.github.io/finch-js/examples/json-sequence.html)では、環境名の更新とオブジェクト配列の反復を組み合わせています。HTML保存・復元後もJSONを含む元のソースを編集できます。
 
 
 ### 共通部品を一度だけ読み込む

@@ -1,6 +1,6 @@
 # 実用UMLの追加記法
 
-[編集できるサンプル](../examples/uml-practical.html)。現在のリポジトリビルドで利用できます。既存の簡潔な記法に、必要な意味を明示する短い指定を追加しています。
+[編集できるサンプル](https://hachiware-labs.github.io/finch-js/examples/uml-practical.html)。現在のリポジトリビルドで利用できます。既存の簡潔な記法に、必要な意味を明示する短い指定を追加しています。
 
 ## シーケンス
 

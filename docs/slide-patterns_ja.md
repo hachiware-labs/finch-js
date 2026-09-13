@@ -1,6 +1,6 @@
 # スライドパターン
 
-[English](./slide-patterns.md) · [動くパターン集を開く](../examples/slide-patterns.html) · [READMEに戻る](../README_ja.md)
+[English](./slide-patterns.md) · [動くパターン集を開く](https://hachiware-labs.github.io/finch-js/examples/slide-patterns.html) · [READMEに戻る](../README_ja.md)
 
 `@slide` には、プレゼンテーションで使いやすい要素を小さく揃えています。`row`、`column`、`grid` で組み合わせ、描画キャンバスとしてではなく「一枚で一つの主張を伝える」ために使います。
 
@@ -14,7 +14,7 @@
 | ロードマップ | `milestone` + `arrow` | 少数の段階や判断ゲートを示す |
 | 顧客の声 | `quote` + `metric` | 定性的な声に定量的な裏付けを添える |
 
-[動くパターン集](../examples/slide-patterns.html)では、各パターンの完成例とソースを切り替えて確認できます。
+[動くパターン集](https://hachiware-labs.github.io/finch-js/examples/slide-patterns.html)では、各パターンの完成例とソースを切り替えて確認できます。
 
 ## KPIサマリー
 

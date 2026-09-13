@@ -72,4 +72,4 @@ SVG and PNG downloads fetch and embed referenced images. Remote hosts must allow
 
 Saving editable HTML preserves the original image references, so distribute referenced images, pack files, and the runtime with the HTML. It is not an automatic single-file image bundle.
 
-Try the [complete icon-pack example](../examples/icon-packs.html).
+Try the [complete icon-pack example](https://hachiware-labs.github.io/finch-js/examples/icon-packs.html).

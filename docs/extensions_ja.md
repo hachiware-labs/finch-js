@@ -4,7 +4,7 @@
 
 Finch.js には4つの plugin 境界があります。Diagram plugin はソースを意味へ変換し、Shape plugin は1種類のノードを計測・描画します。Layout plugin は計測済み item を配置し、Theme plugin は見た目を決める値を提供します。これらは公開 model で接続されるため、parser、router、scene、SVG renderer の内部実装へ触れる必要はありません。
 
-[ブラウザー拡張例](../examples/extensions.html)では、4種類の plugin を小さな service map DSL にまとめています。このガイドでは、各 plugin の役割と、互換性を保つための契約を説明します。
+[ブラウザー拡張例](https://hachiware-labs.github.io/finch-js/examples/extensions.html)では、4種類の plugin を小さな service map DSL にまとめています。このガイドでは、各 plugin の役割と、互換性を保つための契約を説明します。
 
 ## 独立した engine から始める
 
@@ -227,7 +227,7 @@ const serviceLanes: LayoutPlugin = {
 finch.registerLayout("service-lanes", serviceLanes);
 ```
 
-ここでは method の本体を要約しています。完全に動く実装は [`examples/extensions.html`](../examples/extensions.html) に埋め込んであります。有用な layout は複数の判断をまとめて行う必要があり、座標計算だけを抜き出すと重要な責務が見えなくなるためです。
+ここでは method の本体を要約しています。完全に動く実装は [`examples/extensions.html`](https://hachiware-labs.github.io/finch-js/examples/extensions.html) に埋め込んであります。有用な layout は複数の判断をまとめて行う必要があり、座標計算だけを抜き出すと重要な責務が見えなくなるためです。
 
 layout では次の振る舞いを保ちます。
 

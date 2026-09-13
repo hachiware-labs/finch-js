@@ -1,6 +1,6 @@
 # Slide patterns
 
-[日本語](./slide-patterns_ja.md) · [Open the live gallery](../examples/slide-patterns.html) · [Back to README](../README.md)
+[日本語](./slide-patterns_ja.md) · [Open the live gallery](https://hachiware-labs.github.io/finch-js/examples/slide-patterns.html) · [Back to README](../README.md)
 
 `@slide` provides a small set of presentation-native elements. Compose them with `row`, `column`, and `grid`; use each slide to make one point instead of treating the DSL as a drawing canvas.
 
@@ -14,7 +14,7 @@
 | Roadmap | `milestone` + `arrow` | A small number of phases or evidence gates |
 | Customer evidence | `quote` + `metric` | Pairing qualitative evidence with measured impact |
 
-The [live pattern gallery](../examples/slide-patterns.html) includes a complete source for each recipe.
+The [live pattern gallery](https://hachiware-labs.github.io/finch-js/examples/slide-patterns.html) includes a complete source for each recipe.
 
 ## KPI summary
 

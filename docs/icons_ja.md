@@ -72,4 +72,4 @@ SVG・PNG保存では参照画像を取得し、埋め込んでから書き出�
 
 編集用HTMLの保存は元の画像参照を保持します。HTMLを渡すときは、参照画像・パック・ランタイムも一緒に配布してください。自動で画像を含む単一HTMLにする機能ではありません。
 
-[全パックと画像の完成例](../examples/icon-packs.html)で試せます。
+[全パックと画像の完成例](https://hachiware-labs.github.io/finch-js/examples/icon-packs.html)で試せます。

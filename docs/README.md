@@ -8,7 +8,7 @@ Public documentation describes supported syntax, APIs, observable behavior, defa
 - [Icons, colors, and images](icons.md) / [アイコン・色・画像](icons_ja.md)
 - [Coding agents](agents.md) / [エージェント連携](agents_ja.md)
 - [Prompt-to-diagram demo](generating.md) / [ことばから図を作るデモ](generating_ja.md)
-- [UML example guide](../examples/uml-guide.html)
+- [UML example guide](https://hachiware-labs.github.io/finch-js/examples/uml-guide.html)
 - [Layout and theme extensions](extensions.md) / [layout・theme の拡張](extensions_ja.md)
 
 公開文書には、利用者が指定・操作・拡張するための仕様を記載します。組み込みの配置や見た目は既定動作であり、作図上の正解を定めるものではありません。別の配置・表現は layout / theme の拡張で実現できます。

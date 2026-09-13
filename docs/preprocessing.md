@@ -2,7 +2,7 @@
 
 Enable preprocessing with `Finch.render(source, { target: '#diagram', preprocess: {} })`. It works before parsing every diagram kind while retaining the original editable source.
 
-[Editable example](../examples/reusable-sequence.html) · [Complete reference in Japanese](preprocessing_ja.md)
+[Editable example](https://hachiware-labs.github.io/finch-js/examples/reusable-sequence.html) · [Complete reference in Japanese](preprocessing_ja.md)
 
 | Capability | Syntax |
 |---|---|
